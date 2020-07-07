@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>{{message}}</h1>
+    <h1>{{ message }}</h1>
     <a @click="getMessage">Press Me!</a>
   </div>
 </template>
@@ -9,18 +9,18 @@
 export default {
   data() {
     return {
-      message: " "
-    };
+      message: ' ',
+    }
   },
   methods: {
     getMessage: function() {
-      var self = this;
-      window.backend.basic().then(result => {
-        self.message = result;
-      });
-    }
-  }
-};
+      var self = this
+      window.backend.basic().then((result) => {
+        self.message = result
+      })
+    },
+  },
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

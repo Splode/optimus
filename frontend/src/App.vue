@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <img alt="Wails logo" src="./assets/images/logo.png" class="logo zoomIn">
-    <HelloWorld/>
+    <img alt="Wails logo" src="./assets/images/logo.png" class="logo zoomIn" />
+    <HelloWorld />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-import "./assets/css/main.css";
+import HelloWorld from './components/HelloWorld.vue'
+import './assets/css/main.css'
 
 export default {
-  name: "app",
+  name: 'app',
   components: {
-    HelloWorld
-  }
-};
+    HelloWorld,
+  },
+}
 </script>
