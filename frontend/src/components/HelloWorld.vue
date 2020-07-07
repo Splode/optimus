@@ -9,17 +9,17 @@
 export default {
   data() {
     return {
-      message: ' ',
+      message: ' '
     }
   },
   methods: {
     getMessage: function() {
       var self = this
-      window.backend.basic().then((result) => {
+      window.backend.basic().then(result => {
         self.message = result
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

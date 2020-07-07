@@ -10,6 +10,6 @@ import * as Wails from '@wailsapp/runtime'
 
 Wails.Init(() => {
   new Vue({
-    render: (h) => h(App),
+    render: h => h(App)
   }).$mount('#app')
 })
