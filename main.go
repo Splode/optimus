@@ -19,6 +19,9 @@ func main() {
 		CSS:    css,
 		Colour: "#131313",
 	})
-	app.Bind(image.HandleFile)
-	app.Run()
+
+	fm := image.NewFileManager()
+
+	app.Bind(fm)
+	_ = app.Run()
 }

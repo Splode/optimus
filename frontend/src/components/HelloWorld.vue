@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <h1>{{ message }}</h1>
-        <a @click="getMessage">Press Me!</a>
-        <input type="file" @change="processFile"/>
+        <a @click="convert">Press Me!</a>
+        <input type="file" multiple @change="processFileInput"/>
     </div>
 </template>
 
@@ -23,20 +23,28 @@
                     self.message = result
                 })
             },
-            processFile(e) {
-                const file = e.target.files[0]
+            convert() {
+                window.backend.FileManager.Convert().then(result => {
+                    console.log(result)
+                }).catch(err => {
+                    console.error(err)
+                })
+            },
+            processFileInput(e) {
+                e.target.files.forEach(f => {
+                    this.processFile(f)
+                })
+            },
+            processFile(file) {
                 const reader = new FileReader()
                 reader.onload = () => {
-                    console.log(reader.result)
-                    window.backend.HandleFile(JSON.stringify({
+                    window.backend.FileManager.HandleFile(JSON.stringify({
                         data: reader.result.split(',')[1],
                         name: file.name,
                         type: file.type
                     }))
                 }
-                // reader.readAsBinaryString(file)
                 reader.readAsDataURL(file)
-                // reader.readAsArrayBuffer(file)
             }
         }
     }
