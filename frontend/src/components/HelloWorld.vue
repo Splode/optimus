@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <a @click="convert">Convert</a>
+        <button @click="convert">Convert</button>
+        <button @click="selectOutDir">Output Directory</button>
         <input type="file" multiple @change="processFileInput"/>
     </div>
 </template>
@@ -34,6 +35,13 @@
                     }))
                 }
                 reader.readAsDataURL(file)
+            },
+            selectOutDir() {
+                window.backend.FileManager.SetOutDir().then(result => {
+                    console.log(result)
+                }).catch(err => {
+                    console.error(err)
+                })
             }
         }
     }

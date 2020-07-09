@@ -12,13 +12,16 @@ import (
 
 type FileManager struct {
 	Files   []*File
+	OutDir  string
 	Runtime *wails.Runtime
 	Logger  *wails.CustomLogger
 }
 
 // NewFileManager creates a new FileManager.
 func NewFileManager() *FileManager {
-	return &FileManager{}
+	return &FileManager{
+		OutDir: "./",
+	}
 }
 
 func (fm *FileManager) WailsInit(runtime *wails.Runtime) error {
@@ -59,7 +62,7 @@ func (fm *FileManager) Convert() (errs []error) {
 	for _, file := range fm.Files {
 		file := file
 		go func(wg *sync.WaitGroup) {
-			if err := file.Write(); err != nil {
+			if err := file.Write(fm.OutDir); err != nil {
 				fm.Logger.Errorf("failed to convert file: %s", file.Name)
 				errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
 			}
@@ -69,4 +72,12 @@ func (fm *FileManager) Convert() (errs []error) {
 	}
 	wg.Wait()
 	return errs
+}
+
+// SetOutDir opens a directory select dialog and sets the output directory to
+// the chosen directory.
+func (fm *FileManager) SetOutDir() string {
+	dir := fm.Runtime.Dialog.SelectDirectory()
+	fm.OutDir = dir
+	return fm.OutDir
 }
