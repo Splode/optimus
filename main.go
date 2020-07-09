@@ -4,12 +4,7 @@ import (
 	"github.com/leaanthony/mewn"
 	"github.com/wailsapp/wails"
 	"optimus/lib/image"
-	"optimus/lib/webp"
 )
-
-func basic() {
-	webp.Toast()
-}
 
 func main() {
 
@@ -25,6 +20,5 @@ func main() {
 		Colour: "#131313",
 	})
 	app.Bind(image.HandleFile)
-	app.Bind(webp.Toast)
 	app.Run()
 }
