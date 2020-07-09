@@ -9,6 +9,7 @@ import (
 // File represents an image file.
 type File struct {
 	Data     []byte `json:"data"`
+	Ext      string `json:"ext"`
 	MimeType string `json:"type"`
 	Name     string `json:"name"`
 	Image    image.Image

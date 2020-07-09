@@ -1,28 +1,15 @@
 <template>
     <div class="container">
-        <h1>{{ message }}</h1>
-        <a @click="convert">Press Me!</a>
+        <a @click="convert">Convert</a>
         <input type="file" multiple @change="processFileInput"/>
     </div>
 </template>
 
 <script>
+    import {fExt, fName} from "../lib/file";
+
     export default {
-        data() {
-            return {
-                message: ' '
-            }
-        },
         methods: {
-            getMessage: function () {
-                var self = this
-                const time = Date.now()
-                console.log(time)
-                window.backend.Toast().then(result => {
-                    console.log(Date.now() - time)
-                    self.message = result
-                })
-            },
             convert() {
                 window.backend.FileManager.Convert().then(result => {
                     console.log(result)
@@ -38,9 +25,11 @@
             processFile(file) {
                 const reader = new FileReader()
                 reader.onload = () => {
+                    const name = file.name
                     window.backend.FileManager.HandleFile(JSON.stringify({
                         data: reader.result.split(',')[1],
-                        name: file.name,
+                        ext: fExt(name),
+                        name: fName(name),
                         type: file.type
                     }))
                 }
@@ -50,7 +39,6 @@
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     h1 {
         margin-top: 2em;
