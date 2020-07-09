@@ -7,6 +7,7 @@ import (
 	"github.com/wailsapp/wails"
 	"image/jpeg"
 	"image/png"
+	"sync"
 )
 
 type FileManager struct {
@@ -47,19 +48,25 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 		return err
 	}
 
-	//if err := file.Write(); err != nil {
-	//	return err
-	//}
 	return nil
 }
 
-func (fm *FileManager) Convert() error {
+// Convert runs the conversion on all files in the FileManager.
+func (fm *FileManager) Convert() (errs []error) {
+	var wg sync.WaitGroup
+	wg.Add(len(fm.Files))
+
 	for _, file := range fm.Files {
-		if err := file.Write(); err != nil {
-			fm.Logger.Error(fmt.Sprintf("failed to convert file: %s", file.Name))
-			return err
-		}
-		fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
+		file := file
+		go func(wg *sync.WaitGroup) {
+			if err := file.Write(); err != nil {
+				fm.Logger.Errorf("failed to convert file: %s", file.Name)
+				errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
+			}
+			fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
+			wg.Done()
+		}(&wg)
 	}
-	return nil
+	wg.Wait()
+	return errs
 }
