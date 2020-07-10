@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/leaanthony/mewn"
 	"github.com/wailsapp/wails"
+	"optimus/lib/config"
 	"optimus/lib/image"
 )
 
@@ -20,8 +21,10 @@ func main() {
 		Colour: "#131313",
 	})
 
-	fm := image.NewFileManager()
+	cfg := config.NewConfig()
+	fm := image.NewFileManager(cfg)
 
+	app.Bind(cfg)
 	app.Bind(fm)
 	_ = app.Run()
 }

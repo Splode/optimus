@@ -7,10 +7,12 @@ import (
 	"github.com/wailsapp/wails"
 	"image/jpeg"
 	"image/png"
+	"optimus/lib/config"
 	"sync"
 )
 
 type FileManager struct {
+	Config  *config.Config
 	Files   []*File
 	OutDir  string
 	Runtime *wails.Runtime
@@ -18,9 +20,9 @@ type FileManager struct {
 }
 
 // NewFileManager creates a new FileManager.
-func NewFileManager() *FileManager {
+func NewFileManager(c *config.Config) *FileManager {
 	return &FileManager{
-		OutDir: "./",
+		Config: c,
 	}
 }
 
@@ -65,13 +67,15 @@ func (fm *FileManager) Convert() (errs []error) {
 		if !file.IsConverted {
 			file := file
 			go func(wg *sync.WaitGroup) {
-				if err := file.Write(fm.OutDir); err != nil {
-					fm.Logger.Errorf("failed to convert file: %s", file.Name)
+				err := file.Write(fm.Config.OutDir)
+				if err != nil {
+					fm.Logger.Errorf("failed to convert file: %s, %v", file.Name, err)
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
+				} else {
+					file.IsConverted = true
+					fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
+					fm.Runtime.Events.Emit("conversion:complete", file.Name)
 				}
-				file.IsConverted = true
-				fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
-				fm.Runtime.Events.Emit("conversion:complete", file.Name)
 				wg.Done()
 			}(&wg)
 		}
@@ -91,12 +95,4 @@ func (fm *FileManager) CountUnconverted() int {
 		}
 	}
 	return c
-}
-
-// SetOutDir opens a directory select dialog and sets the output directory to
-// the chosen directory.
-func (fm *FileManager) SetOutDir() string {
-	dir := fm.Runtime.Dialog.SelectDirectory()
-	fm.OutDir = dir
-	return fm.OutDir
 }
