@@ -69,12 +69,19 @@ func (fm *FileManager) Convert() (errs []error) {
 			go func(wg *sync.WaitGroup) {
 				err := file.Write(fm.Config.OutDir)
 				if err != nil {
-					fm.Logger.Errorf("failed to convert file: %s, %v", file.Name, err)
+					fm.Logger.Errorf("failed to convert file: %s, %v", file.ID, err)
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
 				} else {
 					file.IsConverted = true
 					fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
-					fm.Runtime.Events.Emit("conversion:complete", file.Name)
+					s, err := file.GetConvertedSize()
+					if err != nil {
+						fm.Logger.Errorf("failed to read converted file size: %v", err)
+					}
+					fm.Runtime.Events.Emit("conversion:complete", map[string]interface{}{
+						"id":   file.ID,
+						"size": s,
+					})
 				}
 				wg.Done()
 			}(&wg)

@@ -1,6 +1,6 @@
 /**
  * fExt returns the extension of a given file.
- * @param {string} filename
+ * @param {string} filename - The filename.
  * @returns {string}
  */
 export function fExt(filename) {
@@ -9,7 +9,7 @@ export function fExt(filename) {
 
 /**
  * fName returns the name of a given file without its extension.
- * @param {string} filename
+ * @param {string} filename - The filename.
  * @returns {string}
  */
 export function fName(filename) {
@@ -20,7 +20,7 @@ export function fName(filename) {
 /**
  * fSize returns a pretty string from a number of bytes.
  * For example, 1024 converts to "1 MB"
- * @param {number} bytes
+ * @param {number} bytes - File size in bytes.
  * @returns {string}
  */
 export function fSize(bytes) {
