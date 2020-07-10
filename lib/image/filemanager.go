@@ -39,6 +39,7 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 		return err
 	}
 
+	// TODO: better checking of mime type
 	if file.MimeType == "image/jpg" || file.MimeType == "image/jpeg" {
 		file.Image, err = jpeg.Decode(bytes.NewReader(file.Data))
 		fm.Files = append(fm.Files, file)
@@ -70,6 +71,7 @@ func (fm *FileManager) Convert() (errs []error) {
 				}
 				file.IsConverted = true
 				fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
+				fm.Runtime.Events.Emit("conversion:complete", file.Name)
 				wg.Done()
 			}(&wg)
 		}

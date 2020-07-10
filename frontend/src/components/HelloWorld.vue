@@ -6,7 +6,7 @@
                 @click="selectOutDir">Output Directory
         </button>
         <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                @click="convert">Convert
+                @click="convert" :disabled="!canConvert">Convert
         </button>
         <div v-if="files.length > 0" class="table-wrapper">
             <table
@@ -27,7 +27,7 @@
                 <tbody>
                 <tr v-for="(file, i) in files" :key="`${i}-${file.name}`">
                     <td class="px-4 py-3">{{ file.filename }}</td>
-                    <td class="px-4 py-3">{{ file.size }}</td>
+                    <td class="font-mono px-4 py-3">{{ file.size }}</td>
                     <td class="px-4 py-3">{{ file.isConverted }}</td>
                 </tr>
                 </tbody>
@@ -38,11 +38,25 @@
 
 <script>
     import {fExt, fName, fSize} from "../lib/file";
+    import Wails from '@wailsapp/runtime'
 
     export default {
         data() {
             return {
                 files: []
+            }
+        },
+        computed: {
+            /**
+             * canConvert returns true if the file list satisfies conditions for
+             * conversion.
+             * @returns {boolean}
+             */
+            canConvert() {
+                if (this.files.length === 0) return false
+                return this.files.some(f => {
+                    return !f.isConverted
+                })
             }
         },
         methods: {
@@ -53,13 +67,48 @@
                     console.error(err)
                 })
             },
+            /**
+             * getFileByName returns the file from the file list with the given
+             * name.
+             * @param {string} name
+             * @returns {object}
+             */
+            getFileByName(name) {
+                if (this.files.length === 0) return
+                return this.files.find(f => {
+                    return f.name === name
+                })
+            },
+            /**
+             * hasFile returns true if the file is already in the file list.
+             * @param {string} name
+             * @returns {boolean}
+             */
+            hasFile(name) {
+                if (this.files.length === 0) return false
+                let e = false
+                this.files.forEach(f => {
+                    if (f.name === name) {
+                        e = true
+                    }
+                })
+                return e
+            },
+            isValidType(type) {
+                const v = ["image/png", "image/jpg", "image/jpeg"]
+                return v.indexOf(type) >= 0
+            },
+            // TODO: make an ID by hashing name and size
             processFileInput(e) {
                 e.target.files.forEach(f => {
+                    const name = fName(f.name)
+                    // reject if wrong mime or already exists
+                    if (!this.isValidType(f.type) || this.hasFile(name)) return
                     this.processFile(f)
                     this.files.push({
                         filename: f.name,
                         isConverted: false,
-                        name: fName(f.name),
+                        name,
                         size: fSize(f.size)
                     })
                 })
@@ -84,6 +133,13 @@
                     console.error(err)
                 })
             }
+        },
+        mounted() {
+            Wails.Events.On("conversion:complete", name => {
+                const f = this.getFileByName(name)
+                if (!f) return
+                f.isConverted = true
+            })
         }
     }
 </script>
