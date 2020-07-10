@@ -24,6 +24,7 @@ func NewFileManager() *FileManager {
 	}
 }
 
+// WailsInit performs setup when Wails is ready.
 func (fm *FileManager) WailsInit(runtime *wails.Runtime) error {
 	fm.Runtime = runtime
 	fm.Logger = fm.Runtime.Log.New("FileManager")
@@ -57,21 +58,37 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 // Convert runs the conversion on all files in the FileManager.
 func (fm *FileManager) Convert() (errs []error) {
 	var wg sync.WaitGroup
-	wg.Add(len(fm.Files))
+	wg.Add(fm.CountUnconverted())
 
 	for _, file := range fm.Files {
-		file := file
-		go func(wg *sync.WaitGroup) {
-			if err := file.Write(fm.OutDir); err != nil {
-				fm.Logger.Errorf("failed to convert file: %s", file.Name)
-				errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
-			}
-			fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
-			wg.Done()
-		}(&wg)
+		if !file.IsConverted {
+			file := file
+			go func(wg *sync.WaitGroup) {
+				if err := file.Write(fm.OutDir); err != nil {
+					fm.Logger.Errorf("failed to convert file: %s", file.Name)
+					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
+				}
+				file.IsConverted = true
+				fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
+				wg.Done()
+			}(&wg)
+		}
 	}
+
 	wg.Wait()
 	return errs
+}
+
+// CountUnconverted returns the number of files in the FileManager that haven't
+// been converted.
+func (fm *FileManager) CountUnconverted() int {
+	c := 0
+	for _, file := range fm.Files {
+		if !file.IsConverted {
+			c++
+		}
+	}
+	return c
 }
 
 // SetOutDir opens a directory select dialog and sets the output directory to
