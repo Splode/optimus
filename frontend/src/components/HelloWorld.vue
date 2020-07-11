@@ -1,32 +1,51 @@
 <template>
     <div class="mx-auto p-10">
-        <input type="file" accept="image/jpeg, image/jpg, image/png, image/webp"
-               multiple
-               @change="processFileInput"/>
-        <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                @click="selectOutDir">Output Directory
+        <input
+                type="file"
+                accept="image/jpeg, image/jpg, image/png, image/webp"
+                multiple
+                @change="processFileInput"
+        />
+        <button
+                class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                @click="selectOutDir"
+        >
+            Output Directory
         </button>
-        <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
-                @click="convert" :disabled="!canConvert">Convert
+        <button
+                class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                @click="convert"
+                :disabled="!canConvert"
+        >
+            Convert
         </button>
         <div v-if="files.length > 0" class="table-wrapper">
-            <table
-                    class="table-auto w-full text-left whitespace-no-wrap">
+            <table class="table-auto w-full text-left whitespace-no-wrap">
                 <thead>
                 <tr>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl">
+                    <th
+                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                    >
                         File
                     </th>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl">
+                    <th
+                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                    >
                         Size
                     </th>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl">
+                    <th
+                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                    >
                         New Size
                     </th>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl">
+                    <th
+                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                    >
                         Savings
                     </th>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200">
+                    <th
+                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200"
+                    >
                         Converted
                     </th>
                 </tr>
@@ -37,9 +56,8 @@
                     <td class="font-mono px-4 py-3">{{ getPrettySize(file.size)
                         }}
                     </td>
-                    <td class="font-mono px-4 py-3">{{
-                        getPrettySize(file.convertedSize)
-                        }}
+                    <td class="font-mono px-4 py-3">
+                        {{ getPrettySize(file.convertedSize) }}
                     </td>
                     <td class="px-4 py-3">{{ getSavings(file) }}</td>
                     <td class="px-4 py-3">{{ file.isConverted }}</td>
@@ -51,174 +69,179 @@
 </template>
 
 <script>
-    import {fExt, fName, fSize} from "../lib/file";
-    import Wails from "@wailsapp/runtime"
+  import { fExt, fName, fSize } from '../lib/file'
+  import Wails from '@wailsapp/runtime'
 
-    export default {
-        data() {
-            return {
-                files: []
-            }
-        },
+  export default {
+    data() {
+      return {
+        files: []
+      }
+    },
 
-        computed: {
-            /**
-             * canConvert returns true if the file list satisfies conditions for
-             * conversion.
-             * @returns {boolean}
-             */
-            canConvert() {
-                if (this.files.length === 0) return false
-                return this.files.some(f => {
-                    return !f.isConverted
-                })
-            }
-        },
+    computed: {
+      /**
+       * canConvert returns true if the file list satisfies conditions for
+       * conversion.
+       * @returns {boolean}
+       */
+      canConvert() {
+        if (this.files.length === 0) return false
+        return this.files.some(f => {
+          return !f.isConverted
+        })
+      }
+    },
 
-        methods: {
+    methods: {
+      /**
+       * convert calls the Convert method on the FileManager.
+       */
+      convert() {
+        window.backend.FileManager.Convert()
+          .then(result => {
+            console.log(result)
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      },
 
-            /**
-             * convert calls the Convert method on the FileManager.
-             */
-            convert() {
-                window.backend.FileManager.Convert().then(result => {
-                    console.log(result)
-                }).catch(err => {
-                    console.error(err)
-                })
-            },
+      /**
+       * createFileId creates a file ID based on its name and size.
+       * @param {string} name - The filename without extension.
+       * @param {number} size - The file size in bytes.
+       * @returns {string} - The file ID.
+       */
+      createFileId(name, size) {
+        return name + size.toString()
+      },
 
-            /**
-             * createFileId creates a file ID based on its name and size.
-             * @param {string} name - The filename without extension.
-             * @param {number} size - The file size in bytes.
-             * @returns {string} - The file ID.
-             */
-            createFileId(name, size) {
-                return name + size.toString()
-            },
+      /**
+       * getFileById returns the file from the file list with the given
+       * ID.
+       * @param {string} id - The file ID.
+       * @returns {object} - The matched file.
+       */
+      getFileById(id) {
+        if (this.files.length === 0) return
+        return this.files.find(f => {
+          return f.id === id
+        })
+      },
 
-            /**
-             * getFileById returns the file from the file list with the given
-             * ID.
-             * @param {string} id - The file ID.
-             * @returns {object} - The matched file.
-             */
-            getFileById(id) {
-                if (this.files.length === 0) return
-                return this.files.find(f => {
-                    return f.id === id
-                })
-            },
+      /**
+       * getPrettySize returns a pretty string of file size given bytes.
+       * @param {number} size - Size in bytes.
+       * @returns {string} - The pretty size.
+       */
+      getPrettySize(size) {
+        if (size === 0) return ''
+        return fSize(size)
+      },
 
-            /**
-             * getPrettySize returns a pretty string of file size given bytes.
-             * @param {number} size - Size in bytes.
-             * @returns {string} - The pretty size.
-             */
-            getPrettySize(size) {
-                if (size === 0) return ""
-                return fSize(size)
-            },
+      /**
+       * getSavings returns the percentage difference between a file's
+       * original and converted sizes as a pretty string.
+       * @param {object} file - A file in the file list.
+       * @returns {string} - The file savings as string.
+       */
+      getSavings(file) {
+        if (file.convertedSize === 0) return ''
+        const p = Math.floor(100 - (file.convertedSize / file.size) * 100)
+        return `${p.toString()}%`
+      },
 
-            /**
-             * getSavings returns the percentage difference between a file's
-             * original and converted sizes as a pretty string.
-             * @param {object} file - A file in the file list.
-             * @returns {string} - The file savings as string.
-             */
-            getSavings(file) {
-                if (file.convertedSize === 0) return ""
-                const p = Math.floor(100 - ((file.convertedSize / file.size) * 100))
-                return `${p.toString()}%`
-            },
+      /**
+       * hasFile returns true if the file is in the file list.
+       * @param {string} id - The file ID.
+       * @returns {boolean}
+       */
+      hasFile(id) {
+        if (this.files.length === 0) return false
+        let e = false
+        this.files.forEach(f => {
+          if (f.id === id) {
+            e = true
+          }
+        })
+        return e
+      },
 
-            /**
-             * hasFile returns true if the file is in the file list.
-             * @param {string} id - The file ID.
-             * @returns {boolean}
-             */
-            hasFile(id) {
-                if (this.files.length === 0) return false
-                let e = false
-                this.files.forEach(f => {
-                    if (f.id === id) {
-                        e = true
-                    }
-                })
-                return e
-            },
+      /**
+       * isValidType returns true if the given type is one of an accepted
+       * set of mime types.
+       * @param {string} type - A file's mime type.
+       * @return {boolean}
+       */
+      isValidType(type) {
+        const v = [
+          'image/jpg',
+          'image/jpeg',
+          'image/.jpg',
+          'image/png',
+          'image/webp'
+        ]
+        return v.indexOf(type) >= 0
+      },
 
-            /**
-             * isValidType returns true if the given type is one of an accepted
-             * set of mime types.
-             * @param {string} type - A file's mime type.
-             * @return {boolean}
-             */
-            isValidType(type) {
-                const v = [
-                    "image/jpg",
-                    "image/jpeg",
-                    "image/.jpg",
-                    "image/png",
-                    "image/webp"
-                ]
-                return v.indexOf(type) >= 0
-            },
+      processFileInput(e) {
+        e.target.files.forEach(f => {
+          const name = fName(f.name)
+          const size = f.size
+          const id = this.createFileId(name, size)
+          // reject if wrong mime or already exists
+          if (!this.isValidType(f.type) || this.hasFile(id)) return
+          this.processFile(f, id)
+          this.files.push({
+            convertedSize: 0,
+            filename: f.name,
+            id,
+            isConverted: false,
+            name,
+            size
+          })
+        })
+      },
 
-            processFileInput(e) {
-                e.target.files.forEach(f => {
-                    const name = fName(f.name)
-                    const size = f.size
-                    const id = this.createFileId(name, size)
-                    // reject if wrong mime or already exists
-                    if (!this.isValidType(f.type) || this.hasFile(id)) return
-                    this.processFile(f, id)
-                    this.files.push({
-                        convertedSize: 0,
-                        filename: f.name,
-                        id,
-                        isConverted: false,
-                        name,
-                        size,
-                    })
-                })
-            },
-
-            processFile(file, id) {
-                const reader = new FileReader()
-                reader.onload = () => {
-                    const name = file.name
-                    window.backend.FileManager.HandleFile(JSON.stringify({
-                        data: reader.result.split(',')[1],
-                        ext: fExt(name),
-                        id,
-                        name: fName(name),
-                        type: file.type
-                    }))
-                }
-                reader.readAsDataURL(file)
-            },
-
-            selectOutDir() {
-                window.backend.Config.SetOutDir().then(result => {
-                    console.log(result)
-                }).catch(err => {
-                    console.error(err)
-                })
-            }
-        },
-
-        mounted() {
-            Wails.Events.On("conversion:complete", e => {
-                const f = this.getFileById(e.id)
-                if (!f) return
-                const size = e.size
-                f.isConverted = true
-                f.convertedSize = size
+      processFile(file, id) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          const name = file.name
+          window.backend.FileManager.HandleFile(
+            JSON.stringify({
+              data: reader.result.split(',')[1],
+              ext: fExt(name),
+              id,
+              name: fName(name),
+              type: file.type
             })
+          )
         }
+        reader.readAsDataURL(file)
+      },
+
+      selectOutDir() {
+        window.backend.Config.SetOutDir()
+          .then(result => {
+            console.log(result)
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      }
+    },
+
+    mounted() {
+      Wails.Events.On('conversion:complete', e => {
+        const f = this.getFileById(e.id)
+        if (!f) return
+        const size = e.size
+        f.isConverted = true
+        f.convertedSize = size
+      })
     }
+  }
 </script>
 
 <style scoped>

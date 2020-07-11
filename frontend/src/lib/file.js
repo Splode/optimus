@@ -4,7 +4,7 @@
  * @returns {string}
  */
 export function fExt(filename) {
-    return filename.split('.').pop()
+  return filename.split('.').pop()
 }
 
 /**
@@ -13,8 +13,11 @@ export function fExt(filename) {
  * @returns {string}
  */
 export function fName(filename) {
-    filename = filename.replace(/\\/g, '/');
-    return filename.substring(filename.lastIndexOf('/') + 1, filename.lastIndexOf('.'));
+  filename = filename.replace(/\\/g, '/')
+  return filename.substring(
+    filename.lastIndexOf('/') + 1,
+    filename.lastIndexOf('.')
+  )
 }
 
 /**
@@ -24,10 +27,9 @@ export function fName(filename) {
  * @returns {string}
  */
 export function fSize(bytes) {
-    if (bytes === 0) {
-        return "0.00 B";
-    }
-    const e = Math.floor(Math.log(bytes) / Math.log(1024));
-    return (bytes / Math.pow(1024, e)).toFixed(2) +
-        ' ' + ' KMGTP'.charAt(e) + 'B';
+  if (bytes === 0) {
+    return '0.00 B'
+  }
+  const e = Math.floor(Math.log(bytes) / Math.log(1024))
+  return (bytes / Math.pow(1024, e)).toFixed(2) + ' ' + ' KMGTP'.charAt(e) + 'B'
 }
