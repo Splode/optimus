@@ -1,13 +1,24 @@
 package image
 
 import (
+	"bytes"
 	"errors"
 	"image"
+	"image/jpeg"
+	"image/png"
 	"io/ioutil"
 	"optimus/lib/webp"
 	"os"
 	"path"
 )
+
+var mimes = map[string]string{
+	"image/.jpg": "jpg",
+	"image/jpg":  "jpg",
+	"image/jpeg": "jpg",
+	"image/png":  "png",
+	"image/webp": "webp",
+}
 
 // File represents an image file.
 type File struct {
@@ -19,6 +30,24 @@ type File struct {
 	ConvertedFile string
 	IsConverted   bool
 	Image         image.Image
+}
+
+// Decode decodes the file's data based on its mime type.
+func (f *File) Decode() error {
+	mime, err := getFileType(f.MimeType)
+	if err != nil {
+		return err
+	}
+
+	switch mime {
+	case "jpg":
+		f.Image, err = jpeg.Decode(bytes.NewReader(f.Data))
+	case "png":
+		f.Image, err = png.Decode(bytes.NewReader(f.Data))
+	case "webp":
+		f.Image, err = webp.DecodeWebp(bytes.NewReader(f.Data))
+	}
+	return nil
 }
 
 // GetConvertedSize returns the size of the converted file.
@@ -33,6 +62,7 @@ func (f *File) GetConvertedSize() (int64, error) {
 	return s.Size(), nil
 }
 
+// Write saves a file to disk based on the encoding target.
 func (f *File) Write(dir string) error {
 	buf, err := webp.EncodeWebp(f.Image)
 	dest := path.Join(dir, f.Name+".webp")
@@ -44,4 +74,13 @@ func (f *File) Write(dir string) error {
 	}
 	f.ConvertedFile = dest
 	return nil
+}
+
+// getFileType returns the file's type based on the given mime type.
+func getFileType(t string) (string, error) {
+	m, prs := mimes[t]
+	if !prs {
+		_ = errors.New("unsupported file type:" + t)
+	}
+	return m, nil
 }

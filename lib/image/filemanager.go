@@ -1,12 +1,9 @@
 package image
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/wailsapp/wails"
-	"image/jpeg"
-	"image/png"
 	"optimus/lib/config"
 	"sync"
 )
@@ -41,19 +38,11 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 		return err
 	}
 
-	// TODO: better checking of mime type
-	if file.MimeType == "image/jpg" || file.MimeType == "image/jpeg" {
-		file.Image, err = jpeg.Decode(bytes.NewReader(file.Data))
-		fm.Files = append(fm.Files, file)
-		fm.Logger.Info(fmt.Sprintf("added file to file manager: %s", file.Name))
-	} else if file.MimeType == "image/png" {
-		file.Image, err = png.Decode(bytes.NewReader(file.Data))
-		fm.Files = append(fm.Files, file)
-		fm.Logger.Info(fmt.Sprintf("added file to file manager: %s", file.Name))
-	}
-	if err != nil {
+	if err = file.Decode(); err != nil {
 		return err
 	}
+	fm.Files = append(fm.Files, file)
+	fm.Logger.Infof("added file to file manager: %s", file.Name)
 
 	return nil
 }

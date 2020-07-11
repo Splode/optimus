@@ -1,6 +1,7 @@
 <template>
     <div class="mx-auto p-10">
-        <input type="file" accept="image/png, image/jpeg, image/jpg" multiple
+        <input type="file" accept="image/jpeg, image/jpg, image/png, image/webp"
+               multiple
                @change="processFileInput"/>
         <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                 @click="selectOutDir">Output Directory
@@ -155,7 +156,13 @@
              * @return {boolean}
              */
             isValidType(type) {
-                const v = ["image/png", "image/jpg", "image/jpeg"]
+                const v = [
+                    "image/jpg",
+                    "image/jpeg",
+                    "image/.jpg",
+                    "image/png",
+                    "image/webp"
+                ]
                 return v.indexOf(type) >= 0
             },
 
