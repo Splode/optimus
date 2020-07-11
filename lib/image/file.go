@@ -63,9 +63,17 @@ func (f *File) GetConvertedSize() (int64, error) {
 }
 
 // Write saves a file to disk based on the encoding target.
-func (f *File) Write(dir string) error {
-	buf, err := webp.EncodeWebp(f.Image)
-	dest := path.Join(dir, f.Name+".webp")
+func (f *File) Write(dir string, target string) (err error) {
+	var buf bytes.Buffer
+	switch target {
+	case "jpg":
+		err = jpeg.Encode(&buf, f.Image, &jpeg.Options{Quality: 70})
+	case "png":
+		err = png.Encode(&buf, f.Image)
+	case "webp":
+		buf, err = webp.EncodeWebp(f.Image)
+	}
+	dest := path.Join(dir, f.Name+"."+target)
 	if err != nil {
 		return err
 	}

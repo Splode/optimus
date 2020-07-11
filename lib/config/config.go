@@ -10,6 +10,7 @@ import (
 // Config represents the application settings.
 type Config struct {
 	OutDir  string
+	Target  string
 	Runtime *wails.Runtime
 	Logger  *wails.CustomLogger
 }
@@ -40,6 +41,8 @@ func NewConfig() *Config {
 	}
 
 	c.OutDir = od
+
+	c.Target = "webp"
 	return c
 }
 
@@ -48,5 +51,13 @@ func NewConfig() *Config {
 func (c *Config) SetOutDir() string {
 	dir := c.Runtime.Dialog.SelectDirectory()
 	c.OutDir = dir
+	c.Logger.Infof("set output directory: %s", dir)
 	return c.OutDir
+}
+
+// SetTarget sets the conversion output target.
+func (c *Config) SetTarget(t string) {
+	// TODO check if valid target
+	c.Target = t
+	c.Logger.Infof("set conversion target: %s", t)
 }

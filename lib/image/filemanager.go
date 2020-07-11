@@ -56,7 +56,7 @@ func (fm *FileManager) Convert() (errs []error) {
 		if !file.IsConverted {
 			file := file
 			go func(wg *sync.WaitGroup) {
-				err := file.Write(fm.Config.OutDir)
+				err := file.Write(fm.Config.OutDir, fm.Config.Target)
 				if err != nil {
 					fm.Logger.Errorf("failed to convert file: %s, %v", file.ID, err)
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
