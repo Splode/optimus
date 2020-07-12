@@ -5,7 +5,8 @@
                 type="file"
                 accept="image/jpeg, image/jpg, image/png, image/webp"
                 multiple
-                @change="processFileInput"
+                @input="processFileInput"
+                ref="fileInput"
         />
         <label for="target">Target</label>
         <select name="target" id="target" @change="selectTarget">
@@ -130,6 +131,7 @@
        */
       clear() {
         this.files = []
+        this.$refs['fileInput'].value = null
         window.backend.FileManager.Clear().then(res => {
           console.log(res)
         }).catch(err => {
