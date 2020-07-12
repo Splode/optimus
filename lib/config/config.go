@@ -5,6 +5,7 @@ import (
 	"github.com/wailsapp/wails"
 	"os"
 	"path"
+	"path/filepath"
 )
 
 // Config represents the application settings.
@@ -28,22 +29,31 @@ func NewConfig() *Config {
 	c := &Config{}
 	ud, err := os.UserHomeDir()
 	if err != nil {
-		_ = fmt.Errorf("failed to get user directory: %v", err)
+		fmt.Printf("failed to get user directory: %v", err)
 	}
 
 	od := path.Join(ud, "optimus")
+	cp := filepath.Clean(od)
 
 	if _, err := os.Stat(od); os.IsNotExist(err) {
 		if err := os.Mkdir(od, 0777); err != nil {
 			od = "./"
-			_ = fmt.Errorf("failed to create default output directory: %v", err)
+			fmt.Printf("failed to create default output directory: %v", err)
 		}
 	}
 
-	c.OutDir = od
+	c.OutDir = cp
 
 	c.Target = "webp"
 	return c
+}
+
+// GetAppConfig returns the application configuration.
+func (c *Config) GetAppConfig() map[string]interface{} {
+	return map[string]interface{}{
+		"outDir": c.OutDir,
+		"target": c.Target,
+	}
 }
 
 // SetOutDir opens a directory select dialog and sets the output directory to

@@ -1,5 +1,6 @@
 <template>
     <div class="mx-auto p-10">
+        <p>{{ config.outDir }}</p>
         <input
                 type="file"
                 accept="image/jpeg, image/jpg, image/png, image/webp"
@@ -73,6 +74,8 @@
   import Wails from '@wailsapp/runtime'
 
   export default {
+    name: 'Editor',
+
     data() {
       return {
         files: []
@@ -90,6 +93,14 @@
         return this.files.some(f => {
           return !f.isConverted
         })
+      },
+
+      /**
+       * config returns the app configuration from state.
+       * @returns {object}
+       */
+      config() {
+        return this.$store.getters.config
       }
     },
 
@@ -225,6 +236,7 @@
         window.backend.Config.SetOutDir()
           .then(result => {
             console.log(result)
+            this.$store.dispatch('getConfig')
           })
           .catch(err => {
             console.error(err)
@@ -233,6 +245,7 @@
     },
 
     mounted() {
+      console.log(this.$store)
       Wails.Events.On('conversion:complete', e => {
         const f = this.getFileById(e.id)
         if (!f) return
