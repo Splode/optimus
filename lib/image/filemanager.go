@@ -47,6 +47,11 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 	return nil
 }
 
+// Clear removes the files in the FileManager.
+func (fm *FileManager) Clear() {
+	fm.Files = nil
+}
+
 // Convert runs the conversion on all files in the FileManager.
 func (fm *FileManager) Convert() (errs []error) {
 	var wg sync.WaitGroup

@@ -26,6 +26,12 @@
         >
             Convert
         </button>
+        <button
+                class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                @click="clear"
+        >
+            Clear
+        </button>
         <div v-if="files.length > 0" class="table-wrapper">
             <table class="table-auto w-full text-left whitespace-no-wrap">
                 <thead>
@@ -111,6 +117,18 @@
     },
 
     methods: {
+      /**
+       * clear removes the files from the file list and the FileManager.
+       */
+      clear() {
+        this.files = []
+        window.backend.FileManager.Clear().then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.error(err)
+        })
+      },
+
       /**
        * convert calls the Convert method on the FileManager.
        */
