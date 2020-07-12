@@ -34,7 +34,7 @@ func NewConfig() *Config {
 	od := path.Join(ud, "optimus")
 
 	if _, err := os.Stat(od); os.IsNotExist(err) {
-		if err := os.Mkdir(od, 0666); err != nil {
+		if err := os.Mkdir(od, 0777); err != nil {
 			od = "./"
 			_ = fmt.Errorf("failed to create default output directory: %v", err)
 		}
