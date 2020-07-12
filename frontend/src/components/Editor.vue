@@ -7,6 +7,12 @@
                 multiple
                 @change="processFileInput"
         />
+        <label for="target">Target</label>
+        <select name="target" id="target" @change="selectTarget">
+            <option value="webp">WebP</option>
+            <option value="jpg">JPG</option>
+            <option value="png">PNG</option>
+        </select>
         <button
                 class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                 @click="selectOutDir"
@@ -232,6 +238,9 @@
         reader.readAsDataURL(file)
       },
 
+      /**
+       * selectOutDir selects an output directory in the config.
+       */
       selectOutDir() {
         window.backend.Config.SetOutDir()
           .then(result => {
@@ -241,6 +250,21 @@
           .catch(err => {
             console.error(err)
           })
+      },
+
+      /**
+       * selectTarget selects the encoding target in the config.
+       * @param {HTMLInputElement} e
+       */
+      selectTarget(e) {
+        const t = e.target.value
+        console.log(t)
+        window.backend.Config.SetTarget(t).then(res => {
+          console.log(res)
+          this.$store.dispatch('getConfig')
+        }).catch(err => {
+          console.error(err)
+        })
       }
     },
 
