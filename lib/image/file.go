@@ -10,6 +10,7 @@ import (
 	"optimus/lib/webp"
 	"os"
 	"path"
+	"path/filepath"
 )
 
 var mimes = map[string]string{
@@ -80,7 +81,8 @@ func (f *File) Write(dir string, target string) (err error) {
 	if err := ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
 		return err
 	}
-	f.ConvertedFile = dest
+	f.ConvertedFile = filepath.Clean(dest)
+	f.IsConverted = true
 	return nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/wailsapp/wails"
 	"optimus/lib/config"
+	"strings"
 	"sync"
 )
 
@@ -59,21 +60,21 @@ func (fm *FileManager) Convert() (errs []error) {
 
 	for _, file := range fm.Files {
 		if !file.IsConverted {
-			file := file
 			go func(wg *sync.WaitGroup) {
 				err := file.Write(fm.Config.OutDir, fm.Config.Target)
 				if err != nil {
 					fm.Logger.Errorf("failed to convert file: %s, %v", file.ID, err)
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
 				} else {
-					file.IsConverted = true
 					fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
 					s, err := file.GetConvertedSize()
 					if err != nil {
 						fm.Logger.Errorf("failed to read converted file size: %v", err)
 					}
 					fm.Runtime.Events.Emit("conversion:complete", map[string]interface{}{
-						"id":   file.ID,
+						"id": file.ID,
+						// TODO: standardize this path conversion
+						"path": strings.Replace(file.ConvertedFile, "\\", "/", -1),
 						"size": s,
 					})
 				}
@@ -96,4 +97,14 @@ func (fm *FileManager) CountUnconverted() int {
 		}
 	}
 	return c
+}
+
+// OpenFile opens the file at the given filepath using the file's native file
+// application.
+func (fm *FileManager) OpenFile(p string) error {
+	if err := fm.Runtime.Browser.OpenFile(p); err != nil {
+		fm.Logger.Errorf("failed to open file %s: %v", p, err)
+		return err
+	}
+	return nil
 }

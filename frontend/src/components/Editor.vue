@@ -57,6 +57,11 @@
                         Savings
                     </th>
                     <th
+                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                    >
+                        Result
+                    </th>
+                    <th
                             class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200"
                     >
                         Converted
@@ -73,6 +78,9 @@
                         {{ getPrettySize(file.convertedSize) }}
                     </td>
                     <td class="px-4 py-3">{{ getSavings(file) }}</td>
+                    <td class="px-4 py-3" @click="openFile(file)">{{
+                        file.convertedPath }}
+                    </td>
                     <td class="px-4 py-3">{{ file.isConverted }}</td>
                 </tr>
                 </tbody>
@@ -220,8 +228,23 @@
         return v.indexOf(type) >= 0
       },
 
+      /**
+       * openDir opens the configured output directory.
+       */
       openDir() {
         window.backend.Config.OpenOutputDir().then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.error(err)
+        })
+      },
+
+      /**
+       * openFile opens the file at the given file path.
+       */
+      openFile(file) {
+        // TODO: can this be called directly from Wails?
+        window.backend.FileManager.OpenFile(file.convertedPath).then(res => {
           console.log(res)
         }).catch(err => {
           console.error(err)
@@ -237,6 +260,7 @@
           if (!this.isValidType(f.type) || this.hasFile(id)) return
           this.processFile(f, id)
           this.files.push({
+            convertedPath: '',
             convertedSize: 0,
             filename: f.name,
             id,
@@ -297,11 +321,12 @@
     mounted() {
       console.log(this.$store)
       Wails.Events.On('conversion:complete', e => {
+        console.log(e)
         const f = this.getFileById(e.id)
         if (!f) return
-        const size = e.size
+        f.convertedPath = e.path
         f.isConverted = true
-        f.convertedSize = size
+        f.convertedSize = e.size
       })
     }
   }
