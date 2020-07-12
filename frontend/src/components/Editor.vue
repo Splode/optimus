@@ -1,6 +1,6 @@
 <template>
     <div class="mx-auto p-10">
-        <p>{{ config.outDir }}</p>
+        <p @click="openDir">{{ config.outDir }}</p>
         <input
                 type="file"
                 accept="image/jpeg, image/jpg, image/png, image/webp"
@@ -200,6 +200,14 @@
           'image/webp'
         ]
         return v.indexOf(type) >= 0
+      },
+
+      openDir() {
+        window.backend.Config.OpenOutputDir().then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.error(err)
+        })
       },
 
       processFileInput(e) {

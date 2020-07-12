@@ -13,12 +13,13 @@ func main() {
 	css := mewn.String("./frontend/dist/app.css")
 
 	app := wails.CreateApp(&wails.AppConfig{
-		Width:  1024,
-		Height: 768,
-		Title:  "Optimus",
-		JS:     js,
-		CSS:    css,
-		Colour: "#131313",
+		Width:     1024,
+		Height:    576,
+		Title:     "Optimus",
+		JS:        js,
+		CSS:       css,
+		Colour:    "#131313",
+		Resizable: true,
 	})
 
 	cfg := config.NewConfig()

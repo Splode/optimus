@@ -56,6 +56,14 @@ func (c *Config) GetAppConfig() map[string]interface{} {
 	}
 }
 
+// OpenOutputDir opens the output directory using the native system browser.
+func (c *Config) OpenOutputDir() error {
+	if err := c.Runtime.Browser.OpenURL(c.OutDir); err != nil {
+		return err
+	}
+	return nil
+}
+
 // SetOutDir opens a directory select dialog and sets the output directory to
 // the chosen directory.
 func (c *Config) SetOutDir() string {
