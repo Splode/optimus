@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@wailsapp/runtime": "^1.0.10",
+    "autoprefixer": "^9.8.5",
     "core-js": "^3.6.4",
     "regenerator-runtime": "^0.13.3",
     "tailwindcss": "^1.4.6",
