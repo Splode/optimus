@@ -3,7 +3,6 @@
         <p @click="openDir">{{ config.outDir }}</p>
         <input
                 type="file"
-                accept="image/jpeg, image/jpg, image/png, image/webp"
                 multiple
                 @input="processFileInput"
                 ref="fileInput"
@@ -33,56 +32,54 @@
         >
             Clear
         </button>
+        <!-- file table -->
         <div v-if="files.length > 0" class="table-wrapper">
             <table class="table-auto w-full text-left whitespace-no-wrap">
                 <thead>
                 <tr>
                     <th
-                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                            class="tracking-wider font-medium pl-3 text-gray-900 text-left text-sm uppercase"
                     >
                         File
                     </th>
                     <th
-                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                            class="tracking-wider font-medium pl-3 text-gray-900 text-left text-sm uppercase"
                     >
                         Size
                     </th>
                     <th
-                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                            class="tracking-wider font-medium pl-3 text-gray-900 text-left text-sm uppercase"
                     >
                         New Size
                     </th>
                     <th
-                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                            class="tracking-wider font-medium pl-3 text-gray-900 text-left text-sm uppercase"
                     >
-                        Savings
+                        Ratio
                     </th>
                     <th
-                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200 rounded-tl rounded-bl"
+                            class="tracking-wider font-medium pl-3 text-gray-900 text-left text-sm uppercase"
                     >
                         Result
                     </th>
                     <th
-                            class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-200"
+                            class="tracking-wider font-medium pl-3 text-gray-900 text-left text-sm uppercase"
                     >
-                        Converted
+                        Status
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(file, i) in files" :key="`${i}-${file.name}`">
-                    <td class="px-4 py-3">{{ file.filename }}</td>
-                    <td class="font-mono px-4 py-3">{{ getPrettySize(file.size)
-                        }}
+                    <td><p class="cell-l">{{ file.filename }}</p></td>
+                    <td class="font-mono "><p>{{ getPrettySize(file.size) }}</p>
                     </td>
-                    <td class="font-mono px-4 py-3">
-                        {{ getPrettySize(file.convertedSize) }}
+                    <td class="font-mono "><p>{{
+                        getPrettySize(file.convertedSize) }}</p></td>
+                    <td><p>{{ getSavings(file) }}</p></td>
+                    <td @click="openFile(file)"><p>{{ file.convertedPath }}</p>
                     </td>
-                    <td class="px-4 py-3">{{ getSavings(file) }}</td>
-                    <td class="px-4 py-3" @click="openFile(file)">{{
-                        file.convertedPath }}
-                    </td>
-                    <td class="px-4 py-3">{{ file.isConverted }}</td>
+                    <td><p class="cell-r">{{ file.isConverted }}</p></td>
                 </tr>
                 </tbody>
             </table>
@@ -144,8 +141,8 @@
        */
       convert() {
         window.backend.FileManager.Convert()
-          .then(result => {
-            console.log(result)
+          .then(res => {
+            console.log(res)
           })
           .catch(err => {
             console.error(err)
@@ -198,6 +195,20 @@
       },
 
       /**
+       * getFileType attempts to determine the file image type based on the
+       * given file type and extension. This method exists due to IE's lack of
+       * support for WebP.
+       * @param {string} type - The file type.
+       * @param {string} ext - The file extension.
+       * @returns {string}
+       */
+      getFileType(type, ext) {
+        if (this.isValidType(type)) return type
+        if (this.isValidExt(ext)) return `image/${ext}`
+        return ''
+      },
+
+      /**
        * hasFile returns true if the file is in the file list.
        * @param {string} id - The file ID.
        * @returns {boolean}
@@ -211,6 +222,17 @@
           }
         })
         return e
+      },
+
+      /**
+       * isValidExt returns true if the given file extension is of an accepted
+       * set of extensions.
+       * @param {string} ext - A file extension
+       * @returns {boolean}
+       */
+      isValidExt(ext) {
+        const v = ['jpg', 'jpeg', 'png', 'webp']
+        return v.indexOf(ext) >= 0
       },
 
       /**
@@ -256,11 +278,13 @@
       processFileInput(e) {
         e.target.files.forEach(f => {
           const name = fName(f.name)
+          const ext = fExt(f.name)
+          const type = this.getFileType(f.type, ext)
           const size = f.size
           const id = this.createFileId(name, size)
           // reject if wrong mime or already exists
-          if (!this.isValidType(f.type) || this.hasFile(id)) return
-          this.processFile(f, id)
+          if (!type || this.hasFile(id)) return
+          this.processFile(f, id, type)
           this.files.push({
             convertedPath: '',
             convertedSize: 0,
@@ -273,7 +297,7 @@
         })
       },
 
-      processFile(file, id) {
+      processFile(file, id, type) {
         const reader = new FileReader()
         reader.onload = () => {
           const name = file.name
@@ -283,7 +307,7 @@
               ext: fExt(name),
               id,
               name: fName(name),
-              type: file.type
+              type
             })
           )
         }
@@ -295,8 +319,8 @@
        */
       selectOutDir() {
         window.backend.Config.SetOutDir()
-          .then(result => {
-            console.log(result)
+          .then(res => {
+            console.log(res)
             this.$store.dispatch('getConfig')
           })
           .catch(err => {
@@ -310,7 +334,6 @@
        */
       selectTarget(e) {
         const t = e.target.value
-        console.log(t)
         window.backend.Config.SetTarget(t).then(res => {
           console.log(res)
           this.$store.dispatch('getConfig')
@@ -321,9 +344,7 @@
     },
 
     mounted() {
-      console.log(this.$store)
       Wails.Events.On('conversion:complete', e => {
-        console.log(e)
         const f = this.getFileById(e.id)
         if (!f) return
         f.convertedPath = e.path
@@ -339,5 +360,25 @@
         min-height: calc(100vh / 5);
         max-height: calc(100vh / 2);
         overflow: auto;
+    }
+
+    td {
+        margin: 0;
+        padding: 0;
+    }
+
+    td p {
+        @apply bg-gray-500 my-1 pl-3 py-2;
+        min-height: 40px;
+    }
+
+    td p.cell-l {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+    }
+
+    td p.cell-r {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
     }
 </style>
