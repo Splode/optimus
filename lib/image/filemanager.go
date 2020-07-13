@@ -59,6 +59,7 @@ func (fm *FileManager) Convert() (errs []error) {
 	wg.Add(fm.CountUnconverted())
 
 	for _, file := range fm.Files {
+		file := file
 		if !file.IsConverted {
 			go func(wg *sync.WaitGroup) {
 				err := file.Write(fm.Config.OutDir, fm.Config.Target)
