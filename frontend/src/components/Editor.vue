@@ -1,12 +1,15 @@
 <template>
     <div class="mx-auto p-10">
-        <p @click="openDir">{{ config.outDir }}</p>
+        <div class="bg-indigo-500 w-50 h-10" ref="dropZone"></div>
         <input
                 type="file"
+                accept="image/jpeg, image/jpg, image/png, image/webp"
                 multiple
-                @input="processFileInput"
+                class="hidden"
+                @input="handleFileInput"
                 ref="fileInput"
         />
+        <p @click="openDir">{{ config.outDir }}</p>
         <label for="target">Target</label>
         <select name="target" id="target" @change="selectTarget">
             <option value="webp">WebP</option>
@@ -209,6 +212,15 @@
       },
 
       /**
+       * handleFileInput handles the file submission via form input.
+       * @param {Event} e
+       */
+      handleFileInput(e) {
+        const f = e.target.files
+        this.processFileInput(f)
+      },
+
+      /**
        * hasFile returns true if the file is in the file list.
        * @param {string} id - The file ID.
        * @returns {boolean}
@@ -275,8 +287,12 @@
         })
       },
 
-      processFileInput(e) {
-        e.target.files.forEach(f => {
+      /**
+       * processFileInput processes a list of submitted files.
+       * @param {FileList} f - A FileList array of files.
+       */
+      processFileInput(f) {
+        f.forEach(f => {
           const name = fName(f.name)
           const ext = fExt(f.name)
           const type = this.getFileType(f.type, ext)
@@ -297,6 +313,13 @@
         })
       },
 
+      /**
+       * processFile encodes a file and sends it to the backend for further
+       * processing.
+       * @param {File} file
+       * @param {string} id
+       * @param {string} type
+       */
       processFile(file, id, type) {
         const reader = new FileReader()
         reader.onload = () => {
@@ -351,6 +374,27 @@
         f.isConverted = true
         f.convertedSize = e.size
       })
+
+      const dz = this.$refs['dropZone']
+
+      dz.addEventListener('click', () => {
+        this.$refs['fileInput'].click()
+      }, false)
+      dz.addEventListener('dragenter', e => {
+        e.stopPropagation()
+        e.preventDefault()
+      }, false)
+      dz.addEventListener('dragover', e => {
+        e.stopPropagation()
+        e.preventDefault()
+      }, false)
+      dz.addEventListener('drop', e => {
+        e.stopPropagation()
+        e.preventDefault()
+        const dt = e.dataTransfer
+        const f = dt.files
+        this.processFileInput(f)
+      }, false)
     }
   }
 </script>
@@ -367,8 +411,12 @@
         padding: 0;
     }
 
+    table tr:nth-child(odd) p {
+        @apply bg-gray-700;
+    }
+
     td p {
-        @apply bg-gray-500 my-1 pl-3 py-2;
+        @apply my-1 pl-3 py-2;
         min-height: 40px;
     }
 
