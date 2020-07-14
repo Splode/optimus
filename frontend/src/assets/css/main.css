@@ -1,6 +1,9 @@
+@import url('animations.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 #app {
     /*font-family: 'Lato', Helvetica, Arial, sans-serif;*/

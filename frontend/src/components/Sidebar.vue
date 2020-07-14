@@ -1,7 +1,7 @@
 <template>
     <nav class="flex flex-col items-center pl-10 pt-10 w-24">
         <div @click="selectView('Settings')"
-             class="border-2 border-gray-700 p-2 rounded-full w-10 h-10">
+             class="border-2 border-gray-700 cursor-pointer p-2 rounded-full w-10 h-10">
             <svg version="1.1" id="cog" xmlns="http://www.w3.org/2000/svg"
                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                  viewBox="0 0 19.6 20" enable-background="new 0 0 19.6 20"
@@ -15,7 +15,7 @@
             </svg>
         </div>
         <div @click="selectView('About')"
-             class="border-2 border-gray-700 flex h-8 items-center justify-center mt-4 p-2 rounded-full text-center w-8">
+             class="border-2 border-gray-700 cursor-pointer flex h-8 items-center justify-center mt-4 p-2 rounded-full text-center w-8">
             <p class="font-bold">i</p>
         </div>
     </nav>
@@ -33,5 +33,19 @@
 </script>
 
 <style scoped>
+    #cog {
+        transition: transform .3s cubic-bezier(.07, .95, 0, 1);
+    }
 
+    #cog path {
+        transition: fill .3s cubic-bezier(.07, .95, 0, 1);
+    }
+
+    div:hover > #cog {
+        transform: rotate(45deg);
+    }
+
+    div:hover > #cog path {
+        fill: #ce51ed;
+    }
 </style>

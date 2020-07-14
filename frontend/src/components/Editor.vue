@@ -2,7 +2,8 @@
     <div class="p-10 w-full">
         <header class="border-b-2 border-gray-800 flex">
             <div class="w-1/2">
-                <div class="bg-gray-800 flex flex-col items-center justify-center py-10"
+                <div class="bg-gray-800 border-2 border-dashed cursor-pointer flex flex-col items-center justify-center py-10 ta-slow rounded-sm"
+                     :class="isDragging ? 'border-green' : 'border-gray-400'"
                      ref="dropZone">
                     <svg version="1.1" id="dropZone-plus"
                          xmlns="http://www.w3.org/2000/svg"
@@ -20,14 +21,14 @@
                 </div>
                 <section class="flex justify-between py-6 w-full">
                     <button
-                            class="bg-purple border-0 flex py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded-full text-gray-900"
+                            class="bg-purple border-0 flex font-medium py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded-full text-gray-900"
                             @click="convert"
                             :disabled="!canConvert"
                     >
                         Optimize
                     </button>
                     <button
-                            class="bg-purple border-0 flex py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded-full text-gray-900"
+                            class="bg-purple border-0 flex font-medium py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded-full text-gray-900"
                             @click="clear"
                     >
                         Clear
@@ -49,19 +50,6 @@
                 @input="handleFileInput"
                 ref="fileInput"
         />
-        <p @click="openDir">{{ config.outDir }}</p>
-        <label for="target">Target</label>
-        <select name="target" id="target" @change="selectTarget">
-            <option value="webp">WebP</option>
-            <option value="jpg">JPG</option>
-            <option value="png">PNG</option>
-        </select>
-        <button
-                class="flex ml-auto bg-purple border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded-full text-gray-900"
-                @click="selectOutDir"
-        >
-            Output Directory
-        </button>
         <!-- file table -->
         <div v-if="files.length > 0" class="table-wrapper">
             <table class="table-auto w-full text-left whitespace-no-wrap">
@@ -87,11 +75,11 @@
                     >
                         Ratio
                     </th>
-                    <th
-                            class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
-                    >
-                        Result
-                    </th>
+                    <!--                    <th-->
+                    <!--                            class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"-->
+                    <!--                    >-->
+                    <!--                        Result-->
+                    <!--                    </th>-->
                     <th
                             class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
                     >
@@ -107,8 +95,8 @@
                     <td><p>{{
                         getPrettySize(file.convertedSize) }}</p></td>
                     <td><p>{{ getSavings(file) }}</p></td>
-                    <td @click="openFile(file)"><p>{{ file.convertedPath }}</p>
-                    </td>
+                    <!--                    <td @click="openFile(file)"><p>{{ file.convertedPath }}</p>-->
+                    <!--                    </td>-->
                     <td>
                         <p v-if="file.isConverted"
                            class="flex items-center justify-center">
@@ -142,7 +130,8 @@
 
     data() {
       return {
-        files: []
+        files: [],
+        isDragging: false
       }
     },
 
@@ -157,14 +146,6 @@
         return this.files.some(f => {
           return !f.isConverted
         })
-      },
-
-      /**
-       * config returns the app configuration from state.
-       * @returns {object}
-       */
-      config() {
-        return this.$store.getters.config
       }
     },
 
@@ -308,17 +289,6 @@
       },
 
       /**
-       * openDir opens the configured output directory.
-       */
-      openDir() {
-        window.backend.Config.OpenOutputDir().then(res => {
-          console.log(res)
-        }).catch(err => {
-          console.error(err)
-        })
-      },
-
-      /**
        * openFile opens the file at the given file path.
        */
       openFile(file) {
@@ -378,34 +348,6 @@
           )
         }
         reader.readAsDataURL(file)
-      },
-
-      /**
-       * selectOutDir selects an output directory in the config.
-       */
-      selectOutDir() {
-        window.backend.Config.SetOutDir()
-          .then(res => {
-            console.log(res)
-            this.$store.dispatch('getConfig')
-          })
-          .catch(err => {
-            console.error(err)
-          })
-      },
-
-      /**
-       * selectTarget selects the encoding target in the config.
-       * @param {HTMLInputElement} e
-       */
-      selectTarget(e) {
-        const t = e.target.value
-        window.backend.Config.SetTarget(t).then(res => {
-          console.log(res)
-          this.$store.dispatch('getConfig')
-        }).catch(err => {
-          console.error(err)
-        })
       }
     },
 
@@ -430,12 +372,25 @@
       dz.addEventListener('dragover', e => {
         e.stopPropagation()
         e.preventDefault()
+        if (this.isDragging) return
+        this.isDragging = true
+      }, false)
+      dz.addEventListener('dragend', e => {
+        e.stopPropagation()
+        e.preventDefault()
+        this.isDragging = false
+      }, false)
+      dz.addEventListener('dragleave', e => {
+        e.stopPropagation()
+        e.preventDefault()
+        this.isDragging = false
       }, false)
       dz.addEventListener('drop', e => {
         e.stopPropagation()
         e.preventDefault()
         const dt = e.dataTransfer
         const f = dt.files
+        this.isDragging = false
         this.processFileInput(f)
       }, false)
     }
@@ -444,8 +399,8 @@
 
 <style scoped>
     .table-wrapper {
+        max-width: calc(100vw - 160px);
         min-height: 80px;
-        /*max-height: calc(100vh / 2);*/
         overflow: auto;
         height: calc(100vh - 344px)
     }

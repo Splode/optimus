@@ -1,0 +1,7 @@
+.ta {
+    transition: all .3s cubic-bezier(.07, .95, 0, 1);
+}
+
+.ta-slow {
+    transition: all 1s cubic-bezier(.07, .95, 0, 1);
+}
