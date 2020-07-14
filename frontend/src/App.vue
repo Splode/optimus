@@ -1,21 +1,41 @@
 <template>
     <div id="app" class="bg-gray-900 flex h-full">
-        <Sidebar/>
-        <!--    <img alt="Wails logo" src="./assets/images/logo.png" class="logo" />-->
-        <Editor/>
+        <Sidebar v-on:select-view="handleViewSelect"/>
+        <component :is="currentView" v-on:close-view="handleViewClose"/>
     </div>
 </template>
 
 <script>
+  import About from './components/About.vue'
   import Editor from './components/Editor.vue'
+  import Settings from './components/Settings.vue'
   import Sidebar from './components/Sidebar.vue'
   import './assets/css/main.css'
 
   export default {
     name: 'app',
+
     components: {
+      About,
       Editor,
+      Settings,
       Sidebar
+    },
+
+    data() {
+      return {
+        currentView: 'Editor'
+      }
+    },
+
+    methods: {
+      handleViewClose() {
+        this.currentView = 'Editor'
+      },
+
+      handleViewSelect(e) {
+        this.currentView = e
+      }
     },
 
     mounted() {

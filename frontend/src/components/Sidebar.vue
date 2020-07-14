@@ -1,6 +1,7 @@
 <template>
     <nav class="flex flex-col items-center pl-10 pt-10 w-24">
-        <div class="border-2 border-gray-700 p-2 rounded-full w-10 h-10">
+        <div @click="selectView('Settings')"
+             class="border-2 border-gray-700 p-2 rounded-full w-10 h-10">
             <svg version="1.1" id="cog" xmlns="http://www.w3.org/2000/svg"
                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                  viewBox="0 0 19.6 20" enable-background="new 0 0 19.6 20"
@@ -13,7 +14,8 @@
                 c2.2,0,4,1.8,4,4s-1.8,4-4,4s-4-1.8-4-4S7.6,6,9.8,6z"/>
             </svg>
         </div>
-        <div class="border-2 border-gray-700 flex h-8 items-center justify-center mt-4 p-2 rounded-full text-center w-8">
+        <div @click="selectView('About')"
+             class="border-2 border-gray-700 flex h-8 items-center justify-center mt-4 p-2 rounded-full text-center w-8">
             <p class="font-bold">i</p>
         </div>
     </nav>
@@ -21,7 +23,12 @@
 
 <script>
   export default {
-    name: 'Sidebar'
+    name: 'Sidebar',
+    methods: {
+      selectView(v) {
+        this.$emit('select-view', v)
+      }
+    }
   }
 </script>
 
