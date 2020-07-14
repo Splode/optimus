@@ -1,0 +1,30 @@
+<template>
+    <nav class="flex flex-col items-center pl-10 pt-10 w-24">
+        <div class="border-2 border-gray-700 p-2 rounded-full w-10 h-10">
+            <svg version="1.1" id="cog" xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 viewBox="0 0 19.6 20" enable-background="new 0 0 19.6 20"
+                 xml:space="preserve">
+                <path fill="#B3B3B3" d="M0.1,13.3l2,3.5c0.3,0.5,0.9,0.6,1.4,0.4l1.4-0.8c0.6,0.5,1.2,0.8,1.9,1.1V19c0,0.6,0.4,1,1,1h4
+                c0.6,0,1-0.4,1-1v-1.6c0.7-0.3,1.3-0.7,1.9-1.1l1.4,0.8c0.5,0.3,1.1,0.1,1.4-0.4l2-3.5c0.3-0.5,0.1-1.1-0.4-1.4l-1.4-0.8
+                c0.1-0.4,0.1-0.7,0.1-1.1s0-0.7-0.1-1.1l1.4-0.8c0.5-0.3,0.6-0.9,0.4-1.4l-2-3.5c-0.3-0.5-0.9-0.6-1.4-0.4l-1.4,0.8
+                c-0.6-0.5-1.2-0.8-1.9-1.1V1c0-0.6-0.4-1-1-1h-4c-0.6,0-1,0.4-1,1v1.6C6.1,2.9,5.5,3.3,4.9,3.7L3.5,2.9C3,2.6,2.4,2.8,2.1,3.3
+                l-2,3.5C-0.1,7.2,0,7.8,0.5,8.1l1.4,0.8C1.8,9.3,1.8,9.6,1.8,10s0,0.7,0.1,1.1l-1.4,0.8C0,12.2-0.1,12.8,0.1,13.3z M9.8,6
+                c2.2,0,4,1.8,4,4s-1.8,4-4,4s-4-1.8-4-4S7.6,6,9.8,6z"/>
+            </svg>
+        </div>
+        <div class="border-2 border-gray-700 flex h-8 items-center justify-center mt-4 p-2 rounded-full text-center w-8">
+            <p class="font-bold">i</p>
+        </div>
+    </nav>
+</template>
+
+<script>
+  export default {
+    name: 'Sidebar'
+  }
+</script>
+
+<style scoped>
+
+</style>

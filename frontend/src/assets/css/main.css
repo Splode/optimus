@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 #app {
-    font-family: 'Lato', Helvetica, Arial, sans-serif;
+    /*font-family: 'Lato', Helvetica, Arial, sans-serif;*/
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #eee;
+    color: #b3b3b3;
 }
 
 * {
-    cursor: default;
+    /*cursor: default;*/
     user-select: none;
 }
 
 html {
-    background-color: #131313;
+    background-color: #18181f;
     background-size: 20px 20px;
     overflow: hidden;
     height: 100%;
@@ -29,10 +29,11 @@ body {
     scrollbar-track-color: #000;
     scrollbar-arrow-color: #000;
     scrollbar-shadow-color: #fff;
+    height: 100%;
 }
 
 button {
-    cursor: default;
+    /*cursor: default;*/
 }
 
 @font-face {
