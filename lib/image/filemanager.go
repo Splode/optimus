@@ -7,6 +7,7 @@ import (
 	"optimus/lib/config"
 	"strings"
 	"sync"
+	"time"
 )
 
 type FileManager struct {
@@ -58,6 +59,8 @@ func (fm *FileManager) Convert() (errs []error) {
 	var wg sync.WaitGroup
 	wg.Add(fm.CountUnconverted())
 
+	c := 0
+	t := time.Now().UnixNano()
 	for _, file := range fm.Files {
 		file := file
 		if !file.IsConverted {
@@ -78,6 +81,7 @@ func (fm *FileManager) Convert() (errs []error) {
 						"path": strings.Replace(file.ConvertedFile, "\\", "/", -1),
 						"size": s,
 					})
+					c++
 				}
 				wg.Done()
 			}(&wg)
@@ -85,6 +89,10 @@ func (fm *FileManager) Convert() (errs []error) {
 	}
 
 	wg.Wait()
+	fm.Runtime.Events.Emit("conversion:stat", map[string]interface{}{
+		"count": c,
+		"time":  (time.Now().UnixNano() - t) / 1000000,
+	})
 	return errs
 }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="p-10 w-full">
-        <header class="border-b-2 border-gray-800 flex">
+        <header class="border-b-2 border-gray-800 flex flex-wrap">
             <div class="w-1/2">
                 <div class="bg-gray-800 border-2 border-dashed cursor-pointer flex flex-col items-center justify-center py-10 ta-slow rounded-sm"
                      :class="isDragging ? 'border-green' : 'border-gray-400'"
@@ -19,7 +19,51 @@
                     <p class="mt-6 text-gray-200">Drag and drop or select
                         images</p>
                 </div>
-                <section class="flex justify-between py-6 w-full">
+            </div>
+            <div class="pl-6 w-1/2">
+                <div v-if="!stats.time"
+                     class="flex h-full items-center justify-center">
+                    <h2 class="leading-none text-4xl text-center text-green">Add
+                        image files<br>to get started</h2>
+                </div>
+                <div v-else
+                     class="flex flex-wrap items-center justify-center h-full">
+                    <div class="px-4 w-4/12">
+                        <h2 class="font-bold leading-none text-5xl text-green tracking-tight">
+                            {{
+                            getPrettySize(stats.savings) }}</h2>
+                        <p class="font-medium text-gray-300 tracking-wider uppercase">
+                            Saved</p>
+                    </div>
+                    <div class="px-4 w-3/12">
+                        <p class="font-bold text-2xl">{{ stats.count }}</p>
+                        <p class="font-medium text-gray-300 tracking-wider uppercase">
+                            {{
+                            stats.count > 1 ? 'Images' : 'Image'}}</p>
+                        <p class="font-bold text-2xl">{{
+                            getPrettyTime(stats.time)[0] }}</p>
+                        <p class="font-medium text-gray-300 tracking-wider uppercase">
+                            {{
+                            getPrettyTime(stats.time)[1] }}</p>
+                    </div>
+                    <div class="px-4 w-5/12">
+                        <p class="font-bold text-2xl">2.25 GB</p>
+                        <p class="font-medium text-gray-300 tracking-wider uppercase">
+                            All time Savings</p>
+                        <p class="font-bold text-2xl">2,204</p>
+                        <p class="font-medium text-gray-300 tracking-wider uppercase">
+                            All time Images</p>
+                    </div>
+                    <div class="px-4 w-full">
+                        <p>Optimized {{ lastStat.count }} {{ lastStat.count > 1
+                            ? 'images' : 'image '}} in {{
+                            getPrettyTime(lastStat.time)[0] }} {{
+                            getPrettyTime(lastStat.time)[1].toLowerCase() }}</p>
+                    </div>
+                </div>
+            </div>
+            <footer class="w-full">
+                <section class="flex justify-between py-6 w-1/2">
                     <button
                             class="bg-purple border-0 flex font-medium py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded-full text-gray-900"
                             @click="convert"
@@ -34,13 +78,7 @@
                         Clear
                     </button>
                 </section>
-            </div>
-            <div class="w-1/2">
-                <div class="flex h-full items-center justify-center">
-                    <h2 class="leading-none text-4xl text-center text-green">Add
-                        image files<br>to get started</h2>
-                </div>
-            </div>
+            </footer>
         </header>
         <input
                 type="file"
@@ -81,7 +119,7 @@
                     <!--                        Result-->
                     <!--                    </th>-->
                     <th
-                            class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
+                            class="font-medium pl-3 pt-6 text-center text-gray-400 text-left text-sm tracking-wider uppercase"
                     >
                         Status
                     </th>
@@ -99,7 +137,7 @@
                     <!--                    </td>-->
                     <td>
                         <p v-if="file.isConverted"
-                           class="flex items-center justify-center">
+                           class="cell-r flex items-center justify-center">
                             <svg version="1.1" :id="`${i}-check`"
                                  xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -112,7 +150,7 @@
                             l1.4,1.4L8,14.4z"/>
                             </svg>
                         </p>
-                        <p v-else></p>
+                        <p v-else class="cell-r"></p>
                     </td>
                 </tr>
                 </tbody>
@@ -124,6 +162,7 @@
 <script>
   import { fExt, fName, fSize } from '../lib/file'
   import Wails from '@wailsapp/runtime'
+  import { prettyTime } from '../lib/time'
 
   export default {
     name: 'Editor',
@@ -131,7 +170,16 @@
     data() {
       return {
         files: [],
-        isDragging: false
+        isDragging: false,
+        lastStat: {
+          count: 0,
+          time: 0
+        },
+        stats: {
+          count: 0,
+          savings: 0,
+          time: 0
+        }
       }
     },
 
@@ -150,6 +198,17 @@
     },
 
     methods: {
+      /**
+       * calcTotalSavings sums the total difference between original and
+       * converted file sizes.
+       */
+      calcTotalSavings() {
+        this.files.forEach(f => {
+          if (!f.isConverted || f.convertedSize > f.size) return
+          this.stats.savings += f.size - f.convertedSize
+        })
+      },
+
       /**
        * clear removes the files from the file list and the FileManager.
        */
@@ -207,6 +266,16 @@
       getPrettySize(size) {
         if (size === 0) return ''
         return fSize(size)
+      },
+
+      /**
+       * getPrettyTime returns an array of human-friendly strings representing
+       * millisecond time.
+       * @param {number} ms
+       * @returns {string[]}
+       */
+      getPrettyTime(ms) {
+        return prettyTime(ms)
       },
 
       /**
@@ -358,6 +427,16 @@
         f.convertedPath = e.path
         f.isConverted = true
         f.convertedSize = e.size
+      })
+
+      Wails.Events.On('conversion:stat', e => {
+        const c = e.count
+        const t = e.time
+        this.stats.count += c
+        this.stats.time += t
+        this.lastStat.count = c
+        this.lastStat.time = t
+        this.calcTotalSavings()
       })
 
       const dz = this.$refs['dropZone']

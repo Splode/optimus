@@ -1,7 +1,9 @@
 <template>
     <div id="app" class="bg-gray-900 flex h-full">
         <Sidebar v-on:select-view="handleViewSelect"/>
-        <component :is="currentView" v-on:close-view="handleViewClose"/>
+        <keep-alive>
+            <component :is="currentView" v-on:close-view="handleViewClose"/>
+        </keep-alive>
     </div>
 </template>
 
