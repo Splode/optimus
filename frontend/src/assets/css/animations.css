@@ -1,3 +1,19 @@
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 600ms cubic-bezier(.07, .95, 0, 1);
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
+.fade-fast-enter-active, .fade-fast-leave-active {
+    transition: opacity 200ms cubic-bezier(.07, .95, 0, 1);
+}
+
+.fade-fast-enter, .fade-fast-leave-to {
+    opacity: 0;
+}
+
 .ta {
     transition: all .3s cubic-bezier(.07, .95, 0, 1);
 }

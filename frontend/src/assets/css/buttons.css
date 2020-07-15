@@ -1,0 +1,9 @@
+.btn {
+    @apply border-2 flex font-medium items-center justify-center px-8 py-2 rounded-full;
+    min-width: 136px;
+    min-height: 40px;
+}
+
+.btn--disabled {
+    @apply bg-gray-700 border-gray-700 cursor-default text-gray-400;
+}

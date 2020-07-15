@@ -2,7 +2,9 @@
     <div id="app" class="bg-gray-900 flex h-full">
         <Sidebar v-on:select-view="handleViewSelect"/>
         <keep-alive>
-            <component :is="currentView" v-on:close-view="handleViewClose"/>
+            <transition name="fade-fast" mode="out-in">
+                <component :is="currentView" v-on:close-view="handleViewClose"/>
+            </transition>
         </keep-alive>
     </div>
 </template>
