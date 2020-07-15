@@ -7,7 +7,8 @@
                      :class="n.type === 'warn' ? 'border-red' : 'border-green'">
                     <div class="mr-3">
                         <!-- warn -->
-                        <svg v-if="n.type === 'warn'" version="1.1" id="Layer_1"
+                        <svg v-if="n.type === 'warn'" version="1.1"
+                             id="warn-icon"
                              xmlns="http://www.w3.org/2000/svg" x="0px"
                              y="0px"
                              viewBox="0 0 20 19"
@@ -18,7 +19,7 @@
                             c0.2-0.3,0.2-0.7,0-1L10.9,0.5z M11,16H9v-2h2V16z M9,12V7h2l0,5H9z"/>
                         </svg>
                         <!-- success -->
-                        <svg v-else version="1.1" id="Layer_1"
+                        <svg v-else version="1.1" id="check-icon"
                              xmlns="http://www.w3.org/2000/svg" x="0px"
                              y="0px"
                              viewBox="0 0 24 24"
