@@ -383,11 +383,17 @@
           const id = this.createFileId(name, size)
           // reject if wrong mime or already exists
           if (!type) {
-            EventBus.$emit('notify', { msg: `File type not supported. Valid file types include JPG, PNG, and WebP.` })
+            EventBus.$emit('notify', {
+              msg: `File type not supported. Valid file types include JPG, PNG, and WebP.`,
+              type: 'warn'
+            })
             return
           }
           if (this.hasFile(id)) {
-            EventBus.$emit('notify', { msg: `Image file has already been added to the file list.` })
+            EventBus.$emit('notify', {
+              msg: `Image file has already been added to the file list.`,
+              type: 'warn'
+            })
             return
           }
           this.processFile(f, id, type)
