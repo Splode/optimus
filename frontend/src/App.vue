@@ -1,11 +1,11 @@
 <template>
     <div id="app" class="bg-gray-900 flex h-full">
         <Sidebar v-on:select-view="handleViewSelect"/>
-        <keep-alive>
-            <transition name="fade-fast" mode="out-in">
+        <transition name="fade-fast" mode="out-in">
+            <keep-alive>
                 <component :is="currentView" v-on:close-view="handleViewClose"/>
-            </transition>
-        </keep-alive>
+            </keep-alive>
+        </transition>
     </div>
 </template>
 
