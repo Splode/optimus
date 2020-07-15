@@ -1,5 +1,5 @@
 <template>
-    <div class="p-10 w-full">
+    <section class="p-10 w-full">
         <header class="border-b-2 border-gray-800 flex flex-wrap">
             <div class="w-5/12">
                 <div class="bg-gray-800 border-2 border-dashed cursor-pointer drop-zone flex flex-col items-center justify-center py-10 ta-slow rounded-sm"
@@ -31,7 +31,7 @@
                     </div>
                     <div v-else
                          key="stats"
-                         class="flex flex-wrap items-center justify-center h-full">
+                         class="flex flex-wrap items-end h-full">
                         <div class="px-3 w-5/12">
                             <h2 class="font-bold leading-none text-5xl text-green tracking-tight">
                                 {{
@@ -57,14 +57,6 @@
                             <p class="font-bold text-2xl">2,204</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 All time Images</p>
-                        </div>
-                        <div class="px-3 w-full">
-                            <p>Optimized {{ lastStat.count }} {{ lastStat.count
-                                > 1
-                                ? 'images' : 'image '}} in {{
-                                getPrettyTime(lastStat.time)[0] }} {{
-                                getPrettyTime(lastStat.time)[1].toLowerCase()
-                                }}</p>
                         </div>
                     </div>
                 </transition>
@@ -168,11 +160,12 @@
                 </table>
             </div>
         </transition>
-    </div>
+    </section>
 </template>
 
 <script>
   import { fExt, fName, fSize } from '../lib/file'
+  import { EventBus } from '../lib/event-bus'
   import Wails from '@wailsapp/runtime'
   import { prettyTime } from '../lib/time'
 
@@ -183,10 +176,6 @@
       return {
         files: [],
         isDragging: false,
-        lastStat: {
-          count: 0,
-          time: 0
-        },
         stats: {
           count: 0,
           savings: 0,
@@ -393,7 +382,14 @@
           const size = f.size
           const id = this.createFileId(name, size)
           // reject if wrong mime or already exists
-          if (!type || this.hasFile(id)) return
+          if (!type) {
+            EventBus.$emit('notify', { msg: `File type not supported. Valid file types include JPG, PNG, and WebP.` })
+            return
+          }
+          if (this.hasFile(id)) {
+            EventBus.$emit('notify', { msg: `Image file has already been added to the file list.` })
+            return
+          }
           this.processFile(f, id, type)
           this.files.push({
             convertedPath: '',
@@ -405,6 +401,7 @@
             size
           })
         })
+        this.$refs['fileInput'].value = null
       },
 
       /**
@@ -446,9 +443,10 @@
         const t = e.time
         this.stats.count += c
         this.stats.time += t
-        this.lastStat.count = c
-        this.lastStat.time = t
         this.calcTotalSavings()
+        EventBus.$emit('notify',
+          { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
+        )
       })
 
       const dz = this.$refs['dropZone']

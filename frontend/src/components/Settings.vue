@@ -1,6 +1,6 @@
 <template>
-    <section>
-        <h1>Options</h1>
+    <section class="p-10 w-full">
+        <h1 class="font-medium text-5xl text-green">Options</h1>
         <p @click="closeView">Close</p>
 
         <p @click="openDir">{{ config.outDir }}</p>
