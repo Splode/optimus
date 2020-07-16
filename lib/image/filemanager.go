@@ -5,23 +5,27 @@ import (
 	"fmt"
 	"github.com/wailsapp/wails"
 	"optimus/lib/config"
+	"optimus/lib/stat"
 	"strings"
 	"sync"
 	"time"
 )
 
 type FileManager struct {
-	Config  *config.Config
-	Files   []*File
-	OutDir  string
+	Files []*File
+
 	Runtime *wails.Runtime
 	Logger  *wails.CustomLogger
+
+	config *config.Config
+	stats  *stat.Stat
 }
 
 // NewFileManager creates a new FileManager.
-func NewFileManager(c *config.Config) *FileManager {
+func NewFileManager(c *config.Config, s *stat.Stat) *FileManager {
 	return &FileManager{
-		Config: c,
+		config: c,
+		stats:  s,
 	}
 }
 
@@ -57,15 +61,16 @@ func (fm *FileManager) Clear() {
 // Convert runs the conversion on all files in the FileManager.
 func (fm *FileManager) Convert() (errs []error) {
 	var wg sync.WaitGroup
-	wg.Add(fm.CountUnconverted())
+	wg.Add(fm.countUnconverted())
 
 	c := 0
+	var b int64
 	t := time.Now().UnixNano()
 	for _, file := range fm.Files {
 		file := file
 		if !file.IsConverted {
 			go func(wg *sync.WaitGroup) {
-				err := file.Write(fm.Config.App.OutDir, fm.Config.App.Target)
+				err := file.Write(fm.config.App.OutDir, fm.config.App.Target)
 				if err != nil {
 					fm.Logger.Errorf("failed to convert file: %s, %v", file.ID, err)
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
@@ -82,6 +87,11 @@ func (fm *FileManager) Convert() (errs []error) {
 						"size": s,
 					})
 					c++
+					s, err = file.GetSavings()
+					if err != nil {
+						fm.Logger.Errorf("failed to get file conversion savings: %v", err)
+					}
+					b += s
 				}
 				wg.Done()
 			}(&wg)
@@ -89,23 +99,14 @@ func (fm *FileManager) Convert() (errs []error) {
 	}
 
 	wg.Wait()
+	fm.stats.SetImageCount(c)
+	fm.stats.SetByteCount(b)
 	fm.Runtime.Events.Emit("conversion:stat", map[string]interface{}{
-		"count": c,
-		"time":  (time.Now().UnixNano() - t) / 1000000,
+		"count":   c,
+		"savings": b,
+		"time":    (time.Now().UnixNano() - t) / 1000000,
 	})
 	return errs
-}
-
-// CountUnconverted returns the number of files in the FileManager that haven't
-// been converted.
-func (fm *FileManager) CountUnconverted() int {
-	c := 0
-	for _, file := range fm.Files {
-		if !file.IsConverted {
-			c++
-		}
-	}
-	return c
 }
 
 // OpenFile opens the file at the given filepath using the file's native file
@@ -116,4 +117,16 @@ func (fm *FileManager) OpenFile(p string) error {
 		return err
 	}
 	return nil
+}
+
+// countUnconverted returns the number of files in the FileManager that haven't
+// been converted.
+func (fm *FileManager) countUnconverted() int {
+	c := 0
+	for _, file := range fm.Files {
+		if !file.IsConverted {
+			c++
+		}
+	}
+	return c
 }

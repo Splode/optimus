@@ -21,9 +21,9 @@ type App struct {
 // Config represents the application settings.
 type Config struct {
 	App        *App
-	LocalStore *localstore.LocalStore
 	Runtime    *wails.Runtime
 	Logger     *wails.CustomLogger
+	localStore *localstore.LocalStore
 }
 
 // WailsInit performs setup when Wails is ready.
@@ -37,9 +37,9 @@ func (c *Config) WailsInit(runtime *wails.Runtime) error {
 // NewConfig returns a new instance of Config.
 func NewConfig() *Config {
 	c := &Config{}
-	c.LocalStore = localstore.NewLocalStore()
+	c.localStore = localstore.NewLocalStore()
 
-	a, err := c.LocalStore.Load(filename)
+	a, err := c.localStore.Load(filename)
 	if err != nil {
 		c.App, _ = defaults()
 	}
@@ -71,7 +71,7 @@ func (c *Config) SetOutDir() string {
 	dir := c.Runtime.Dialog.SelectDirectory()
 	c.App.OutDir = dir
 	c.Logger.Infof("set output directory: %s", dir)
-	if err := c.Store(); err != nil {
+	if err := c.store(); err != nil {
 		c.Logger.Errorf("failed to store config: %v", err)
 	}
 	return c.App.OutDir
@@ -82,21 +82,7 @@ func (c *Config) SetTarget(t string) error {
 	// TODO check if valid target
 	c.App.Target = t
 	c.Logger.Infof("set conversion target: %s", t)
-	if err := c.Store(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Store stores the configuration state to the file system.
-func (c *Config) Store() error {
-	js, err := json.Marshal(c.GetAppConfig())
-	if err != nil {
-		c.Logger.Errorf("failed to marshal config: %v", err)
-		return err
-	}
-	if err := c.LocalStore.Store(js, filename); err != nil {
-		c.Logger.Errorf("failed to store config: %v", err)
+	if err := c.store(); err != nil {
 		return err
 	}
 	return nil
@@ -123,4 +109,18 @@ func defaults() (*App, error) {
 	}
 	a.OutDir = cp
 	return a, nil
+}
+
+// store stores the configuration state to the file system.
+func (c *Config) store() error {
+	js, err := json.Marshal(c.GetAppConfig())
+	if err != nil {
+		c.Logger.Errorf("failed to marshal config: %v", err)
+		return err
+	}
+	if err := c.localStore.Store(js, filename); err != nil {
+		c.Logger.Errorf("failed to store config: %v", err)
+		return err
+	}
+	return nil
 }

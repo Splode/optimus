@@ -7,13 +7,13 @@ import (
 	"path"
 )
 
-// LocalStore provides reading and writing application data to the user's
+// localStore provides reading and writing application data to the user's
 // configuration directory.
 type LocalStore struct {
 	ConfDir string
 }
 
-// NewLocalStore returns a LocalStore instance.
+// NewLocalStore returns a localStore instance.
 func NewLocalStore() *LocalStore {
 	return &LocalStore{ConfDir: path.Join(userdir.GetConfigHome(), "Optimus")}
 }
@@ -29,7 +29,7 @@ func (l *LocalStore) Load(filename string) ([]byte, error) {
 	return d, err
 }
 
-// Store writes data to the user's configuration directory at the given
+// store writes data to the user's configuration directory at the given
 // filename.
 func (l *LocalStore) Store(data []byte, filename string) error {
 	p := path.Join(l.ConfDir, filename)

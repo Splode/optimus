@@ -51,10 +51,12 @@
                                 getPrettyTime(stats.time)[1] }}</p>
                         </div>
                         <div class="px-3 w-4/12">
-                            <p class="font-bold text-2xl">2.25 GB</p>
+                            <p class="font-bold text-2xl">{{
+                                getPrettySize(totalStats.byteCount) }}</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 All time Savings</p>
-                            <p class="font-bold text-2xl">2,204</p>
+                            <p class="font-bold text-2xl">{{
+                                totalStats.imageCount }}</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 All time Images</p>
                         </div>
@@ -195,21 +197,14 @@
         return this.files.some(f => {
           return !f.isConverted
         })
+      },
+
+      totalStats() {
+        return this.$store.getters.stats
       }
     },
 
     methods: {
-      /**
-       * calcTotalSavings sums the total difference between original and
-       * converted file sizes.
-       */
-      calcTotalSavings() {
-        this.files.forEach(f => {
-          if (!f.isConverted || f.convertedSize > f.size) return
-          this.stats.savings += f.size - f.convertedSize
-        })
-      },
-
       /**
        * clear removes the files from the file list and the FileManager.
        */
@@ -427,6 +422,7 @@
               ext: fExt(name),
               id,
               name: fName(name),
+              size: file.size,
               type
             })
           )
@@ -448,8 +444,9 @@
         const c = e.count
         const t = e.time
         this.stats.count += c
+        this.stats.savings += e.savings
         this.stats.time += t
-        this.calcTotalSavings()
+        this.$store.dispatch('getStats')
         EventBus.$emit('notify',
           { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
         )

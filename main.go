@@ -5,6 +5,7 @@ import (
 	"github.com/wailsapp/wails"
 	"optimus/lib/config"
 	"optimus/lib/image"
+	"optimus/lib/stat"
 )
 
 func main() {
@@ -23,9 +24,11 @@ func main() {
 	})
 
 	cfg := config.NewConfig()
-	fm := image.NewFileManager(cfg)
+	st := stat.NewStat()
+	fm := image.NewFileManager(cfg, st)
 
 	app.Bind(cfg)
+	app.Bind(st)
 	app.Bind(fm)
 	_ = app.Run()
 }

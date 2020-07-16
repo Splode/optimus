@@ -28,6 +28,7 @@ type File struct {
 	ID            string `json:"id"`
 	MimeType      string `json:"type"`
 	Name          string `json:"name"`
+	Size          int64  `json:"size"`
 	ConvertedFile string
 	IsConverted   bool
 	Image         image.Image
@@ -61,6 +62,15 @@ func (f *File) GetConvertedSize() (int64, error) {
 		return 0, err
 	}
 	return s.Size(), nil
+}
+
+// GetSavings returns the delta between original and converted file size.
+func (f *File) GetSavings() (int64, error) {
+	c, err := f.GetConvertedSize()
+	if err != nil {
+		return 0, err
+	}
+	return f.Size - c, nil
 }
 
 // Write saves a file to disk based on the encoding target.

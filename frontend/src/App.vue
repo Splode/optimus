@@ -47,6 +47,7 @@
 
     mounted() {
       this.$store.dispatch('getConfig')
+      this.$store.dispatch('getStats')
     }
   }
 </script>
