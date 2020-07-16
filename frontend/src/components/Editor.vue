@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="pl-6 w-7/12">
-                <transition name="fade-fast" mode="out-in">
+                <transition name="fade" mode="out-in">
                     <div v-if="!stats.time"
                          key="intro"
                          class="flex h-full items-center justify-center">
@@ -33,11 +33,19 @@
                          key="stats"
                          class="flex flex-wrap items-end h-full">
                         <div class="px-3 w-5/12">
-                            <h2 class="font-bold leading-none text-5xl text-green tracking-tight">
-                                {{
-                                getPrettySize(stats.savings) }}</h2>
-                            <p class="font-medium text-gray-300 tracking-wider uppercase">
-                                Saved</p>
+                            <div v-if="stats.savings > 0">
+                                <h2 class="font-bold leading-none text-5xl text-green tracking-tight">
+                                    {{
+                                    getPrettySize(stats.savings) }}</h2>
+                                <p class="font-medium text-gray-300 tracking-wider uppercase">
+                                    Saved</p>
+                            </div>
+                            <div v-else>
+                                <h2 class="font-bold leading-none text-5xl text-green tracking-tight uppercase">
+                                    No Savings</h2>
+                                <p class="font-medium text-gray-300 tracking-wider uppercase">
+                                    Try adjusting options</p>
+                            </div>
                         </div>
                         <div class="px-3 w-3/12">
                             <p class="font-bold text-2xl">{{ stats.count }}</p>
@@ -67,7 +75,7 @@
                 <section class="flex justify-between py-6 w-5/12">
                     <button
                             class="btn focus:outline-none ta-slow"
-                            :class="canConvert ? 'border-purple hover:bg-purple hover:text-gray-900 text-gray-200' : 'btn--disabled'"
+                            :class="canConvert ? 'border-yellow hover:bg-yellow hover:text-gray-900 text-gray-200' : 'btn--disabled'"
                             @click="convert"
                             :disabled="!canConvert"
                     >
@@ -443,10 +451,13 @@
       Wails.Events.On('conversion:stat', e => {
         const c = e.count
         const t = e.time
+        const s = e.savings
         this.stats.count += c
-        this.stats.savings += e.savings
         this.stats.time += t
         this.$store.dispatch('getStats')
+        if (s > 0) {
+          this.stats.savings += e.savings
+        }
         EventBus.$emit('notify',
           { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
         )
