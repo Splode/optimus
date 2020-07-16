@@ -34,3 +34,19 @@
 .ta-slow {
     transition: all 1s cubic-bezier(.07, .95, 0, 1);
 }
+
+.anime-txt-success {
+    animation: txt-success 600ms ease-in-out forwards;
+}
+
+@keyframes txt-success {
+    0% {
+        color: #b3b3b3;
+    }
+    50% {
+        color: #07fdbc;
+    }
+    100% {
+        color: #b3b3b3;
+    }
+}

@@ -141,16 +141,28 @@
                     <tbody>
                     <tr v-for="(file, i) in files" :key="`${i}-${file.name}`">
                         <td><p class="cell-l ta"
-                               :class="file.isProcessed ? 'text-gray-200' : 'text-gray-400'">
+                               :class="{
+                                    'text-gray-400': !file.isProcessed,
+                                    'text-gray-200': file.isProcessed,
+                                    'anime-txt-success': file.isConverted
+                                }">
                             {{ file.filename }}</p></td>
                         <td>
                             <p class="ta"
-                               :class="file.isProcessed ? 'text-gray-200' : 'text-gray-400'">
+                               :class="{
+                                    'text-gray-400': !file.isProcessed,
+                                    'text-gray-200': file.isProcessed,
+                                    'anime-txt-success': file.isConverted
+                                }">
                                 {{ getPrettySize(file.size) }}</p>
                         </td>
-                        <td><p>{{
-                            getPrettySize(file.convertedSize) }}</p></td>
-                        <td><p>{{ getSavings(file) }}</p></td>
+                        <td>
+                            <p :class="{ 'anime-txt-success': file.isConverted }">
+                                {{
+                                getPrettySize(file.convertedSize) }}</p></td>
+                        <td>
+                            <p :class="{ 'anime-txt-success' : file.isConverted}">
+                                {{ getSavings(file) }}</p></td>
                         <!--                    <td @click="openFile(file)"><p>{{ file.convertedPath }}</p>-->
                         <!--                    </td>-->
                         <td>
