@@ -15,7 +15,7 @@
                         <path fill="#808080" d="M47,20.6H28.4c-0.6,0-1-0.4-1-1V1c0-0.6-0.4-1-1-1h-4.9c-0.6,0-1,0.4-1,1v18.6c0,0.6-0.4,1-1,1H1
                 c-0.6,0-1,0.4-1,1v4.9c0,0.6,0.4,1,1,1h18.6c0.6,0,1,0.4,1,1V47c0,0.6,0.4,1,1,1h4.9c0.6,0,1-0.4,1-1V28.4c0-0.6,0.4-1,1-1H47
                 c0.6,0,1-0.4,1-1v-4.9C48,21,47.6,20.6,47,20.6z"/>
-            </svg>
+                    </svg>
                     <p class="mt-6 text-gray-200">Drag and drop or select
                         images</p>
                 </div>
@@ -79,13 +79,13 @@
                             @click="convert"
                             :disabled="!canConvert"
                     >
-                        Optimize
+                        {{ optBtnTxt }}
                     </button>
                     <button
                             class="btn focus:outline-none ta-slow"
-                            :class="files.length > 0 ? 'border-gray-400 hover:bg-gray-400 hover:text-gray-900' : 'btn--disabled'"
+                            :class="canClear ? 'border-gray-400 hover:bg-gray-400 hover:text-gray-900' : 'btn--disabled'"
                             @click="clear"
-                            :disabled="files.length === 0"
+                            :disabled="!canClear"
                     >
                         Clear
                     </button>
@@ -140,8 +140,13 @@
                     </thead>
                     <tbody>
                     <tr v-for="(file, i) in files" :key="`${i}-${file.name}`">
-                        <td><p class="cell-l">{{ file.filename }}</p></td>
-                        <td><p>{{ getPrettySize(file.size) }}</p>
+                        <td><p class="cell-l ta"
+                               :class="file.isProcessed ? 'text-gray-200' : 'text-gray-400'">
+                            {{ file.filename }}</p></td>
+                        <td>
+                            <p class="ta"
+                               :class="file.isProcessed ? 'text-gray-200' : 'text-gray-400'">
+                                {{ getPrettySize(file.size) }}</p>
                         </td>
                         <td><p>{{
                             getPrettySize(file.convertedSize) }}</p></td>
@@ -196,17 +201,57 @@
 
     computed: {
       /**
+       * canClear returns true if the file list can be cleared.
+       * @returns {boolean}
+       */
+      canClear() {
+        if (this.files.length === 0) return false
+        return !this.filesPending
+      },
+
+      /**
        * canConvert returns true if the file list satisfies conditions for
        * conversion.
        * @returns {boolean}
        */
       canConvert() {
         if (this.files.length === 0) return false
-        return this.files.some(f => {
-          return !f.isConverted
-        })
+        return (this.filesConverted && !this.filesPending)
       },
 
+      /**
+       * filesConverted returns true if all files have been converted.
+       * @returns {boolean}
+       */
+      filesConverted() {
+        if (this.files.length === 0) return false
+        return this.files.some(f => !f.isConverted)
+      },
+
+      /**
+       * filesPending returns true if there are files not processed.
+       * @returns {boolean}
+       */
+      filesPending() {
+        if (this.files.length === 0) return false
+        return this.files.some(f => !f.isProcessed)
+      },
+
+      /**
+       * optBtnTxt returns the text string for the Optimize button per the
+       * current app state.
+       * @returns {string}
+       */
+      optBtnTxt() {
+        const d = 'Optimize'
+        if (this.files.length === 0) return d
+        if (this.filesPending) return 'Processing...'
+        return d
+      },
+
+      /**
+       * totalStats returns the all-time stats.
+       */
       totalStats() {
         return this.$store.getters.stats
       }
@@ -406,6 +451,7 @@
             filename: f.name,
             id,
             isConverted: false,
+            isProcessed: false,
             name,
             size
           })
@@ -433,7 +479,12 @@
               size: file.size,
               type
             })
-          )
+          ).then(() => {
+            const f = this.getFileById(id)
+            f.isProcessed = true
+          }).catch(err => {
+            console.error(err)
+          })
         }
         reader.readAsDataURL(file)
       }
