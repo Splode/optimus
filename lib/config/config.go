@@ -69,10 +69,12 @@ func (c *Config) OpenOutputDir() error {
 // the chosen directory.
 func (c *Config) SetOutDir() string {
 	dir := c.Runtime.Dialog.SelectDirectory()
-	c.App.OutDir = dir
-	c.Logger.Infof("set output directory: %s", dir)
-	if err := c.store(); err != nil {
-		c.Logger.Errorf("failed to store config: %v", err)
+	if dir != "" {
+		c.App.OutDir = dir
+		c.Logger.Infof("set output directory: %s", dir)
+		if err := c.store(); err != nil {
+			c.Logger.Errorf("failed to store config: %v", err)
+		}
 	}
 	return c.App.OutDir
 }
