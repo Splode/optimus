@@ -11,7 +11,7 @@
                 <label for="target">Target</label>
                 <select name="target" id="target" v-model="config.target"
                         class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-3 py-2 rounded-md ta-color-slow"
-                        @change="selectTarget">
+                        @change="setConfig">
                     <option value="webp">WebP</option>
                     <option value="jpg">JPG</option>
                     <option value="png">PNG</option>
@@ -39,13 +39,15 @@
             </div>
             <div class="flex flex-wrap items-center my-2">
                 <label for="prefix">Prefix</label>
-                <input type="text" id="prefix"
+                <input type="text" id="prefix" v-model="config.prefix"
+                       @change="setConfig"
                        class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow"
                        maxlength="16">
             </div>
             <div class="flex flex-wrap items-center my-2">
                 <label for="suffix">Suffix</label>
-                <input type="text" id="suffix"
+                <input type="text" id="suffix" v-model="config.suffix"
+                       @change="setConfig"
                        class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow"
                        maxlength="16">
             </div>
@@ -99,17 +101,10 @@
       },
 
       /**
-       * selectTarget selects the encoding target in the config.
-       * @param {HTMLInputElement} e
+       * setConfig updates the configuration with the current state.
        */
-      selectTarget(e) {
-        const t = e.target.value
-        window.backend.Config.SetTarget(t).then(res => {
-          console.log(res)
-          this.$store.dispatch('getConfig')
-        }).catch(err => {
-          console.error(err)
-        })
+      setConfig() {
+        this.$store.dispatch('setConfig', this.config)
       }
     }
   }

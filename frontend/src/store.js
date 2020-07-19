@@ -7,7 +7,9 @@ const store = new Vuex.Store({
   state: {
     config: {
       outDir: '',
-      target: ''
+      target: '',
+      prefix: '',
+      suffix: ''
     },
     stats: {
       byteCount: 0,
@@ -31,8 +33,12 @@ const store = new Vuex.Store({
         console.error(err)
       })
     },
-    setConfig(context, cfg) {
-      context.commit('setConfig', cfg)
+    setConfig(context, c) {
+      window.backend.Config.SetConfig(JSON.stringify(c)).then(() => {
+        context.dispatch('getConfig')
+      }).catch(err => {
+        console.error(err)
+      })
     },
 
     getStats(context) {
@@ -47,8 +53,8 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    setConfig(state, cfg) {
-      state.config = cfg
+    setConfig(state, c) {
+      state.config = c
     },
 
     setStats(state, s) {

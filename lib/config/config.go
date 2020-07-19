@@ -16,6 +16,8 @@ const filename = "conf.json"
 type App struct {
 	OutDir string `json:"outDir"`
 	Target string `json:"target"`
+	Prefix string `json:"prefix"`
+	Suffix string `json:"suffix"`
 }
 
 // Config represents the application settings.
@@ -54,12 +56,29 @@ func (c *Config) GetAppConfig() map[string]interface{} {
 	return map[string]interface{}{
 		"outDir": c.App.OutDir,
 		"target": c.App.Target,
+		"prefix": c.App.Prefix,
+		"suffix": c.App.Suffix,
 	}
 }
 
 // OpenOutputDir opens the output directory using the native system browser.
 func (c *Config) OpenOutputDir() error {
 	if err := c.Runtime.Browser.OpenURL(c.App.OutDir); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SetConfig sets and stores the given configuration.
+func (c *Config) SetConfig(cfg string) error {
+	a := &App{}
+	if err := json.Unmarshal([]byte(cfg), &a); err != nil {
+		c.Logger.Errorf("failed to unmarshal config: %v", err)
+		return err
+	}
+	c.App = a
+	if err := c.store(); err != nil {
+		c.Logger.Errorf("failed to store config: %v", err)
 		return err
 	}
 	return nil
@@ -77,17 +96,6 @@ func (c *Config) SetOutDir() string {
 		}
 	}
 	return c.App.OutDir
-}
-
-// SetTarget sets the conversion output target.
-func (c *Config) SetTarget(t string) error {
-	// TODO check if valid target
-	c.App.Target = t
-	c.Logger.Infof("set conversion target: %s", t)
-	if err := c.store(); err != nil {
-		return err
-	}
-	return nil
 }
 
 // defaults returns the application configuration defaults.
