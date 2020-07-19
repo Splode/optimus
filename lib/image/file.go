@@ -5,8 +5,8 @@ import (
 	"errors"
 	"image"
 	"image/jpeg"
-	"image/png"
 	"io/ioutil"
+	"optimus/lib/png"
 	"optimus/lib/webp"
 	"os"
 	"path"
@@ -45,7 +45,7 @@ func (f *File) Decode() error {
 	case "jpg":
 		f.Image, err = jpeg.Decode(bytes.NewReader(f.Data))
 	case "png":
-		f.Image, err = png.Decode(bytes.NewReader(f.Data))
+		f.Image, err = png.DecodePNG(bytes.NewReader(f.Data))
 	case "webp":
 		f.Image, err = webp.DecodeWebp(bytes.NewReader(f.Data))
 	}
@@ -80,7 +80,7 @@ func (f *File) Write(dir string, target string) (err error) {
 	case "jpg":
 		err = jpeg.Encode(&buf, f.Image, &jpeg.Options{Quality: 70})
 	case "png":
-		err = png.Encode(&buf, f.Image)
+		buf, err = png.EncodePNG(f.Image)
 	case "webp":
 		buf, err = webp.EncodeWebp(f.Image)
 	}
