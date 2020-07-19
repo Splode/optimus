@@ -35,6 +35,14 @@
     transition: all 1s cubic-bezier(.07, .95, 0, 1);
 }
 
+.ta-color {
+    transition: color .3s cubic-bezier(.07, .95, 0, 1);
+}
+
+.ta-color-slow {
+    transition: color 1s cubic-bezier(.07, .95, 0, 1);
+}
+
 .anime-txt-success {
     animation: txt-success 600ms ease-in-out forwards;
 }
