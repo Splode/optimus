@@ -1,5 +1,6 @@
 @import url('animations.css');
 @import url('buttons.css');
+@import url('input.css');
 
 @tailwind base;
 @tailwind components;

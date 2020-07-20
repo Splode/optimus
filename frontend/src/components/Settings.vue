@@ -8,14 +8,11 @@
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
             <h2 class="mb-3 text-gray-200 text-xl w-full">General</h2>
             <div class="flex items-center mr-6 my-2">
-                <label for="target">Target</label>
-                <select name="target" id="target" v-model="config.target"
-                        class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-3 py-2 rounded-md ta-color-slow"
-                        @change="setConfig">
-                    <option value="webp">WebP</option>
-                    <option value="jpg">JPG</option>
-                    <option value="png">PNG</option>
-                </select>
+                <p class="mr-4">Target</p>
+                <dropdown :options="targets"
+                          :selected="target"
+                          v-on:updateOption="selectTarget"
+                          class="m-0 text-gray-200"></dropdown>
             </div>
             <div class="flex flex-wrap items-center mr-8 my-2">
                 <p>Destination</p>
@@ -51,13 +48,32 @@
                        class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow"
                        maxlength="16">
             </div>
+            <div class="w-1/2">
+                <vue-slider v-model="value"/>
+            </div>
         </div>
     </section>
 </template>
 
 <script>
+  import dropdown from 'vue-dropdowns'
+  import VueSlider from 'vue-slider-component'
+  import 'vue-slider-component/theme/antd.css'
+
   export default {
     name: 'Settings',
+
+    components: { dropdown, VueSlider },
+
+    data() {
+      return {
+        targets: [{ name: 'WebP', value: 'webp' }, {
+          name: 'JPG',
+          value: 'jpg'
+        }, { name: 'PNG', value: 'png' }],
+        value: 0
+      }
+    },
 
     computed: {
       /**
@@ -66,6 +82,10 @@
        */
       config() {
         return this.$store.getters.config
+      },
+
+      target() {
+        return this.targets.find(t => this.config.target === t.value)
       }
     },
 
@@ -94,6 +114,20 @@
           .then(res => {
             console.log(res)
             this.$store.dispatch('getConfig')
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      },
+
+      /**
+       * selectTarget updates the config target.
+       * @param {object} e - The selected target.
+       */
+      selectTarget(e) {
+        this.$store.dispatch('setConfigProp', { key: 'target', value: e.value })
+          .then(() => {
+            this.setConfig()
           })
           .catch(err => {
             console.error(err)

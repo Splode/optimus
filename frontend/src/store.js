@@ -41,6 +41,10 @@ const store = new Vuex.Store({
       })
     },
 
+    setConfigProp(context, payload) {
+      context.commit('setConfigProp', payload)
+    },
+
     getStats(context) {
       window.backend.Stat.GetStats().then(s => {
         context.commit('setStats', s)
@@ -55,6 +59,10 @@ const store = new Vuex.Store({
   mutations: {
     setConfig(state, c) {
       state.config = c
+    },
+
+    setConfigProp(state, payload) {
+      state.config[payload.key] = payload.value
     },
 
     setStats(state, s) {

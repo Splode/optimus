@@ -1,0 +1,33 @@
+.dropdown-toggle {
+    background-color: #18181f;
+    background-image: none;
+    border-radius: 0.375rem;
+    color: #b3b3b3;
+    font-weight: 400;
+    margin: 0;
+    transition: color .3s cubic-bezier(.07, .95, 0, 1);
+}
+
+.dropdown-toggle:hover {
+    background-color: #18181f;
+    color: #07fdbc;
+}
+
+.dropdown-menu {
+    background-color: #18181f;
+    border: 0;
+    border-top: 1px solid #3a3a42;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.dropdown-menu > li > a {
+    color: #b3b3b3;
+    font-weight: 500;
+    transition: all .3s cubic-bezier(.07, .95, 0, 1);
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #07fdbc;
+    color: #18181f;
+}
