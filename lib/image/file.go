@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/jpeg"
 	"io/ioutil"
+	"optimus/lib/config"
 	"optimus/lib/png"
 	"optimus/lib/webp"
 	"os"
@@ -74,9 +75,9 @@ func (f *File) GetSavings() (int64, error) {
 }
 
 // Write saves a file to disk based on the encoding target.
-func (f *File) Write(dir string, target string) (err error) {
+func (f *File) Write(c *config.Config) (err error) {
 	var buf bytes.Buffer
-	switch target {
+	switch c.App.Target {
 	case "jpg":
 		err = jpeg.Encode(&buf, f.Image, &jpeg.Options{Quality: 70})
 	case "png":
@@ -84,7 +85,7 @@ func (f *File) Write(dir string, target string) (err error) {
 	case "webp":
 		buf, err = webp.EncodeWebp(f.Image)
 	}
-	dest := path.Join(dir, f.Name+"."+target)
+	dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+c.App.Suffix+"."+c.App.Target)
 	if err != nil {
 		return err
 	}
