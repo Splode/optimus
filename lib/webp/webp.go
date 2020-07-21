@@ -7,6 +7,12 @@ import (
 	"io"
 )
 
+// Options represent WebP encoding options.
+type Options struct {
+	Lossless bool `json:"lossless"`
+	Quality  int  `json:"quality"`
+}
+
 // Decode a webp file and return an image.
 func DecodeWebp(r io.Reader) (image.Image, error) {
 	i, err := webp.Decode(r)
@@ -17,8 +23,8 @@ func DecodeWebp(r io.Reader) (image.Image, error) {
 }
 
 // EncodeWebp encodes an image into webp and returns a buffer.
-func EncodeWebp(i image.Image) (buf bytes.Buffer, err error) {
-	if err = webp.Encode(&buf, i, &webp.Options{Lossless: false, Quality: 70}); err != nil {
+func EncodeWebp(i image.Image, o *Options) (buf bytes.Buffer, err error) {
+	if err = webp.Encode(&buf, i, &webp.Options{Lossless: o.Lossless, Quality: float32(o.Quality)}); err != nil {
 		return buf, err
 	}
 	return buf, nil

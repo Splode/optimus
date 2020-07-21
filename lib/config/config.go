@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/wailsapp/wails"
+	"optimus/lib/jpeg"
 	"optimus/lib/localstore"
+	"optimus/lib/png"
+	"optimus/lib/webp"
 	"os"
 	"path"
 	"path/filepath"
@@ -14,10 +17,13 @@ const filename = "conf.json"
 
 // App represents application persistent configuration values.
 type App struct {
-	OutDir string `json:"outDir"`
-	Target string `json:"target"`
-	Prefix string `json:"prefix"`
-	Suffix string `json:"suffix"`
+	OutDir  string        `json:"outDir"`
+	Target  string        `json:"target"`
+	Prefix  string        `json:"prefix"`
+	Suffix  string        `json:"suffix"`
+	JpegOpt *jpeg.Options `json:"jpegOpt"`
+	PngOpt  *png.Options  `json:"pngOpt"`
+	WebpOpt *webp.Options `json:"webpOpt"`
 }
 
 // Config represents the application settings.
@@ -54,10 +60,13 @@ func NewConfig() *Config {
 // GetAppConfig returns the application configuration.
 func (c *Config) GetAppConfig() map[string]interface{} {
 	return map[string]interface{}{
-		"outDir": c.App.OutDir,
-		"target": c.App.Target,
-		"prefix": c.App.Prefix,
-		"suffix": c.App.Suffix,
+		"outDir":  c.App.OutDir,
+		"target":  c.App.Target,
+		"prefix":  c.App.Prefix,
+		"suffix":  c.App.Suffix,
+		"jpegOpt": c.App.JpegOpt,
+		"pngOpt":  c.App.PngOpt,
+		"webpOpt": c.App.WebpOpt,
 	}
 }
 
@@ -100,7 +109,12 @@ func (c *Config) SetOutDir() string {
 
 // defaults returns the application configuration defaults.
 func defaults() (*App, error) {
-	a := &App{Target: "webp"}
+	a := &App{
+		Target:  "webp",
+		JpegOpt: &jpeg.Options{Quality: 80},
+		PngOpt:  &png.Options{Quality: 80},
+		WebpOpt: &webp.Options{Lossless: false, Quality: 80},
+	}
 	ud, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Printf("failed to get user directory: %v", err)

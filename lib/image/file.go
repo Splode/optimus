@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"errors"
 	"image"
-	"image/jpeg"
 	"io/ioutil"
 	"optimus/lib/config"
+	"optimus/lib/jpeg"
 	"optimus/lib/png"
 	"optimus/lib/webp"
 	"os"
@@ -44,7 +44,7 @@ func (f *File) Decode() error {
 
 	switch mime {
 	case "jpg":
-		f.Image, err = jpeg.Decode(bytes.NewReader(f.Data))
+		f.Image, err = jpeg.DecodeJPEG(bytes.NewReader(f.Data))
 	case "png":
 		f.Image, err = png.DecodePNG(bytes.NewReader(f.Data))
 	case "webp":
@@ -79,11 +79,11 @@ func (f *File) Write(c *config.Config) (err error) {
 	var buf bytes.Buffer
 	switch c.App.Target {
 	case "jpg":
-		err = jpeg.Encode(&buf, f.Image, &jpeg.Options{Quality: 70})
+		buf, err = jpeg.EncodeJPEG(f.Image, c.App.JpegOpt)
 	case "png":
-		buf, err = png.EncodePNG(f.Image)
+		buf, err = png.EncodePNG(f.Image, c.App.PngOpt)
 	case "webp":
-		buf, err = webp.EncodeWebp(f.Image)
+		buf, err = webp.EncodeWebp(f.Image, c.App.WebpOpt)
 	}
 	dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+c.App.Suffix+"."+c.App.Target)
 	if err != nil {
