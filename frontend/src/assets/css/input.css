@@ -1,3 +1,5 @@
+/* vue-select */
+
 .dropdown-toggle {
     background-color: #18181f;
     background-image: none;
@@ -30,4 +32,49 @@
 .dropdown-menu > li > a:hover {
     background-color: #07fdbc;
     color: #18181f;
+}
+
+/* vue slider*/
+
+.vue-slider-rail {
+    background-color: #18181f;
+}
+
+.vue-slider:hover .vue-slider-rail {
+    background-color: #18181f;
+}
+
+.vue-slider:hover .vue-slider-dot-handle {
+    border-color: transparent;
+    opacity: 1;
+}
+
+.vue-slider:hover .vue-slider-dot-handle:hover {
+    border-color: transparent;
+}
+
+.vue-slider-dot-handle {
+    background-color: #cbccd2;
+    border-color: transparent;
+    opacity: 0;
+    transition: all .6s cubic-bezier(.07, .95, 0, 1);
+}
+
+.vue-slider-dot-handle:hover {
+    background-color: #07fdbc;
+    border-color: transparent;
+}
+
+.vue-slider-process {
+    background-color: #07fdbc;
+}
+
+.vue-slider:hover .vue-slider-process {
+    background-color: #07fdbc;
+}
+
+.vue-slider-dot-tooltip-inner {
+    background-color: #18181f;
+    border-color: #18181f;
+    color: #cbccd2;
 }

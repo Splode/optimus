@@ -7,14 +7,14 @@
 
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
             <h2 class="mb-3 text-gray-200 text-xl w-full">General</h2>
-            <div class="flex items-center mr-6 my-2">
+            <div class="flex items-center mr-6 my-2 px-4 text-gray-100">
                 <p class="mr-4">Target</p>
                 <dropdown :options="targets"
                           :selected="target"
                           v-on:updateOption="selectTarget"
                           class="m-0 text-gray-200"></dropdown>
             </div>
-            <div class="flex flex-wrap items-center mr-8 my-2">
+            <div class="flex flex-wrap items-center mr-8 my-2 px-4 text-gray-100">
                 <p>Destination</p>
                 <p class="bg-gray-900 cursor-pointer font-mono hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow"
                    @click="selectOutDir"
@@ -28,28 +28,85 @@
                          viewBox="0 0 24 24"
                          style="enable-background:new 0 0 24 24;"
                          xml:space="preserve" width="20" height="18">
-                    <path fill="#b3b3b3"
-                          d="M20,3H4C2.9,3,2,3.9,2,5v14c0,1.1,0.9,2,2,2h5v-2H4V7h16v12h-5v2h5c1.1,0,2-0.9,2-2V5C22,3.9,21.1,3,20,3z"/>
+                        <path fill="#b3b3b3"
+                              d="M20,3H4C2.9,3,2,3.9,2,5v14c0,1.1,0.9,2,2,2h5v-2H4V7h16v12h-5v2h5c1.1,0,2-0.9,2-2V5C22,3.9,21.1,3,20,3z"/>
                         <path fill="#b3b3b3" d="M13,21v-5h3l-4-5l-4,5h3v5H13z"/>
-                </svg>
+                    </svg>
                 </button>
             </div>
-            <div class="flex flex-wrap items-center my-2">
+            <div class="flex flex-wrap items-center my-2 px-4 text-gray-100">
                 <label for="prefix">Prefix</label>
                 <input type="text" id="prefix" v-model="config.prefix"
                        @change="setConfig"
                        class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow"
                        maxlength="16">
             </div>
-            <div class="flex flex-wrap items-center my-2">
+            <div class="flex flex-wrap items-center my-2 px-4 text-gray-100">
                 <label for="suffix">Suffix</label>
                 <input type="text" id="suffix" v-model="config.suffix"
                        @change="setConfig"
                        class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow"
                        maxlength="16">
             </div>
-            <div class="w-1/2">
-                <vue-slider v-model="value"/>
+        </div>
+
+        <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
+            <h2 class="mb-3 text-gray-200 text-xl w-full">WebP</h2>
+            <div class="px-4 text-gray-100 w-1/2">
+                <div class="flex items-center w-full">
+                    <p class="mr-6">Quality</p>
+                    <div class="w-full">
+                        <vue-slider v-model="config.webpOpt.quality"
+                                    @change="setConfig"/>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 text-gray-100 w-1/2">
+                <div class="flex items-center w-full">
+                    <p class="mr-4">Lossless</p>
+                    <div @click="toggleWebpLossless"
+                         class="bg-gray-900 check-wrapper flex items-center justify-center rounded-md">
+                        <transition name="fade" mode="out-in">
+                            <svg v-if="config.webpOpt.lossless" version="1.1"
+                                 id="check-icon"
+                                 xmlns="http://www.w3.org/2000/svg" x="0px"
+                                 y="0px"
+                                 viewBox="0 0 24 24"
+                                 style="enable-background:new 0 0 24 24;"
+                                 width="24" height="24"
+                                 xml:space="preserve">
+                                <path fill="#07FDBC"
+                                      d="M10,15.6l-3.3-3.3l-1.4,1.4l4.7,4.7l9.7-9.7l-1.4-1.4L10,15.6z"/>
+                            </svg>
+                        </transition>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
+            <h2 class="mb-3 text-gray-200 text-xl w-full">JPEG</h2>
+            <div class="px-4 text-gray-100 w-1/2">
+                <div class="flex items-center w-full">
+                    <p class="mr-6">Quality</p>
+                    <div class="w-full">
+                        <vue-slider v-model="config.jpegOpt.quality"
+                                    @change="setConfig"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
+            <h2 class="mb-3 text-gray-200 text-xl w-full">PNG</h2>
+            <div class="px-4 text-gray-100 w-1/2">
+                <div class="flex items-center w-full">
+                    <p class="mr-6">Quality</p>
+                    <div class="w-full">
+                        <vue-slider v-model="config.pngOpt.quality"
+                                    @change="setConfig"/>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -139,6 +196,19 @@
        */
       setConfig() {
         this.$store.dispatch('setConfig', this.config)
+      },
+
+      /**
+       * toggleWebpLossless toggles the lossless property of the WebP config.
+       */
+      toggleWebpLossless() {
+        this.$store.dispatch('toggleWebpLossless')
+          .then(() => {
+            this.setConfig()
+          })
+          .catch(err => {
+            console.error(err)
+          })
       }
     }
   }
@@ -155,5 +225,12 @@
 
     input:focus {
         color: #07fdbc;
+    }
+
+    .check-wrapper {
+        border: 2px solid transparent;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
     }
 </style>

@@ -9,7 +9,10 @@ const store = new Vuex.Store({
       outDir: '',
       target: '',
       prefix: '',
-      suffix: ''
+      suffix: '',
+      jpegOpt: { quality: 0 },
+      pngOpt: { quality: 0 },
+      webpOpt: { lossless: false, quality: 0 }
     },
     stats: {
       byteCount: 0,
@@ -45,6 +48,10 @@ const store = new Vuex.Store({
       context.commit('setConfigProp', payload)
     },
 
+    toggleWebpLossless(context) {
+      context.commit('toggleWebpLossless')
+    },
+
     getStats(context) {
       window.backend.Stat.GetStats().then(s => {
         context.commit('setStats', s)
@@ -67,6 +74,10 @@ const store = new Vuex.Store({
 
     setStats(state, s) {
       state.stats = s
+    },
+
+    toggleWebpLossless(state) {
+      state.config.webpOpt.lossless = !state.config.webpOpt.lossless
     }
   }
 })
