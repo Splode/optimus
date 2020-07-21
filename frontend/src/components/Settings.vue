@@ -9,10 +9,10 @@
             <h2 class="mb-3 text-gray-200 text-xl w-full">General</h2>
             <div class="flex items-center mr-6 my-2 px-4 text-gray-100">
                 <p class="mr-4">Target</p>
-                <dropdown :options="targets"
+                <Dropdown :options="targets"
                           :selected="target"
                           v-on:updateOption="selectTarget"
-                          class="m-0 text-gray-200"></dropdown>
+                          class="m-0 text-gray-200"></Dropdown>
             </div>
             <div class="flex flex-wrap items-center mr-8 my-2 px-4 text-gray-100">
                 <p>Destination</p>
@@ -109,18 +109,24 @@
                 </div>
             </div>
         </div>
+
+        <div class="w-full">
+            <button class="btn border-gray-400 focus:outline-none hover:bg-gray-400 hover:text-gray-900 ml-auto ta-slow"
+                    @click="restoreDefaults">Restore Defaults
+            </button>
+        </div>
     </section>
 </template>
 
 <script>
-  import dropdown from 'vue-dropdowns'
+  import Dropdown from './Dropdown'
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/antd.css'
 
   export default {
     name: 'Settings',
 
-    components: { dropdown, VueSlider },
+    components: { Dropdown, VueSlider },
 
     data() {
       return {
@@ -157,6 +163,17 @@
       openDir() {
         window.backend.Config.OpenOutputDir().then(res => {
           console.log(res)
+        }).catch(err => {
+          console.error(err)
+        })
+      },
+
+      /**
+       * restoreDefaults resets the app configuration to defaults.
+       */
+      restoreDefaults() {
+        window.backend.Config.RestoreDefaults().then(() => {
+          this.$store.dispatch('getConfig')
         }).catch(err => {
           console.error(err)
         })

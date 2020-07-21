@@ -78,6 +78,20 @@ func (c *Config) OpenOutputDir() error {
 	return nil
 }
 
+// RestoreDefaults sets the app configuration to defaults.
+func (c *Config) RestoreDefaults() (err error) {
+	var a *App
+	a, err = defaults()
+	if err != nil {
+		return err
+	}
+	c.App = a
+	if err := c.store(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // SetConfig sets and stores the given configuration.
 func (c *Config) SetConfig(cfg string) error {
 	a := &App{}
