@@ -148,7 +148,10 @@
       },
 
       target() {
-        return this.targets.find(t => this.config.target === t.value)
+        return this.targets.find(t => this.config.target === t.value) || {
+          name: '',
+          value: ''
+        }
       }
     },
 
