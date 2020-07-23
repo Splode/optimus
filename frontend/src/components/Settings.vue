@@ -2,7 +2,18 @@
     <section class="bg-gray-800 overflow-y-auto p-10 w-full">
         <header class="flex items-center justify-between w-full">
             <h1 class="font-medium text-2xl text-gray-100">Options</h1>
-            <p @click="closeView">Close</p>
+            <button class="border-2 border-gray-800 cursor-pointer flex hover:border-gray-400 hover:bg-gray-900 items-center justify-center p-2 ta-slow rounded-full w-10 h-10"
+                    @click="closeView">
+                <svg version="1.1" id="x" xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     viewBox="0 0 11.9 11.9"
+                     style="enable-background:new 0 0 11.9 11.9;"
+                     width="14" height="14"
+                     xml:space="preserve">
+                    <path fill="#b3b3b3"
+                          d="M10.4,0L6,4.5L1.5,0L0,1.5L4.5,6L0,10.4l1.5,1.5L6,7.5l4.5,4.5l1.5-1.5L7.5,6l4.5-4.5L10.4,0z"/>
+                </svg>
+            </button>
         </header>
 
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
@@ -236,7 +247,7 @@
 
 <style scoped>
     button > svg > path {
-        transition: fill .3s cubic-bezier(.07, .95, 0, 1);
+        transition: fill .6s cubic-bezier(.07, .95, 0, 1);
     }
 
     button:hover > svg > path {
