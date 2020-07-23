@@ -6,7 +6,7 @@ module.exports = {
         default: '#27d1ff'
       },
       gray: {
-        100: '#cbccd2',
+        100: '#f4f5f9',
         200: '#b3b3b3',
         300: '#808080',
         400: '#666666',

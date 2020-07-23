@@ -6,7 +6,7 @@
         </header>
 
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
-            <h2 class="mb-3 text-green text-xl w-full">General</h2>
+            <h2 class="mb-3 text-gray-100 text-xl w-full">General</h2>
             <div class="flex items-center mr-6 my-2 px-4 text-gray-100">
                 <p class="mr-4">Target</p>
                 <Dropdown :options="targets"
@@ -51,13 +51,13 @@
         </div>
 
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
-            <h2 class="mb-3 text-yellow text-xl w-full">WebP</h2>
+            <h2 class="mb-3 text-gray-100 text-xl w-full">WebP</h2>
             <div class="px-4 text-gray-100 w-1/2">
                 <div class="flex items-center w-full">
                     <p class="mr-6">Quality</p>
                     <div class="w-full">
                         <vue-slider v-model="config.webpOpt.quality"
-                                    @change="setConfig" class="slider-yellow"/>
+                                    @change="setConfig"/>
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                                  style="enable-background:new 0 0 24 24;"
                                  width="24" height="24"
                                  xml:space="preserve">
-                                <path fill="#ffe027"
+                                <path fill="#27ffa7"
                                       d="M10,15.6l-3.3-3.3l-1.4,1.4l4.7,4.7l9.7-9.7l-1.4-1.4L10,15.6z"/>
                             </svg>
                         </transition>
@@ -85,26 +85,26 @@
         </div>
 
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
-            <h2 class="mb-3 text-purple-400 text-xl w-full">JPEG</h2>
+            <h2 class="mb-3 text-gray-100 text-xl w-full">JPEG</h2>
             <div class="px-4 text-gray-100 w-1/2">
                 <div class="flex items-center w-full">
                     <p class="mr-6">Quality</p>
                     <div class="w-full">
                         <vue-slider v-model="config.jpegOpt.quality"
-                                    @change="setConfig" class="slider-purple"/>
+                                    @change="setConfig"/>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
-            <h2 class="mb-3 text-blue text-xl w-full">PNG</h2>
+            <h2 class="mb-3 text-gray-100 text-xl w-full">PNG</h2>
             <div class="px-4 text-gray-100 w-1/2">
                 <div class="flex items-center w-full">
                     <p class="mr-6">Quality</p>
                     <div class="w-full">
                         <vue-slider v-model="config.pngOpt.quality"
-                                    @change="setConfig" class="slider-blue"/>
+                                    @change="setConfig"/>
                     </div>
                 </div>
             </div>

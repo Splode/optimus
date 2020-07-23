@@ -66,29 +66,16 @@
     border-color: transparent;
 }
 
-.slider-blue .vue-slider-dot-handle:hover,
-.slider-blue .vue-slider-process,
-.slider-blue:hover .vue-slider-process,
-.slider-blue .vue-slider-dot-handle {
-    background-color: #27d1ff;
-}
 
-.slider-purple .vue-slider-dot-handle:hover,
-.slider-purple .vue-slider-process,
-.slider-purple:hover .vue-slider-process,
-.slider-purple .vue-slider-dot-handle {
-    background-color: #ba45ff;
-}
-
-.slider-yellow .vue-slider-dot-handle:hover,
-.slider-yellow .vue-slider-process,
-.slider-yellow:hover .vue-slider-process,
-.slider-yellow .vue-slider-dot-handle {
-    background-color: #ffe027;
+.vue-slider-dot-handle:hover,
+.vue-slider-process,
+.vue-slider:hover .vue-slider-process,
+.vue-slider-dot-handle {
+    background-color: #27ffa7;
 }
 
 .vue-slider-dot-tooltip-inner {
     background-color: #18181f;
     border-color: #18181f;
-    color: #cbccd2;
+    color: #f4f5f9;
 }
