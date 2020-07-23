@@ -39,7 +39,11 @@
       },
 
       handleViewSelect(e) {
-        this.currentView = e
+        if (this.currentView === e) {
+          this.currentView = 'Editor'
+        } else {
+          this.currentView = e
+        }
       }
     },
 
