@@ -14,8 +14,8 @@ func main() {
 	css := mewn.String("./frontend/dist/app.css")
 
 	app := wails.CreateApp(&wails.AppConfig{
-		Width:     1024,
-		Height:    768,
+		Width:     1200,
+		Height:    742,
 		Title:     "Optimus",
 		JS:        js,
 		CSS:       css,

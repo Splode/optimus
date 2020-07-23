@@ -594,6 +594,7 @@
     td p.cell-r {
         border-top-right-radius: 6px;
         border-bottom-right-radius: 6px;
+        margin-right: 1rem;
     }
 
     .drop-zone > svg path {

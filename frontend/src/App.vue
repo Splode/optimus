@@ -1,11 +1,9 @@
 <template>
     <div id="app" class="bg-gray-900 flex relative h-full">
         <Sidebar v-on:select-view="handleViewSelect"/>
-        <transition name="fade" mode="out-in">
-            <keep-alive>
-                <component :is="currentView" v-on:close-view="handleViewClose"/>
-            </keep-alive>
-        </transition>
+        <keep-alive>
+            <component :is="currentView" v-on:close-view="handleViewClose"/>
+        </keep-alive>
         <Notification/>
     </div>
 </template>
