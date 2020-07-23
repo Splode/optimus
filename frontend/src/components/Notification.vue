@@ -28,7 +28,7 @@
                                  style="enable-background:new 0 0 24 24;"
                                  width="24" height="24"
                                  xml:space="preserve">
-                            <path fill="#07FDBC"
+                            <path fill="#27ffa7"
                                   d="M10,15.6l-3.3-3.3l-1.4,1.4l4.7,4.7l9.7-9.7l-1.4-1.4L10,15.6z"/>
                         </svg>
                         </div>

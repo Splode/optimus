@@ -2,26 +2,33 @@ module.exports = {
   purge: ['./src/**/*.vue'],
   theme: {
     colors: {
+      blue: {
+        default: '#27d1ff'
+      },
       gray: {
         100: '#cbccd2',
         200: '#b3b3b3',
         300: '#808080',
         400: '#666666',
         700: '#3a3a42',
-        800: '#24242a',
+        800: '#212128',
         900: '#18181f'
       },
       green: {
-        default: '#07fdbc'
+        default: '#27ffa7'
+      },
+      pink: {
+        default: '#ff27ff'
       },
       purple: {
-        default: '#ce51ed'
+        400: '#d690ff',
+        default: '#ba45ff'
       },
       red: {
         default: '#f84d53'
       },
       yellow: {
-        default: '#f9bb0d'
+        default: '#ffe027'
       }
     }
   },

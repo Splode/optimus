@@ -41,29 +41,30 @@
                                     Saved</p>
                             </div>
                             <div v-else>
-                                <h2 class="font-bold leading-none text-5xl text-green tracking-tight uppercase">
+                                <h2 class="font-bold leading-none text-5xl text-pink tracking-tight uppercase">
                                     No Savings</h2>
                                 <p class="font-medium text-gray-300 tracking-wider uppercase">
                                     Try adjusting options</p>
                             </div>
                         </div>
                         <div class="px-3 w-3/12">
-                            <p class="font-bold text-2xl">{{ stats.count }}</p>
+                            <p class="font-bold text-2xl text-blue">{{
+                                stats.count }}</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 {{
                                 stats.count > 1 ? 'Images' : 'Image'}}</p>
-                            <p class="font-bold text-2xl">{{
+                            <p class="font-bold text-2xl text-yellow">{{
                                 getPrettyTime(stats.time)[0] }}</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 {{
                                 getPrettyTime(stats.time)[1] }}</p>
                         </div>
                         <div class="px-3 w-4/12">
-                            <p class="font-bold text-2xl">{{
+                            <p class="font-bold text-2xl text-pink">{{
                                 getPrettySize(totalStats.byteCount) }}</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 All time Savings</p>
-                            <p class="font-bold text-2xl">{{
+                            <p class="font-bold text-2xl text-purple">{{
                                 totalStats.imageCount }}</p>
                             <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                 All time Images</p>
@@ -75,7 +76,7 @@
                 <section class="flex justify-between py-6 w-5/12">
                     <button
                             class="btn focus:outline-none ta-slow"
-                            :class="canConvert ? 'border-yellow hover:bg-yellow hover:text-gray-900 text-gray-200' : 'btn--disabled'"
+                            :class="canConvert ? 'border-green hover:bg-green hover:text-gray-900 text-gray-200' : 'btn--disabled'"
                             @click="convert"
                             :disabled="!canConvert"
                     >
@@ -176,7 +177,7 @@
                                      enable-background="new 0 0 20 20"
                                      width="20px" height="20px"
                                      xml:space="preserve">
-                                <path fill="#07FDBC" d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M8,14.4l-3.7-3.7l1.4-1.4L8,11.6l5.3-5.3
+                                <path fill="#27ffa7" d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M8,14.4l-3.7-3.7l1.4-1.4L8,11.6l5.3-5.3
                             l1.4,1.4L8,14.4z"/>
                             </svg>
                             </p>
@@ -600,6 +601,6 @@
     }
 
     .drop-zone:hover > svg path {
-        fill: #07fdbc;
+        fill: #27ffa7;
     }
 </style>

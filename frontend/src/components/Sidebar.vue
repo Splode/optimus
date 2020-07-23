@@ -46,6 +46,6 @@
     }
 
     div:hover > #cog path {
-        fill: #ce51ed;
+        fill: #27d1ff;
     }
 </style>

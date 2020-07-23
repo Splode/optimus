@@ -1,6 +1,6 @@
 {
  "name": "Optimus",
- "description": "Enter your project description",
+ "description": "Image conversion and compression. Supports WebP, JPEG, and PNG.",
  "author": {
   "name": "Christopher Murphy",
   "email": "flyweight@protonmail.com"
