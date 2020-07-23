@@ -1,5 +1,5 @@
 <template>
-    <button class="border-2 border-gray-800 cursor-pointer flex hover:border-gray-400 hover:bg-gray-900 items-center justify-center p-2 ta-slow rounded-full w-10 h-10">
+    <button class="border-2 border-gray-800 cursor-pointer flex focus:outline-none hover:border-gray-400 hover:bg-gray-900 items-center justify-center p-2 ta-slow rounded-full w-10 h-10">
         <svg version="1.1" id="x" xmlns="http://www.w3.org/2000/svg"
              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
              viewBox="0 0 11.9 11.9"

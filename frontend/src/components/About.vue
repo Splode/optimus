@@ -1,7 +1,7 @@
 <template>
     <section class="bg-gray-800 overflow-y-auto p-10 w-full">
         <header class="flex items-center justify-between w-full">
-            <h1 class="font-medium text-2xl text-gray-100">About</h1>
+            <h1 class="font-medium text-2xl text-gray-200">About</h1>
             <BtnClose @click.native="closeView"/>
         </header>
         <div class="flex flex-wrap items-center justify-center pt-16 w-full">
@@ -234,9 +234,18 @@
 
             <!-- info -->
             <div class="text-center text-gray-100 w-full">
-                <p class="mb-2">Optimus 0.1.0</p>
-                <p class="mb-2">© 2020 <span>Christopher Murphy</span></p>
-                <p class="mb-2"><span>License</span> and <span>Documentation</span></p>
+                <p class="mb-1">Optimus 0.1.0</p>
+                <p class="mb-1">© 2020 <span
+                        class="cursor-pointer hover:text-green ta-color-slow"
+                        @click="openLink('https://christophermurphy.dev')">Christopher Murphy</span>
+                </p>
+                <p class="mb-1"><span
+                        class="cursor-pointer hover:text-green ta-color-slow"
+                        @click="openLink('https://github.com/splode')">License</span>
+                    and
+                    <span class="cursor-pointer hover:text-green ta-color-slow"
+                          @click="openLink('https://github.com/splode')">Documentation</span>
+                </p>
             </div>
         </div>
     </section>
@@ -251,6 +260,11 @@
     methods: {
       closeView() {
         this.$emit('close-view')
+      },
+
+      openLink(u) {
+        console.log(window.wails)
+        window.wails.Browser.OpenURL(u)
       }
     }
   }
@@ -258,9 +272,9 @@
 
 <style scoped>
     span {
-        cursor: pointer;
-        box-shadow: 0 2px #27ffa7;
+        box-shadow: 0 1px #27ffa7;
     }
+
     .st0 {
         fill: #F411BA;
     }
