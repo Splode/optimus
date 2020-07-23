@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-gray-800 p-10 w-full">
+    <section class="bg-gray-800 overflow-y-auto p-10 w-full">
         <header class="flex items-center justify-between w-full">
             <h1 class="font-medium text-2xl text-gray-100">Options</h1>
             <p @click="closeView">Close</p>
@@ -110,7 +110,7 @@
             </div>
         </div>
 
-        <div class="w-full">
+        <div class="mb-4 w-full">
             <button class="btn border-gray-400 focus:outline-none hover:bg-gray-400 hover:text-gray-900 ml-auto ta-slow"
                     @click="restoreDefaults">Restore Defaults
             </button>
