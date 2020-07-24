@@ -5,7 +5,7 @@
             <BtnClose @click.native="closeView"/>
         </header>
         <div class="flex flex-wrap items-center justify-center pt-16 w-full">
-            <div class="mb-10 w-full h-48">
+            <div class="flex items-center justify-center mb-10 w-full h-48">
                 <svg version="1.1" id="optimus-logo"
                      xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
@@ -252,22 +252,22 @@
 </template>
 
 <script>
-  import BtnClose from './BtnClose'
+    import BtnClose from './BtnClose'
 
-  export default {
-    name: 'About',
-    components: { BtnClose },
-    methods: {
-      closeView() {
-        this.$emit('close-view')
-      },
+    export default {
+        name: 'About',
+        components: {BtnClose},
+        methods: {
+            closeView() {
+                this.$emit('close-view')
+            },
 
-      openLink(u) {
-        console.log(window.wails)
-        window.wails.Browser.OpenURL(u)
-      }
+            openLink(u) {
+                console.log(window.wails)
+                window.wails.Browser.OpenURL(u)
+            }
+        }
     }
-  }
 </script>
 
 <style scoped>
