@@ -3,6 +3,7 @@
         <div @click="selectView('Settings')"
              class="cursor-pointer mb-2 p-2 rounded-full w-10 h-10">
             <svg version="1.1" id="cog" xmlns="http://www.w3.org/2000/svg"
+                 :class="{ 'active': active === 'Settings' }"
                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                  viewBox="0 0 19.6 20" enable-background="new 0 0 19.6 20"
                  xml:space="preserve">
@@ -16,7 +17,9 @@
         </div>
         <div @click="selectView('About')"
              class="cursor-pointer mb-2 p-2 rounded-full w-10 h-10">
-            <svg version="1.1" id="info" xmlns="http://www.w3.org/2000/svg"
+            <svg version="1.1" id="info"
+                 :class="{ 'active': active === 'About' }"
+                 xmlns="http://www.w3.org/2000/svg"
                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                  viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;"
                  xml:space="preserve">
@@ -34,6 +37,14 @@
 <script>
   export default {
     name: 'Sidebar',
+
+    props: {
+      active: {
+        type: String,
+        required: true
+      }
+    },
+
     methods: {
       selectView(v) {
         this.$emit('select-view', v)
@@ -51,8 +62,12 @@
         transition: fill .3s cubic-bezier(.07, .95, 0, 1);
     }
 
-    div:hover > #cog {
-        transform: rotate(45deg);
+    #cog.active {
+        transform: rotate(270deg);
+    }
+
+    #cog.active path, #info.active path {
+        fill: #27ffa7;
     }
 
     div:hover > #cog path, div:hover > #info path {

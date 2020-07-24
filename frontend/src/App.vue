@@ -1,6 +1,6 @@
 <template>
     <div id="app" class="bg-gray-900 flex relative h-full">
-        <Sidebar v-on:select-view="handleViewSelect"/>
+        <Sidebar :active="currentView" v-on:select-view="handleViewSelect"/>
         <keep-alive>
             <component :is="currentView" v-on:close-view="handleViewClose"/>
         </keep-alive>
