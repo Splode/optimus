@@ -1,7 +1,7 @@
 <template>
     <section class="bg-gray-800 overflow-y-auto p-10 w-full">
         <header class="flex items-center justify-between w-full">
-            <h1 class="font-medium text-2xl text-gray-200">About</h1>
+            <h1 class="font-medium text-2xl text-green">About</h1>
             <BtnClose @click.native="closeView"/>
         </header>
         <div class="flex flex-wrap items-center justify-center pt-16 w-full">
