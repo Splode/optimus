@@ -111,7 +111,7 @@
         </div>
 
         <div class="mb-4 w-full">
-            <button class="btn border-gray-400 focus:outline-none hover:bg-gray-400 hover:text-gray-900 ml-auto ta-slow"
+            <button class="border-gray-400 btn focus:outline-none hover:bg-green hover:border-green hover:text-gray-900 ml-auto ta-slow"
                     @click="restoreDefaults">Restore Defaults
             </button>
         </div>
