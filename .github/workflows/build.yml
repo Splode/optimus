@@ -1,0 +1,76 @@
+on:
+  push:
+jobs:
+  package:
+    strategy:
+      matrix:
+        go-version: [1.14.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get wails
+        run: go get -u github.com/wailsapp/wails
+      - name: Build package osx
+        run: |
+          export PATH=${PATH}:`go env GOPATH`/bin
+          echo "building on ${{ matrix.platform }}"
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
+          export LOG_LEVEL=debug
+          export GODEBUG=1
+          wails build -p
+          ls
+          echo "turning the .app into a .dmg"
+          npm install -g appdmg
+          appdmg dmg-spec.json optimus.dmg
+        if: matrix.platform == 'macos-latest'
+      - name: Build package linux
+        run: |
+          sudo apt update && sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+          export PATH=${PATH}:`go env GOPATH`/bin
+          echo "building on ${{ matrix.platform }}"
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
+          export LOG_LEVEL=debug
+          export GODEBUG=1
+          wails build
+          # turn into app image
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy*.AppImage
+          ls ./
+          ./linuxdeploy*.AppImage --appdir AppDir --executable optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon.png --output appimage
+        if: matrix.platform == 'ubuntu-latest'
+      - name: Build package windows
+        run: |
+          $GP = (go env GOPATH)
+          $env:path = "$env:path;$GP\bin"
+          echo "building on ${{ matrix.platform }}"
+          New-Item -ItemType directory -Path "$HOME\.wails" -Force
+          Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
+          choco install mingw
+          wails build -p
+        if: matrix.platform == 'windows-latest'
+      - name: upload artifact osx
+        uses: actions/upload-artifact@v1
+        with:
+          name: optimus-osx
+          path: optimus.dmg
+        if: matrix.platform == 'macos-latest'
+      - name: upload artifact linux
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: optimus-linux
+          path: optimus*.AppImage
+        if: matrix.platform == 'ubuntu-latest'
+      - name: upload artifact windows
+        uses: actions/upload-artifact@v1
+        with:
+          name: optimus-windows
+          path: optimus.exe
+        if: matrix.platform == 'windows-latest'

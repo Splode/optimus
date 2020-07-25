@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Optimus
+Exec=optimus
+Icon=appicon
+Type=Application
+Categories=GTK;GNOME;Utility;Development;
