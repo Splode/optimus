@@ -35,7 +35,7 @@ jobs:
 #        if: matrix.platform == 'macos-latest'
       - name: Build package linux
         run: |
-          export PATH=${PATH}:`go env GOPATH`/bin
+          export PATH=$PATH:$(go env GOPATH)/bin
           echo "building on ${{ matrix.platform }}"
           mkdir -p ~/.wails
           cp wails.json ~/.wails/
