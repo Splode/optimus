@@ -17,8 +17,8 @@ jobs:
       - name: Get Wails dependencies
         run: sudo apt update && sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev
         if: matrix.platform == 'ubuntu-latest'
-      - name: Get Wails
-        run: go get -u github.com/wailsapp/wails
+#      - name: Get Wails
+#        run: go get -u github.com/wailsapp/wails
 #      - name: Build package osx
 #        run: |
 #          export PATH=${PATH}:`go env GOPATH`/bin
@@ -36,6 +36,7 @@ jobs:
       - name: Build package linux
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
+          go get -u github.com/wailsapp/wails
           echo "building on ${{ matrix.platform }}"
           mkdir -p ~/.wails
           cp wails.json ~/.wails/
