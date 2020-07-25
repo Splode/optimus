@@ -19,20 +19,20 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
       - name: Get Wails
         run: go get -u github.com/wailsapp/wails/cmd/wails
-#      - name: Build package osx
-#        run: |
-#          export PATH=${PATH}:`go env GOPATH`/bin
-#          echo "building on ${{ matrix.platform }}"
-#          mkdir -p ~/.wails
-#          cp wails.json ~/.wails/
-#          export LOG_LEVEL=debug
-#          export GODEBUG=1
-#          wails build -p
-#          ls
-#          echo "turning the .app into a .dmg"
-#          npm install -g appdmg
-#          appdmg dmg-spec.json optimus.dmg
-#        if: matrix.platform == 'macos-latest'
+      - name: Build package osx
+        run: |
+          export PATH=${PATH}:`go env GOPATH`/bin
+          echo "building on ${{ matrix.platform }}"
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
+          export LOG_LEVEL=debug
+          export GODEBUG=1
+          wails build -p
+          ls
+          echo "turning the .app into a .dmg"
+          npm install -g appdmg
+          appdmg dmg-spec.json optimus.dmg
+        if: matrix.platform == 'macos-latest'
       - name: Build package linux
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
@@ -59,12 +59,12 @@ jobs:
           choco install mingw
           wails build -p
         if: matrix.platform == 'windows-latest'
-#      - name: upload artifact osx
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: optimus-osx
-#          path: optimus.dmg
-#        if: matrix.platform == 'macos-latest'
+      - name: upload artifact osx
+        uses: actions/upload-artifact@v1
+        with:
+          name: optimus-osx
+          path: optimus.dmg
+        if: matrix.platform == 'macos-latest'
       - name: upload artifact linux
         uses: actions/upload-artifact@v2-preview
         with:
