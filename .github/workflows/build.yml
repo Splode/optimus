@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         with:
           name: optimus-linux
-          path: optimus*.AppImage
+          path: Optimus-0.1.0-x86_64.AppImage
         if: matrix.platform == 'ubuntu-latest'
 #      - name: upload artifact windows
 #        uses: actions/upload-artifact@v1
