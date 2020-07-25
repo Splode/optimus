@@ -43,6 +43,7 @@ jobs:
           export GODEBUG=1
           wails build
           # turn into app image
+          export VERSION=0.1.0
           wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
           ls ./
