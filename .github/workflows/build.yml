@@ -49,16 +49,16 @@ jobs:
           ls ./
           ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
         if: matrix.platform == 'ubuntu-latest'
-#      - name: Build package windows
-#        run: |
-#          $GP = (go env GOPATH)
-#          $env:path = "$env:path;$GP\bin"
-#          echo "building on ${{ matrix.platform }}"
-#          New-Item -ItemType directory -Path "$HOME\.wails" -Force
-#          Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
-#          choco install mingw
-#          wails build -p
-#        if: matrix.platform == 'windows-latest'
+      - name: Build package windows
+        run: |
+          $GP = (go env GOPATH)
+          $env:path = "$env:path;$GP\bin"
+          echo "building on ${{ matrix.platform }}"
+          New-Item -ItemType directory -Path "$HOME\.wails" -Force
+          Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
+          choco install mingw
+          wails build -p
+        if: matrix.platform == 'windows-latest'
 #      - name: upload artifact osx
 #        uses: actions/upload-artifact@v1
 #        with:
@@ -71,9 +71,9 @@ jobs:
           name: optimus-linux
           path: Optimus-0.1.0-x86_64.AppImage
         if: matrix.platform == 'ubuntu-latest'
-#      - name: upload artifact windows
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: optimus-windows
-#          path: optimus.exe
-#        if: matrix.platform == 'windows-latest'
+      - name: upload artifact windows
+        uses: actions/upload-artifact@v1
+        with:
+          name: optimus-windows
+          path: ./build/optimus.exe
+        if: matrix.platform == 'windows-latest'
