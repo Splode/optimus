@@ -18,7 +18,7 @@ jobs:
         run: sudo apt update && sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev
         if: matrix.platform == 'ubuntu-latest'
 #      - name: Get Wails
-#        run: go get -u github.com/wailsapp/wails
+#        run: go get -u github.com/wailsapp/wails/cmd/wails
 #      - name: Build package osx
 #        run: |
 #          export PATH=${PATH}:`go env GOPATH`/bin
@@ -36,7 +36,6 @@ jobs:
       - name: Build package linux
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
-          go get -u github.com/wailsapp/wails/cmd/wails
           echo "building on ${{ matrix.platform }}"
           mkdir -p ~/.wails
           cp wails.json ~/.wails/
@@ -47,7 +46,7 @@ jobs:
           wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
           ls ./
-          ./linuxdeploy*.AppImage --appdir AppDir --executable optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon.png --output appimage
+          ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon.png --output appimage
         if: matrix.platform == 'ubuntu-latest'
 #      - name: Build package windows
 #        run: |
