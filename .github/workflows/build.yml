@@ -46,7 +46,7 @@ jobs:
           wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
           ls ./
-          ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon.png --output appimage
+          ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
         if: matrix.platform == 'ubuntu-latest'
 #      - name: Build package windows
 #        run: |
