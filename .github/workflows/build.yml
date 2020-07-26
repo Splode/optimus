@@ -57,13 +57,12 @@ jobs:
           $GP = (go env GOPATH)
           $env:path = "$env:path;$GP\bin"
           echo "building on ${{ matrix.platform }}"
-          Set-Variable -Name "VERSION" -Value $(git rev-parse --short HEAD)
-          Get-Variable -Name "VERSION" -Value
+          Set-Variable -Name "WIN_VERSION" -Value $(git rev-parse --short HEAD)
           New-Item -ItemType directory -Path "$HOME\.wails" -Force
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
-          mv ./build/optimus.exe ./build/optimus_$($VERSION)_windows_x86_64.exe
+          mv ./build/optimus.exe ./build/optimus_$($WIN_VERSION)_windows_x86_64.exe
         if: matrix.platform == 'windows-latest'
 #      - name: upload artifact osx
 #        uses: actions/upload-artifact@v1
