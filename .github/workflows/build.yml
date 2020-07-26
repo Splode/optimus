@@ -46,11 +46,10 @@ jobs:
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build
-#           turn into app image
-#          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-#          chmod +x linuxdeploy*.AppImage
-          ls ./
-#          ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
+          # wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          # chmod +x linuxdeploy*.AppImage
+          # ls ./
+          # ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
           mv ./build/optimus ./build/optimus_${{ env.VERSION }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
       - name: Build package windows
