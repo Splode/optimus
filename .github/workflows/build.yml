@@ -21,34 +21,36 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
       - name: Get Wails
         run: go get -u github.com/wailsapp/wails/cmd/wails
-      - name: Build package osx
-        run: |
-          export PATH=${PATH}:`go env GOPATH`/bin
-          echo "building on ${{ matrix.platform }}"
-          mkdir -p ~/.wails
-          cp wails.json ~/.wails/
-          export LOG_LEVEL=debug
-          export GODEBUG=1
-          wails build -p
-          ls
-          echo "turning the .app into a .dmg"
-          npm install -g appdmg
-          appdmg dmg-spec.json optimus_${{ env.VERSION }}_macOS.dmg
-        if: matrix.platform == 'macos-latest'
+#      - name: Build package osx
+#        run: |
+#          export PATH=${PATH}:`go env GOPATH`/bin
+#          echo "building on ${{ matrix.platform }}"
+#          mkdir -p ~/.wails
+#          cp wails.json ~/.wails/
+#          export LOG_LEVEL=debug
+#          export GODEBUG=1
+#          wails build -p
+#          ls
+#          echo "turning the .app into a .dmg"
+#          npm install -g appdmg
+#          appdmg dmg-spec.json optimus_${{ env.VERSION }}_macOS.dmg
+#        if: matrix.platform == 'macos-latest'
       - name: Build package linux
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
           echo "building on ${{ matrix.platform }}"
+          echo ${{ env.GITHUB_REF }}
+          echo ${{ env.GITHUB_HEAD_REF }}
           mkdir -p ~/.wails
           cp wails.json ~/.wails/
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build
-          # turn into app image
-          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          chmod +x linuxdeploy*.AppImage
+#           turn into app image
+#          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+#          chmod +x linuxdeploy*.AppImage
           ls ./
-          ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
+#          ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
           mv ./build/optimus ./build/optimus_${{ env.VERSION }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
       - name: Build package windows
@@ -56,31 +58,31 @@ jobs:
           $GP = (go env GOPATH)
           $env:path = "$env:path;$GP\bin"
           echo "building on ${{ matrix.platform }}"
-          Write-Host "$env:VERSION"
+          Write-Host "$env:GITHUB_REF"
           Write-Host "$env:GITHUB_SHA"
           New-Item -ItemType directory -Path "$HOME\.wails" -Force
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
         if: matrix.platform == 'windows-latest'
-      - name: upload artifact osx
-        uses: actions/upload-artifact@v1
-        with:
-          name: optimus-osx
-          path: optimus_${{ env.VERSION }}_macOS.dmg
-        if: matrix.platform == 'macos-latest'
+#      - name: upload artifact osx
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: optimus-osx
+#          path: optimus_${{ env.VERSION }}_macOS.dmg
+#        if: matrix.platform == 'macos-latest'
       - name: upload artifact linux
         uses: actions/upload-artifact@v2-preview
         with:
           name: optimus-linux
           path: ./build/optimus_${{ env.VERSION }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
-      - name: upload artifact linux appimage
-        uses: actions/upload-artifact@v2-preview
-        with:
-          name: optimus-linux-appimage
-          path: Optimus-${{ env.VERSION }}-x86_64.AppImage
-        if: matrix.platform == 'ubuntu-latest'
+#      - name: upload artifact linux appimage
+#        uses: actions/upload-artifact@v2-preview
+#        with:
+#          name: optimus-linux-appimage
+#          path: Optimus-${{ env.VERSION }}-x86_64.AppImage
+#        if: matrix.platform == 'ubuntu-latest'
       - name: upload artifact windows
         uses: actions/upload-artifact@v1
         with:
