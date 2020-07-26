@@ -32,8 +32,7 @@ jobs:
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build -p
-          ls
-          echo "turning the .app into a .dmg"
+          echo "converting .app into a .dmg"
           npm install -g appdmg
           appdmg dmg-spec.json optimus.dmg
         if: matrix.platform == 'macos-latest'
@@ -58,7 +57,6 @@ jobs:
           $GP = (go env GOPATH)
           $env:path = "$env:path;$GP\bin"
           echo "building on ${{ matrix.platform }}"
-          Set-Variable -Name "WIN_VERSION" -Value $(git rev-parse --short HEAD)
           New-Item -ItemType directory -Path "$HOME\.wails" -Force
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
@@ -101,7 +99,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ${{ github.tag }}
           draft: true
           prerelease: true
       - name: Download macOS package
