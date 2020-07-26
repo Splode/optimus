@@ -21,37 +21,37 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
       - name: Get Wails
         run: go get -u github.com/wailsapp/wails/cmd/wails
-#      - name: Build package osx
-#        run: |
-#          export PATH=${PATH}:`go env GOPATH`/bin
-#          echo "building on ${{ matrix.platform }}"
-#          mkdir -p ~/.wails
-#          cp wails.json ~/.wails/
-#          export LOG_LEVEL=debug
-#          export GODEBUG=1
-#          wails build -p
-#          ls
-#          echo "turning the .app into a .dmg"
-#          npm install -g appdmg
-#          appdmg dmg-spec.json optimus_${{ env.VERSION }}_macOS.dmg
-#        if: matrix.platform == 'macos-latest'
-#      - name: Build package linux
-#        run: |
-#          export PATH=$PATH:$(go env GOPATH)/bin
-#          echo "building on ${{ matrix.platform }}"
-#          echo ${{ env.GITHUB_REF }}
-#          echo ${{ env.GITHUB_HEAD_REF }}
-#          mkdir -p ~/.wails
-#          cp wails.json ~/.wails/
-#          export LOG_LEVEL=debug
-#          export GODEBUG=1
-#          wails build
-#          # wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-#          # chmod +x linuxdeploy*.AppImage
-#          # ls ./
-#          # ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
-#          mv ./build/optimus ./build/optimus_${{ env.VERSION }}_linux_x86_64
-#        if: matrix.platform == 'ubuntu-latest'
+      - name: Build package macOS
+        run: |
+          export PATH=${PATH}:`go env GOPATH`/bin
+          echo "building on ${{ matrix.platform }}"
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
+          export LOG_LEVEL=debug
+          export GODEBUG=1
+          wails build -p
+          ls
+          echo "turning the .app into a .dmg"
+          npm install -g appdmg
+          appdmg dmg-spec.json optimus_${{ env.VERSION }}_macOS.dmg
+        if: matrix.platform == 'macos-latest'
+      - name: Build package linux
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          echo "building on ${{ matrix.platform }}"
+          echo ${{ env.GITHUB_REF }}
+          echo ${{ env.GITHUB_HEAD_REF }}
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
+          export LOG_LEVEL=debug
+          export GODEBUG=1
+          wails build
+          # wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          # chmod +x linuxdeploy*.AppImage
+          # ls ./
+          # ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
+          mv ./build/optimus ./build/optimus_${{ env.VERSION }}_linux_x86_64
+        if: matrix.platform == 'ubuntu-latest'
       - name: Build package windows
         run: |
           $GP = (go env GOPATH)
@@ -62,20 +62,19 @@ jobs:
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
-          mv ./build/optimus.exe ./build/optimus_$($WIN_VERSION)_windows_x86_64.exe
         if: matrix.platform == 'windows-latest'
-#      - name: upload artifact osx
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: optimus-osx
-#          path: optimus_${{ env.VERSION }}_macOS.dmg
-#        if: matrix.platform == 'macos-latest'
-#      - name: upload artifact linux
-#        uses: actions/upload-artifact@v2-preview
-#        with:
-#          name: optimus-linux
-#          path: ./build/optimus_${{ env.VERSION }}_linux_x86_64
-#        if: matrix.platform == 'ubuntu-latest'
+      - name: upload artifact macOS
+        uses: actions/upload-artifact@v1
+        with:
+          name: optimus-macOS
+          path: optimus_${{ env.VERSION }}_macOS.dmg
+        if: matrix.platform == 'macos-latest'
+      - name: upload artifact linux
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: optimus-linux
+          path: ./build/optimus_${{ env.VERSION }}_linux_x86_64
+        if: matrix.platform == 'ubuntu-latest'
 #      - name: upload artifact linux appimage
 #        uses: actions/upload-artifact@v2-preview
 #        with:
@@ -86,5 +85,62 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: optimus-windows
-          path: ./build/optimus_${{ env.VERSION }}_windows_x86_64.exe
+          path: ./build/optimus.exe
         if: matrix.platform == 'windows-latest'
+
+  release:
+    runs-on: ubuntu-latest
+    needs: package
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
+      - name: Download macOS package
+        uses: actions/download-artifact@v1
+        with:
+          name: optimus-macOS
+      - name: Upload macOS package to release
+        id: upload-macOS-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./optimus-macOS/optimus_${{ env.VERSION }}_macOS.dmg
+          asset_name: optimus_${{ env.VERSION }}_macOS.dmg
+          asset_content_type: application/octet-stream
+      - name: Download linux package
+        uses: actions/download-artifact@v1
+        with:
+          name: optimus-linux
+      - name: Upload Linux package to release
+        id: upload-linux-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./optimus-linux/optimus_${{ env.VERSION }}_linux_x86_64
+          asset_name: optimus_${{ env.VERSION }}_linux_x86_64
+          asset_content_type: application/octet-stream
+      - name: Download windows package
+        uses: actions/download-artifact@v1
+        with:
+          name: optimus-windows
+      - name: Upload Windows package to release
+        id: upload-windows-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./optimus-windows/optimus.exe
+          asset_name: optimus.exe
+          asset_content_type: application/octet-stream
