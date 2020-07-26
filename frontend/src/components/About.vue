@@ -6,7 +6,7 @@
         </header>
         <div class="flex flex-wrap items-center justify-center pt-16 w-full">
             <div class="flex items-center justify-center mb-10 w-full h-48">
-                <svg version="1.1" id="optimus-logo"
+                <svg version="1.1" id="optimus-logo" class="w-full"
                      xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
                      y="0px" viewBox="0 0 1078.6 331.3"
