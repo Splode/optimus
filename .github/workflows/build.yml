@@ -63,6 +63,7 @@ jobs:
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
+          Rename-Item -Path "./build/optimus.exe" -NewName "./build/optimus_$($VERSION)_windows_x86_64.exe"
         if: matrix.platform == 'windows-latest'
 #      - name: upload artifact osx
 #        uses: actions/upload-artifact@v1
@@ -86,5 +87,5 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: optimus-windows
-          path: ./build/optimus.exe
+          path: ./build/optimus_${{ env.VERSION }}_windows_x86_64.exe
         if: matrix.platform == 'windows-latest'
