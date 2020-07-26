@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: optimus-osx
-          path: optimus.dmg
+          path: optimus_${{ env.VERSION }}_macOS.dmg
         if: matrix.platform == 'macos-latest'
       - name: upload artifact linux
         uses: actions/upload-artifact@v2-preview
