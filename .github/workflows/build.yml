@@ -33,7 +33,7 @@ jobs:
           ls
           echo "turning the .app into a .dmg"
           npm install -g appdmg
-          appdmg dmg-spec.json optimus_${{ env.VERSION }}_macOS.dmg
+          appdmg dmg-spec.json optimus_${{ env.GITHUB_REF }}_macOS.dmg
         if: matrix.platform == 'macos-latest'
       - name: Build package linux
         run: |
@@ -50,7 +50,7 @@ jobs:
           # chmod +x linuxdeploy*.AppImage
           # ls ./
           # ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
-          mv ./build/optimus ./build/optimus_${{ env.VERSION }}_linux_x86_64
+          mv ./build/optimus ./build/optimus_${{ env.GITHUB_REF }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
       - name: Build package windows
         run: |
@@ -67,13 +67,13 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: optimus-macOS
-          path: optimus_${{ env.VERSION }}_macOS.dmg
+          path: optimus_${{ env.GITHUB_REF }}_macOS.dmg
         if: matrix.platform == 'macos-latest'
       - name: upload artifact linux
         uses: actions/upload-artifact@v2-preview
         with:
           name: optimus-linux
-          path: ./build/optimus_${{ env.VERSION }}_linux_x86_64
+          path: ./build/optimus_${{ env.GITHUB_REF }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
 #      - name: upload artifact linux appimage
 #        uses: actions/upload-artifact@v2-preview
@@ -113,8 +113,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-macOS/optimus_${{ env.VERSION }}_macOS.dmg
-          asset_name: optimus_${{ env.VERSION }}_macOS.dmg
+          asset_path: ./optimus-macOS/optimus_${{ env.GITHUB_REF }}_macOS.dmg
+          asset_name: optimus_${{ env.GITHUB_REF }}_macOS.dmg
           asset_content_type: application/octet-stream
       - name: Download linux package
         uses: actions/download-artifact@v1
@@ -127,8 +127,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-linux/optimus_${{ env.VERSION }}_linux_x86_64
-          asset_name: optimus_${{ env.VERSION }}_linux_x86_64
+          asset_path: ./optimus-linux/optimus_${{ env.GITHUB_REF }}_linux_x86_64
+          asset_name: optimus_${{ env.GITHUB_REF }}_linux_x86_64
           asset_content_type: application/octet-stream
       - name: Download windows package
         uses: actions/download-artifact@v1
