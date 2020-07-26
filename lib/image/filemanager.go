@@ -6,6 +6,7 @@ import (
 	"github.com/wailsapp/wails"
 	"optimus/lib/config"
 	"optimus/lib/stat"
+	"runtime/debug"
 	"strings"
 	"sync"
 	"time"
@@ -56,6 +57,7 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 // Clear removes the files in the FileManager.
 func (fm *FileManager) Clear() {
 	fm.Files = nil
+	debug.FreeOSMemory()
 }
 
 // Convert runs the conversion on all files in the FileManager.
@@ -106,6 +108,7 @@ func (fm *FileManager) Convert() (errs []error) {
 		"savings": b,
 		"time":    (time.Now().UnixNano() - t) / 1000000,
 	})
+	fm.Clear()
 	return errs
 }
 
