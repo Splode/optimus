@@ -57,7 +57,7 @@ jobs:
           $GP = (go env GOPATH)
           $env:path = "$env:path;$GP\bin"
           echo "building on ${{ matrix.platform }}"
-          echo ${{ env.VERSION }}
+          echo "${{ env.VERSION }}"
           New-Item -ItemType directory -Path "$HOME\.wails" -Force
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
