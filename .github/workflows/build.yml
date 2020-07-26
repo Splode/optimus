@@ -29,7 +29,6 @@ jobs:
           cp wails.json ~/.wails/
           export LOG_LEVEL=debug
           export GODEBUG=1
-          echo ${{ env.VERSION }}
           wails build -p
           ls
           echo "turning the .app into a .dmg"
@@ -44,13 +43,13 @@ jobs:
           cp wails.json ~/.wails/
           export LOG_LEVEL=debug
           export GODEBUG=1
-          echo ${{ env.VERSION }}
           wails build
           # turn into app image
           wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
           ls ./
           ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
+          mv ./build/optimus ./build/optimus_${{ env.VERSION }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
       - name: Build package windows
         run: |
@@ -74,13 +73,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         with:
           name: optimus-linux
-          path: ./build/optimus
+          path: ./build/optimus_${{ env.VERSION }}_linux_x86_64
         if: matrix.platform == 'ubuntu-latest'
       - name: upload artifact linux appimage
         uses: actions/upload-artifact@v2-preview
         with:
           name: optimus-linux-appimage
-          path: Optimus-0.1.0-x86_64.AppImage
+          path: Optimus-${{ env.VERSION }}-x86_64.AppImage
         if: matrix.platform == 'ubuntu-latest'
       - name: upload artifact windows
         uses: actions/upload-artifact@v1
