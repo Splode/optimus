@@ -16,19 +16,16 @@
             </svg>
         </div>
         <div @click="selectView('Stats')"
-             class="cursor-pointer mb-2 p-2 rounded-full w-10 h-10">
-            <svg version="1.1" id="info"
+             class="cursor-pointer mb-4 p-2 rounded-full w-10 h-10">
+            <svg version="1.1" id="graph" xmlns="http://www.w3.org/2000/svg"
                  :class="{ 'active': active === 'Stats' }"
-                 xmlns="http://www.w3.org/2000/svg"
                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;"
+                 viewBox="0 0 17 20" style="enable-background:new 0 0 17 20;"
                  xml:space="preserve">
-                <g>
-                    <path fill="#b3b3b3" d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8
-                        S14.4,18,10,18z"/>
-                    <path fill="#b3b3b3"
-                          d="M9,9h2v6H9V9z M9,5h2v2H9V5z"/>
-                </g>
+                <rect y="10" fill="#b3b3b3" width="2" height="10"/>
+                <rect x="5" y="2" fill="#b3b3b3" width="2" height="18"/>
+                <rect x="10" y="5" fill="#b3b3b3" width="2" height="15"/>
+                <rect x="15" fill="#b3b3b3" width="2" height="20"/>
             </svg>
         </div>
         <div @click="selectView('About')"
@@ -74,8 +71,8 @@
         transition: transform .3s cubic-bezier(.07, .95, 0, 1);
     }
 
-    #cog path, #info path {
-        transition: fill .3s cubic-bezier(.07, .95, 0, 1);
+    #cog path, #graph rect, #info path {
+        transition: fill 1s cubic-bezier(.07, .95, 0, 1);
     }
 
     #cog.active {
@@ -86,7 +83,23 @@
         fill: #27ffa7;
     }
 
-    div:hover > #cog path, div:hover > #info path {
+    #graph.active rect:first-of-type {
+        fill: #27ffa7;
+    }
+
+    #graph.active rect:nth-of-type(2) {
+        fill: #ffe027;
+    }
+
+    #graph.active rect:nth-of-type(3) {
+        fill: #27d1ff;
+    }
+
+    #graph.active rect:nth-of-type(4) {
+        fill: #ba45ff;
+    }
+
+    div:hover > #cog path, div:hover > #graph rect, div:hover > #info path {
         fill: #27ffa7;
     }
 </style>
