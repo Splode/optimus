@@ -218,6 +218,7 @@
       return {
         files: [],
         headerHeight: 0,
+        isConverting: false,
         isDragging: false,
         stats: {
           count: 0,
@@ -243,7 +244,7 @@
        * @returns {boolean}
        */
       canConvert() {
-        if (this.files.length === 0) return false
+        if (this.files.length === 0 || this.isConverting) return false
         return (this.filesConverted && !this.filesPending)
       },
 
@@ -303,6 +304,7 @@
        * convert calls the Convert method on the FileManager.
        */
       convert() {
+        this.isConverting = true
         window.backend.FileManager.Convert()
           .then(res => {
             console.log(res)
@@ -550,6 +552,7 @@
         EventBus.$emit('notify',
           { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
         )
+        this.isConverting = false
       })
 
       const dz = this.$refs['dropZone']
