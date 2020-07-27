@@ -11,6 +11,7 @@ const filename = "stats.json"
 type Stat struct {
 	ByteCount  int64 `json:"byteCount"`
 	ImageCount int   `json:"imageCount"`
+	TimeCount  int64 `json:"timeCount"`
 
 	Runtime *wails.Runtime
 	Logger  *wails.CustomLogger
@@ -42,6 +43,7 @@ func (s *Stat) GetStats() map[string]interface{} {
 	return map[string]interface{}{
 		"byteCount":  s.ByteCount,
 		"imageCount": s.ImageCount,
+		"timeCount":  s.TimeCount,
 	}
 }
 
@@ -62,6 +64,17 @@ func (s *Stat) SetImageCount(i int) {
 		return
 	}
 	s.ImageCount += i
+	if err := s.store(); err != nil {
+		s.Logger.Errorf("failed to store stats: %v", err)
+	}
+}
+
+// SetTimeCount adds and persists the given time count to the app stats.
+func (s *Stat) SetTimeCount(t int64) {
+	if t < 0 {
+		return
+	}
+	s.TimeCount += t
 	if err := s.store(); err != nil {
 		s.Logger.Errorf("failed to store stats: %v", err)
 	}

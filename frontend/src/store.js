@@ -18,7 +18,8 @@ const store = new Vuex.Store({
     },
     stats: {
       byteCount: 0,
-      imageCount: 0
+      imageCount: 0,
+      timeCount: 0
     },
     session: {
       count: 0,
@@ -43,7 +44,8 @@ const store = new Vuex.Store({
     stats(state) {
       return {
         byteCount: fSize(state.stats.byteCount),
-        imageCount: state.stats.imageCount
+        imageCount: state.stats.imageCount,
+        timeCount: prettyTime(state.stats.timeCount)
       }
     }
   },

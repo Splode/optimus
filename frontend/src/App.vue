@@ -14,6 +14,7 @@
   import Notification from './components/Notification.vue'
   import Settings from './components/Settings.vue'
   import Sidebar from './components/Sidebar.vue'
+  import Stats from './components/Stats.vue'
   import './assets/css/main.css'
 
   export default {
@@ -24,7 +25,8 @@
       Editor,
       Notification,
       Settings,
-      Sidebar
+      Sidebar,
+      Stats
     },
 
     data() {

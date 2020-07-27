@@ -15,6 +15,22 @@
                 c2.2,0,4,1.8,4,4s-1.8,4-4,4s-4-1.8-4-4S7.6,6,9.8,6z"/>
             </svg>
         </div>
+        <div @click="selectView('Stats')"
+             class="cursor-pointer mb-2 p-2 rounded-full w-10 h-10">
+            <svg version="1.1" id="info"
+                 :class="{ 'active': active === 'Stats' }"
+                 xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;"
+                 xml:space="preserve">
+                <g>
+                    <path fill="#b3b3b3" d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8
+                        S14.4,18,10,18z"/>
+                    <path fill="#b3b3b3"
+                          d="M9,9h2v6H9V9z M9,5h2v2H9V5z"/>
+                </g>
+            </svg>
+        </div>
         <div @click="selectView('About')"
              class="cursor-pointer mb-2 p-2 rounded-full w-10 h-10">
             <svg version="1.1" id="info"

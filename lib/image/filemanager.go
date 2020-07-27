@@ -101,12 +101,14 @@ func (fm *FileManager) Convert() (errs []error) {
 	}
 
 	wg.Wait()
+	nt := (time.Now().UnixNano() - t) / 1000000
 	fm.stats.SetImageCount(c)
 	fm.stats.SetByteCount(b)
+	fm.stats.SetTimeCount(nt)
 	fm.Runtime.Events.Emit("conversion:stat", map[string]interface{}{
 		"count":   c,
 		"savings": b,
-		"time":    (time.Now().UnixNano() - t) / 1000000,
+		"time":    nt,
 	})
 	fm.Clear()
 	return errs
