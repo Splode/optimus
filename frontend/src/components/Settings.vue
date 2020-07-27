@@ -132,7 +132,7 @@
     data() {
       return {
         targets: [{ name: 'WebP', value: 'webp' }, {
-          name: 'JPG',
+          name: 'JPEG',
           value: 'jpg'
         }, { name: 'PNG', value: 'png' }],
         value: 0

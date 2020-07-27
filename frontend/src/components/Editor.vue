@@ -22,7 +22,7 @@
             </div>
             <div class="lg:w-7/12 md:pl-6 md:w-1/2 my-3 w-full">
                 <transition name="fade" mode="out-in">
-                    <div v-if="!stats.time"
+                    <div v-if="!session.count"
                          key="intro"
                          class="flex h-full items-center justify-center">
                         <h2 class="leading-none text-4xl text-center text-green">
@@ -33,10 +33,9 @@
                          key="stats"
                          class="flex flex-wrap items-end h-full">
                         <div class="px-3 w-full lg:w-5/12">
-                            <div v-if="stats.savings > 0">
+                            <div v-if="session.hasSavings">
                                 <h2 class="font-bold leading-none text-4xl md:text-5xl text-green tracking-tight">
-                                    {{
-                                    getPrettySize(stats.savings) }}</h2>
+                                    {{ session.savings }}</h2>
                                 <p class="font-medium text-gray-300 tracking-wider uppercase">
                                     Saved</p>
                             </div>
@@ -50,33 +49,28 @@
                         <div class="flex lg:flex-col justify-between px-3 w-full lg:w-3/12">
                             <div class="w-1/2 lg:w-full">
                                 <p class="font-bold text-xl lg:text-2xl text-blue">
-                                    {{
-                                    stats.count }}</p>
+                                    {{ session.count }}</p>
                                 <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
-                                    {{
-                                    stats.count > 1 ? 'Images' : 'Image'}}</p>
+                                    {{ session.count > 1 ? 'Images' :
+                                    'Image'}}</p>
                             </div>
                             <div class="w-1/2 lg:w-full">
                                 <p class="font-bold text-xl lg:text-2xl text-yellow">
-                                    {{
-                                    getPrettyTime(stats.time)[0] }}</p>
+                                    {{ session.time[0] }}</p>
                                 <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
-                                    {{
-                                    getPrettyTime(stats.time)[1] }}</p>
+                                    {{ session.time[1] }}</p>
                             </div>
                         </div>
                         <div class="flex lg:flex-col justify-between px-3 w-full lg:w-4/12">
                             <div class="w-1/2 lg:w-full">
                                 <p class="font-bold text-xl lg:text-2xl text-pink">
-                                    {{
-                                    getPrettySize(totalStats.byteCount) }}</p>
+                                    {{ totalStats.byteCount }}</p>
                                 <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                     All time Savings</p>
                             </div>
                             <div class="w-1/2 lg:w-full">
                                 <p class="font-bold text-xl lg:text-2xl text-purple">
-                                    {{
-                                    totalStats.imageCount }}</p>
+                                    {{ totalStats.imageCount }}</p>
                                 <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
                                     All time Images</p>
                             </div>
@@ -219,12 +213,7 @@
         files: [],
         headerHeight: 0,
         isConverting: false,
-        isDragging: false,
-        stats: {
-          count: 0,
-          savings: 0,
-          time: 0
-        }
+        isDragging: false
       }
     },
 
@@ -276,6 +265,14 @@
         if (this.files.length === 0) return d
         if (this.filesPending) return 'Processing...'
         return d
+      },
+
+      /**
+       * session returns the current session stats.
+       * @returns {object}
+       */
+      session() {
+        return this.$store.getters.session
       },
 
       /**
@@ -345,16 +342,6 @@
       getPrettySize(size) {
         if (size === 0) return ''
         return fSize(size)
-      },
-
-      /**
-       * getPrettyTime returns an array of human-friendly strings representing
-       * millisecond time.
-       * @param {number} ms
-       * @returns {string[]}
-       */
-      getPrettyTime(ms) {
-        return prettyTime(ms)
       },
 
       /**
@@ -543,11 +530,11 @@
         const c = e.count
         const t = e.time
         const s = e.savings
-        this.stats.count += c
-        this.stats.time += t
+        this.$store.dispatch('setSessionProp', { key: 'count', value: c })
+        this.$store.dispatch('setSessionProp', { key: 'time', value: t })
         this.$store.dispatch('getStats')
         if (s > 0) {
-          this.stats.savings += e.savings
+          this.$store.dispatch('setSessionProp', { key: 'savings', value: s })
         }
         EventBus.$emit('notify',
           { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }

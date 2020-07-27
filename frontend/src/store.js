@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { fSize } from './lib/file'
+import { prettyTime } from './lib/time'
 
 Vue.use(Vuex)
 
@@ -17,6 +19,11 @@ const store = new Vuex.Store({
     stats: {
       byteCount: 0,
       imageCount: 0
+    },
+    session: {
+      count: 0,
+      savings: 0,
+      time: 0
     }
   },
   getters: {
@@ -24,8 +31,20 @@ const store = new Vuex.Store({
       return state.config
     },
 
+    session(state) {
+      return {
+        count: state.session.count,
+        hasSavings: state.session.savings > 0,
+        savings: fSize(state.session.savings),
+        time: prettyTime(state.session.time)
+      }
+    },
+
     stats(state) {
-      return state.stats
+      return {
+        byteCount: fSize(state.stats.byteCount),
+        imageCount: state.stats.imageCount
+      }
     }
   },
   actions: {
@@ -46,6 +65,10 @@ const store = new Vuex.Store({
 
     setConfigProp(context, payload) {
       context.commit('setConfigProp', payload)
+    },
+
+    setSessionProp(context, payload) {
+      context.commit('setSessionProp', payload)
     },
 
     toggleWebpLossless(context) {
@@ -70,6 +93,10 @@ const store = new Vuex.Store({
 
     setConfigProp(state, payload) {
       state.config[payload.key] = payload.value
+    },
+
+    setSessionProp(state, payload) {
+      state.session[payload.key] += payload.value
     },
 
     setStats(state, s) {
