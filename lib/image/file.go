@@ -50,6 +50,9 @@ func (f *File) Decode() error {
 	case "webp":
 		f.Image, err = webp.DecodeWebp(bytes.NewReader(f.Data))
 	}
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
