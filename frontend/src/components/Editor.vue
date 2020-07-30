@@ -510,10 +510,25 @@
             const f = this.getFileById(id)
             f.isProcessed = true
           }).catch(err => {
+            this.removeFileById(id)
+            EventBus.$emit('notify', {
+              msg: err,
+              type: 'warn'
+            })
             console.error(err)
           })
         }
         reader.readAsDataURL(file)
+      },
+
+      /**
+       * removeFileById removes a file from the file list by the given ID.
+       * @param {string} id
+       */
+      removeFileById(id) {
+        const i = this.files.findIndex(f => f.id === id)
+        if (i < 0) return
+        this.files.splice(i, 1)
       }
     },
 
