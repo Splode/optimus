@@ -234,10 +234,12 @@
 
       <!-- info -->
       <div class="text-center text-gray-100 w-full">
-        <p class="mb-1">Optimus 0.1.0</p>
+        <p class="mb-1">{{ pkg.name }} {{ pkg.version }}</p>
         <p class="mb-1">© 2020 <span
             class="cursor-pointer hover:text-green ta-color-slow"
-            @click="openLink('https://christophermurphy.dev')">Christopher Murphy</span>
+            @click="openLink('https://christophermurphy.dev')">{{
+            pkg.author.name
+          }}</span>
         </p>
         <p class="mb-1"><span
             class="cursor-pointer hover:text-green ta-color-slow"
@@ -253,10 +255,19 @@
 
 <script>
 import BtnClose from './BtnClose'
+import pkg from './../../package.json'
 
 export default {
   name: 'About',
+
   components: { BtnClose },
+
+  data() {
+    return {
+      pkg
+    }
+  },
+
   methods: {
     closeView() {
       this.$emit('close-view')

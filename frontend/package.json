@@ -1,7 +1,11 @@
 {
-  "name": "optimus",
-  "author": "Christopher Murphy<flyweight@protonmail.com>",
+  "name": "Optimus",
+  "author": {
+    "name": "Christopher Murphy",
+    "email": "flyweight@protonmail.com"
+  },
   "private": true,
+  "version": "0.2.0-beta",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
