@@ -27,8 +27,8 @@ jobs:
         run: |
           export PATH=${PATH}:`go env GOPATH`/bin
           echo "building on ${{ matrix.platform }}"
-          mkdir -p ~/wails
-          cp wails.json ~/wails/
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build -p
@@ -42,8 +42,8 @@ jobs:
           echo "building on ${{ matrix.platform }}"
           echo ${{ env.GITHUB_REF }}
           echo ${{ env.GITHUB_HEAD_REF }}
-          mkdir -p ~/wails
-          cp wails.json ~/wails/
+          mkdir -p ~/.wails
+          cp wails.json ~/.wails/
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build
@@ -57,8 +57,8 @@ jobs:
           $GP = (go env GOPATH)
           $env:path = "$env:path;$GP\bin"
           echo "building on ${{ matrix.platform }}"
-          New-Item -ItemType directory -Path "$HOME\wails" -Force
-          Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\wails\wails.json"
+          New-Item -ItemType directory -Path "$HOME\.wails" -Force
+          Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
         if: matrix.platform == 'windows-latest'
