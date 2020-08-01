@@ -17,8 +17,11 @@ module.exports = {
       green: {
         default: '#27ffa7'
       },
+      orange: {
+        default: '#ff9b45'
+      },
       pink: {
-        default: '#ff27ff'
+        default: '#ff45bd'
       },
       purple: {
         400: '#d690ff',

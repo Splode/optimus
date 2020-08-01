@@ -22,11 +22,11 @@
            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
            viewBox="0 0 17 20" style="enable-background:new 0 0 17 20;"
            xml:space="preserve">
-                <rect y="10" fill="#b3b3b3" width="2" height="10"/>
+        <rect y="10" fill="#b3b3b3" width="2" height="10"/>
         <rect x="5" y="2" fill="#b3b3b3" width="2" height="18"/>
         <rect x="10" y="5" fill="#b3b3b3" width="2" height="15"/>
         <rect x="15" fill="#b3b3b3" width="2" height="20"/>
-            </svg>
+      </svg>
     </div>
     <div @click="selectView('About')"
          class="cursor-pointer mb-2 p-2 rounded-full w-10 h-10">
@@ -83,23 +83,35 @@ export default {
   fill: #27ffa7;
 }
 
+#info.active path {
+  fill: #d690ff;
+}
+
+#graph:hover rect:first-of-type,
 #graph.active rect:first-of-type {
-  fill: #27ffa7;
-}
-
-#graph.active rect:nth-of-type(2) {
-  fill: #ffe027;
-}
-
-#graph.active rect:nth-of-type(3) {
   fill: #27d1ff;
 }
 
-#graph.active rect:nth-of-type(4) {
-  fill: #ba45ff;
+#graph:hover rect:nth-of-type(2),
+#graph.active rect:nth-of-type(2) {
+  fill: #27ffa7;
 }
 
-div:hover > #cog path, div:hover > #graph rect, div:hover > #info path {
+#graph:hover rect:nth-of-type(3),
+#graph.active rect:nth-of-type(3) {
+  fill: #ffe027;
+}
+
+#graph:hover rect:nth-of-type(4),
+#graph.active rect:nth-of-type(4) {
+  fill: #ff9b45;
+}
+
+div:hover > #cog path {
   fill: #27ffa7;
+}
+
+div:hover > #info path {
+  fill: #d690ff;
 }
 </style>

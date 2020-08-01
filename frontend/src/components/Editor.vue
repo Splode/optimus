@@ -26,7 +26,7 @@
           <div v-if="!session.count"
                key="intro"
                class="flex h-full items-center justify-center">
-            <h2 class="leading-none text-4xl text-center text-green">
+            <h2 class="leading-none text-4xl text-center text-yellow">
               Add
               image files<br>to get started</h2>
           </div>
@@ -94,7 +94,7 @@
           </button>
           <button
               class="btn focus:outline-none ta-slow"
-              :class="canClear ? 'border-gray-400 hover:bg-gray-400 hover:text-gray-900' : 'btn--disabled'"
+              :class="canClear ? 'border-gray-400 hover:bg-gray-800 hover:text-green' : 'btn--disabled'"
               @click="clear"
               :disabled="!canClear"
           >
