@@ -12,14 +12,12 @@ Optimus is a desktop image optimization application. It supports conversion and 
 
 ### Downloads
 
-Download the latest version from the releases page.
+Download the latest version from the [releases page](https://github.com/Splode/optimus/releases).
 
 Optimus is available for Windows, macOS, and Linux.
 
 ### Scoop
 
 ## Development
-
-Optimus uses Go and JavaScript with Wails and Vue.js, respectively.
 
 ## License
