@@ -5,7 +5,7 @@
   "name": "Christopher Murphy",
   "email": "flyweight@protonmail.com"
  },
- "version": "0.2.0-beta",
+ "version": "0.2.1-beta",
  "binaryname": "optimus",
  "frontend": {
   "dir": "frontend",
