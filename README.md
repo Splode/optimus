@@ -21,3 +21,5 @@ Optimus is available for Windows, macOS, and Linux.
 ## Development
 
 ## License
+
+MIT (c) 2020 Christopher Murphy
