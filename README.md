@@ -26,10 +26,16 @@ Download the latest version from the [releases page](https://github.com/Splode/o
 
 Optimus is available for Windows, macOS, and Linux.
 
-### Scoop
-
 ## Development
+
+Optimus is built using [Wails](https://wails.app/) and uses JavaScript on the frontend and Go on the backend.
+
+Take the following steps to develop locally:
+
+1. Clone the repo
+2. Install Wails
+3. Install go and npm dependencies
 
 ## License
 
-MIT (c) 2020 Christopher Murphy
+MIT &copy; 2020 Christopher Murphy
