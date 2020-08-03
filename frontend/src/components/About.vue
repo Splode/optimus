@@ -17,7 +17,7 @@
         </p>
         <p class="mb-1"><span
             class="cursor-pointer hover:text-purple-400 ta-color-slow"
-            @click="openLink('https://github.com/splode/optimus')">License</span>
+            @click="openLink('https://github.com/Splode/optimus/blob/main/LICENSE')">License</span>
           and
           <span class="cursor-pointer hover:text-purple-400 ta-color-slow"
                 @click="openLink('https://github.com/splode/optimus')">Documentation</span>
