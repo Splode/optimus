@@ -35,7 +35,7 @@ jobs:
           echo "converting .app into a .dmg"
           npm install -g appdmg
           appdmg dmg-spec.json optimus.dmg
-          zip optimus_${{ github.ref }}_macOS.zip optimus.dmg
+          # zip optimus_${{ github.ref }}_macOS.zip optimus.dmg
         if: matrix.platform == 'macos-latest'
       - name: Build package linux
         run: |
@@ -48,7 +48,7 @@ jobs:
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build
-          tar -czvf optimus_${{ github.ref }}_linux_x86_64.tar.gz ./build/optimus
+          # tar -czvf optimus_${{ github.ref }}_linux_x86_64.tar.gz ./build/optimus
           # wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           # chmod +x linuxdeploy*.AppImage
           # ls ./
@@ -63,7 +63,7 @@ jobs:
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
-          Compress-Archive -Path .\build\optimus* -DestinationPath .\optimus_${{ github.ref }}_windows_x86_64.zip
+          # Compress-Archive -Path .\build\optimus* -DestinationPath .\optimus_${{ github.ref }}_windows_x86_64.zip
         if: matrix.platform == 'windows-latest'
       - name: upload artifact macOS
         uses: actions/upload-artifact@v1
