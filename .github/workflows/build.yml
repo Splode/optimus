@@ -1,7 +1,7 @@
 on:
   push:
-    tags:
-      - 'v*'
+#    tags:
+#      - 'v*'
 jobs:
   package:
     strategy:
@@ -35,6 +35,7 @@ jobs:
           echo "converting .app into a .dmg"
           npm install -g appdmg
           appdmg dmg-spec.json optimus.dmg
+          zip optimus_${{ github.ref }}_macOS.zip optimus.dmg
         if: matrix.platform == 'macos-latest'
       - name: Build package linux
         run: |
@@ -47,6 +48,7 @@ jobs:
           export LOG_LEVEL=debug
           export GODEBUG=1
           wails build
+          tar -czvf optimus_${{ github.ref }}_linux_x86_64.tar.gz ./build/optimus
           # wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           # chmod +x linuxdeploy*.AppImage
           # ls ./
@@ -61,6 +63,7 @@ jobs:
           Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
           wails build -p
+          Compress-Archive -Path .\build\optimus* -DestinationPath .\optimus_${{ github.ref }}_windows_x86_64.zip
         if: matrix.platform == 'windows-latest'
       - name: upload artifact macOS
         uses: actions/upload-artifact@v1
@@ -74,12 +77,12 @@ jobs:
           name: optimus-linux
           path: ./build/optimus
         if: matrix.platform == 'ubuntu-latest'
-#      - name: upload artifact linux appimage
-#        uses: actions/upload-artifact@v2-preview
-#        with:
-#          name: optimus-linux-appimage
-#          path: Optimus-${{ env.VERSION }}-x86_64.AppImage
-#        if: matrix.platform == 'ubuntu-latest'
+      #      - name: upload artifact linux appimage
+      #        uses: actions/upload-artifact@v2-preview
+      #        with:
+      #          name: optimus-linux-appimage
+      #          path: Optimus-${{ env.VERSION }}-x86_64.AppImage
+      #        if: matrix.platform == 'ubuntu-latest'
       - name: upload artifact windows
         uses: actions/upload-artifact@v1
         with:
@@ -112,8 +115,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-macOS/optimus.dmg
-          asset_name: optimus_${{ github.ref }}_macOS.dmg
+          asset_path: ./optimus-macOS
+          asset_name: optimus_${{ github.ref }}_macOS.zip
           asset_content_type: application/octet-stream
       - name: Download linux package
         uses: actions/download-artifact@v1
@@ -126,8 +129,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-linux/optimus
-          asset_name: optimus_${{ github.ref }}_linux_x86_64
+          asset_path: ./optimus-linux
+          asset_name: optimus_${{ github.ref }}_linux_x86_64.tar.gz
           asset_content_type: application/octet-stream
       - name: Download windows package
         uses: actions/download-artifact@v1
@@ -140,6 +143,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-windows/optimus.exe
-          asset_name: optimus_${{ github.ref }}_windows_x86_64.exe
+          asset_path: ./optimus-windows
+          asset_name: optimus_${{ github.ref }}_windows_x86_64.zip
           asset_content_type: application/octet-stream
