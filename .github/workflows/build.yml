@@ -69,13 +69,13 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: optimus-macOS
-          path: optimus.dmg
+          path: optimus.zip
         if: matrix.platform == 'macos-latest'
       - name: upload artifact linux
         uses: actions/upload-artifact@v2-preview
         with:
           name: optimus-linux
-          path: ./build/optimus
+          path: optimus.tar.gz
         if: matrix.platform == 'ubuntu-latest'
       #      - name: upload artifact linux appimage
       #        uses: actions/upload-artifact@v2-preview
@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: optimus-windows
-          path: ./build/optimus.exe
+          path: optimus.zip
         if: matrix.platform == 'windows-latest'
 
   release:
