@@ -26,6 +26,12 @@ Download the latest version from the [releases page](https://github.com/Splode/o
 
 Optimus is available for Windows, macOS, and Linux.
 
+### Scoop
+
+```bash
+scoop install https://raw.githubusercontent.com/Splode/optimus/main/optimus.json
+```
+
 ## Development
 
 Optimus is built using [Wails](https://wails.app/) and uses JavaScript on the frontend and Go on the backend.
