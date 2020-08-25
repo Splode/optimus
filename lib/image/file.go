@@ -83,16 +83,7 @@ func (f *File) Write(c *config.Config) (err error) {
 	if c.App.Sizes != nil {
 		for _, r := range c.App.Sizes {
 			i := imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
-
-			var buf bytes.Buffer
-			switch c.App.Target {
-			case "jpg":
-				buf, err = jpeg.EncodeJPEG(i, c.App.JpegOpt)
-			case "png":
-				buf, err = png.EncodePNG(i, c.App.PngOpt)
-			case "webp":
-				buf, err = webp.EncodeWebp(i, c.App.WebpOpt)
-			}
+			buf, err := encToBuf(i, c.App)
 			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+r.String()+c.App.Suffix+"."+c.App.Target)
 			if err != nil {
 				return err
@@ -102,15 +93,7 @@ func (f *File) Write(c *config.Config) (err error) {
 			}
 		}
 	}
-	var buf bytes.Buffer
-	switch c.App.Target {
-	case "jpg":
-		buf, err = jpeg.EncodeJPEG(f.Image, c.App.JpegOpt)
-	case "png":
-		buf, err = png.EncodePNG(f.Image, c.App.PngOpt)
-	case "webp":
-		buf, err = webp.EncodeWebp(f.Image, c.App.WebpOpt)
-	}
+	buf, err := encToBuf(f.Image, c.App)
 	dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+c.App.Suffix+"."+c.App.Target)
 	if err != nil {
 		return err
@@ -121,6 +104,24 @@ func (f *File) Write(c *config.Config) (err error) {
 	f.ConvertedFile = filepath.Clean(dest)
 	f.IsConverted = true
 	return nil
+}
+
+// encToBuf encodes an image to a buffer using the configured target.
+func encToBuf(i image.Image, a *config.App) (*bytes.Buffer, error) {
+	var b bytes.Buffer
+	var err error
+	switch a.Target {
+	case "jpg":
+		b, err = jpeg.EncodeJPEG(i, a.JpegOpt)
+	case "png":
+		b, err = png.EncodePNG(i, a.PngOpt)
+	case "webp":
+		b, err = webp.EncodeWebp(i, a.WebpOpt)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &b, nil
 }
 
 // getFileType returns the file's type based on the given mime type.
