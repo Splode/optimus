@@ -99,7 +99,12 @@ const store = new Vuex.Store({
   },
   mutations: {
     addSize(state) {
-      state.config.sizes.push({ height: null, width: null })
+      const s = { height: null, width: null }
+      if (!state.config.sizes) {
+        state.config.sizes = [s]
+      } else {
+        state.config.sizes.push(s)
+      }
     },
     removeSize(state, index) {
       state.config.sizes.splice(index, 1)
