@@ -53,8 +53,11 @@
 
     <div
         class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
-      <h2 class="mb-3 text-gray-200 text-xl w-full">Resizing</h2>
-      <button @click="addSize">Add Size</button>
+      <h2 class="text-gray-200 text-xl">Resizing</h2>
+      <button
+          class="border-0 focus:outline-none hover:green hover:text-green ml-8 ta-slow"
+          @click="addSize">Add Size +
+      </button>
       <div v-for="(s, i) in config.sizes" :key="i"
            class="flex flex-wrap items-center my-2 px-4 text-gray-100 w-full">
         <label :for="`width-${i}`">Width</label>
@@ -65,7 +68,17 @@
         <input type="text" :id="`height-${i}`" v-model.number="s.height"
                @input="handleNumber" @blur="setConfig"
                class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow">
-        <button @click="removeSize(i)">Remove</button>
+        <button @click="removeSize(i)">
+          <svg version="1.1" id="x" xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+               viewBox="0 0 11.9 11.9"
+               style="enable-background:new 0 0 11.9 11.9;"
+               width="10" height="10"
+               xml:space="preserve">
+                    <path fill="#b3b3b3"
+                          d="M10.4,0L6,4.5L1.5,0L0,1.5L4.5,6L0,10.4l1.5,1.5L6,7.5l4.5,4.5l1.5-1.5L7.5,6l4.5-4.5L10.4,0z"/>
+        </svg>
+        </button>
       </div>
     </div>
 
@@ -296,6 +309,14 @@ export default {
 <style scoped>
 input:focus {
   color: #27ffa7;
+}
+
+button > svg > path {
+  transition: fill .6s cubic-bezier(.07, .95, 0, 1);
+}
+
+button:hover > svg > path {
+  fill: #27ffa7;
 }
 
 .check-wrapper {
