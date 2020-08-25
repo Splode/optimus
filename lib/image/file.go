@@ -82,6 +82,9 @@ func (f *File) GetSavings() (int64, error) {
 func (f *File) Write(c *config.Config) (err error) {
 	if c.App.Sizes != nil {
 		for _, r := range c.App.Sizes {
+			if r.Height <= 0 || r.Width <= 0 {
+				continue
+			}
 			i := imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
 			buf, err := encToBuf(i, c.App)
 			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+r.String()+c.App.Suffix+"."+c.App.Target)
