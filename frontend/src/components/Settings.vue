@@ -53,6 +53,24 @@
 
     <div
         class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
+      <h2 class="mb-3 text-gray-200 text-xl w-full">Resizing</h2>
+      <button @click="addSize">Add Size</button>
+      <div v-for="(s, i) in config.sizes" :key="i"
+           class="flex flex-wrap items-center my-2 px-4 text-gray-100 w-full">
+        <label :for="`width-${i}`">Width</label>
+        <input type="text" :id="`width-${i}`" v-model.number="s.width"
+               @input="handleNumber" @blur="setConfig"
+               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow">
+        <label :for="`height-${i}`">Height</label>
+        <input type="text" :id="`height-${i}`" v-model.number="s.height"
+               @input="handleNumber" @blur="setConfig"
+               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow">
+        <button @click="removeSize(i)">Remove</button>
+      </div>
+    </div>
+
+    <div
+        class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
       <h2 class="mb-3 text-gray-200 text-xl w-full">WebP</h2>
       <div class="px-4 text-gray-100 w-1/2">
         <div class="flex items-center w-full">
@@ -128,6 +146,7 @@ import BtnClose from './BtnClose'
 import Dropdown from './Dropdown'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
+import { EventBus } from '@/lib/event-bus'
 
 export default {
   name: 'Settings',
@@ -162,8 +181,42 @@ export default {
   },
 
   methods: {
+    /**
+     * addSize adds a blank size to the size config.
+     */
+    addSize() {
+      this.$store.dispatch('addSize')
+    },
+    /**
+     * removeSize removes the selected size rect from the sizes config.
+     * @param {number} i - The size index.
+     */
+    removeSize(i) {
+      this.$store.dispatch('removeSize', i)
+      this.setConfig()
+    },
+
+    /**
+     * closeView closes the current view.
+     */
     closeView() {
       this.$emit('close-view')
+    },
+
+    /**
+     * handleNumber validates a number input and displays an error message if
+     * the input cannot be parsed.
+     * @param {InputEvent} e
+     */
+    handleNumber(e) {
+      if (!e.data) return
+      const n = parseInt(e.data, 10)
+      if (isNaN(n)) {
+        EventBus.$emit('notify', {
+          msg: `Image size must be a number.`,
+          type: 'warn'
+        })
+      }
     },
 
     /**

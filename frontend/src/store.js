@@ -12,6 +12,7 @@ const store = new Vuex.Store({
       target: '',
       prefix: '',
       suffix: '',
+      sizes: [],
       jpegOpt: { quality: 0 },
       pngOpt: { quality: 0 },
       webpOpt: { lossless: false, quality: 0 }
@@ -50,6 +51,13 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    addSize(context) {
+      context.commit('addSize')
+    },
+    removeSize(context, index) {
+      context.commit('removeSize', index)
+    },
+
     getConfig(context) {
       window.backend.Config.GetAppConfig().then(cfg => {
         context.commit('setConfig', cfg)
@@ -57,6 +65,7 @@ const store = new Vuex.Store({
         console.error(err)
       })
     },
+
     setConfig(context, c) {
       window.backend.Config.SetConfig(JSON.stringify(c)).then(() => {
         context.dispatch('getConfig')
@@ -89,6 +98,13 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    addSize(state) {
+      state.config.sizes.push({ height: null, width: null })
+    },
+    removeSize(state, index) {
+      state.config.sizes.splice(index, 1)
+    },
+
     setConfig(state, c) {
       state.config = c
     },
