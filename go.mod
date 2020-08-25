@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/chai2010/webp v1.1.0
+	github.com/disintegration/imaging v1.6.2
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/foobaz/lossypng v0.0.0-20170418091904-b2e79a7cd5f1
 	github.com/leaanthony/mewn v0.10.7

@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 )
 
 const filename = "conf.json"
@@ -21,6 +22,7 @@ type App struct {
 	Target  string        `json:"target"`
 	Prefix  string        `json:"prefix"`
 	Suffix  string        `json:"suffix"`
+	Sizes   []*Rect       `json:"sizes"`
 	JpegOpt *jpeg.Options `json:"jpegOpt"`
 	PngOpt  *png.Options  `json:"pngOpt"`
 	WebpOpt *webp.Options `json:"webpOpt"`
@@ -64,6 +66,7 @@ func (c *Config) GetAppConfig() map[string]interface{} {
 		"target":  c.App.Target,
 		"prefix":  c.App.Prefix,
 		"suffix":  c.App.Suffix,
+		"sizes":   c.App.Sizes,
 		"jpegOpt": c.App.JpegOpt,
 		"pngOpt":  c.App.PngOpt,
 		"webpOpt": c.App.WebpOpt,
@@ -161,4 +164,18 @@ func (c *Config) store() error {
 		return err
 	}
 	return nil
+}
+
+// Rect represents an image width and height size.
+type Rect struct {
+	Height int `json:"height,omitempty"`
+	Width  int `json:"width,omitempty"`
+}
+
+// String returns a string representation of the Rect.
+// For example, "1280x720"
+func (r *Rect) String() string {
+	w := strconv.Itoa(r.Width)
+	h := strconv.Itoa(r.Height)
+	return fmt.Sprintf("%sx%s", w, h)
 }

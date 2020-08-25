@@ -3,6 +3,7 @@ package image
 import (
 	"bytes"
 	"errors"
+	"github.com/disintegration/imaging"
 	"image"
 	"io/ioutil"
 	"optimus/lib/config"
@@ -79,6 +80,28 @@ func (f *File) GetSavings() (int64, error) {
 
 // Write saves a file to disk based on the encoding target.
 func (f *File) Write(c *config.Config) (err error) {
+	if c.App.Sizes != nil {
+		for _, r := range c.App.Sizes {
+			i := imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
+
+			var buf bytes.Buffer
+			switch c.App.Target {
+			case "jpg":
+				buf, err = jpeg.EncodeJPEG(i, c.App.JpegOpt)
+			case "png":
+				buf, err = png.EncodePNG(i, c.App.PngOpt)
+			case "webp":
+				buf, err = webp.EncodeWebp(i, c.App.WebpOpt)
+			}
+			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+r.String()+c.App.Suffix+"."+c.App.Target)
+			if err != nil {
+				return err
+			}
+			if err := ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
+				return err
+			}
+		}
+	}
 	var buf bytes.Buffer
 	switch c.App.Target {
 	case "jpg":
