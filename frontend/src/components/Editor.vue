@@ -547,17 +547,24 @@ export default {
 
     Wails.Events.On('conversion:stat', e => {
       const c = e.count
-      const t = e.time
+      const r = e.resizes
       const s = e.savings
+      const t = e.time
       this.$store.dispatch('setSessionProp', { key: 'count', value: c })
       this.$store.dispatch('setSessionProp', { key: 'time', value: t })
       this.$store.dispatch('getStats')
       if (s > 0) {
         this.$store.dispatch('setSessionProp', { key: 'savings', value: s })
       }
-      EventBus.$emit('notify',
-          { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
-      )
+      if (r > 0) {
+        EventBus.$emit('notify',
+            { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} and made ${r} resizes in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
+        )
+      } else {
+        EventBus.$emit('notify',
+            { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
+        )
+      }
       this.isConverting = false
     })
 

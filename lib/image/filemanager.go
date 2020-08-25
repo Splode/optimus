@@ -107,6 +107,7 @@ func (fm *FileManager) Convert() (errs []error) {
 	fm.stats.SetTimeCount(nt)
 	fm.Runtime.Events.Emit("conversion:stat", map[string]interface{}{
 		"count":   c,
+		"resizes": c * len(fm.config.App.Sizes),
 		"savings": b,
 		"time":    nt,
 	})

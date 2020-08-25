@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { EventBus } from '../lib/event-bus'
+import { EventBus } from '@/lib/event-bus'
 
 export default {
   name: 'Notification',
