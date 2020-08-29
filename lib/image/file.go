@@ -3,7 +3,9 @@ package image
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/disintegration/imaging"
+	"github.com/wailsapp/wails"
 	"image"
 	"io/ioutil"
 	"optimus/lib/config"
@@ -34,6 +36,7 @@ type File struct {
 	ConvertedFile string
 	IsConverted   bool
 	Image         image.Image
+	Runtime       *wails.Runtime
 }
 
 // Decode decodes the file's data based on its mime type.
@@ -83,6 +86,10 @@ func (f *File) Write(c *config.Config) (err error) {
 	if c.App.Sizes != nil {
 		for _, r := range c.App.Sizes {
 			if r.Height <= 0 || r.Width <= 0 {
+				f.Runtime.Events.Emit("notify", map[string]interface{}{
+					"msg":  fmt.Sprintf("Invalid image size: %s", r.String()),
+					"type": "warn",
+				})
 				continue
 			}
 			i := imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)

@@ -40,7 +40,7 @@ func (fm *FileManager) WailsInit(runtime *wails.Runtime) error {
 
 // HandleFile processes a file from the client.
 func (fm *FileManager) HandleFile(fileJson string) (err error) {
-	file := &File{}
+	file := &File{Runtime: fm.Runtime}
 	if err := json.Unmarshal([]byte(fileJson), &file); err != nil {
 		return err
 	}
@@ -75,6 +75,10 @@ func (fm *FileManager) Convert() (errs []error) {
 				err := file.Write(fm.config)
 				if err != nil {
 					fm.Logger.Errorf("failed to convert file: %s, %v", file.ID, err)
+					fm.Runtime.Events.Emit("notify", map[string]interface{}{
+						"msg":  fmt.Sprintf("Failed to convert file: %s, %s", file.Name, err.Error()),
+						"type": "warn",
+					})
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
 				} else {
 					fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))

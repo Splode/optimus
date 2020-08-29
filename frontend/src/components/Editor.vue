@@ -204,10 +204,10 @@
 </template>
 
 <script>
-import { fExt, fName, fSize } from '../lib/file'
-import { EventBus } from '../lib/event-bus'
+import { fExt, fName, fSize } from '@/lib/file'
+import { EventBus } from '@/lib/event-bus'
 import Wails from '@wailsapp/runtime'
-import { prettyTime } from '../lib/time'
+import { prettyTime } from '@/lib/time'
 
 export default {
   name: 'Editor',

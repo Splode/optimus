@@ -42,6 +42,7 @@
 
 <script>
 import { EventBus } from '@/lib/event-bus'
+import Wails from '@wailsapp/runtime'
 
 export default {
   name: 'Notification',
@@ -64,16 +65,18 @@ export default {
         this.notifications.pop()
         this.clear()
       }, 6000)
-    }
-  },
-
-  mounted() {
-    EventBus.$on('notify', n => {
+    },
+    notify(n) {
       this.notifications.unshift({ msg: n.msg, type: n.type })
       if (!this.isClearing) {
         this.clear()
       }
-    })
+    }
+  },
+
+  mounted() {
+    EventBus.$on('notify', this.notify)
+    Wails.Events.On('notify', this.notify)
   }
 }
 </script>
