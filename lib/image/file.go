@@ -99,15 +99,17 @@ func (f *File) Write(c *config.Config) (err error) {
 				continue
 			}
 			var i image.Image
+			var s string
 			switch r.Strategy {
 			case FILL:
 				i = imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
+				s = r.String()
 			case FIT:
 				i = imaging.Fit(f.Image, r.Width, r.Height, imaging.Lanczos)
-				// TODO determine file name size based on returned image rect
+				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
 			}
 			buf, err := encToBuf(i, c.App)
-			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+r.String()+c.App.Suffix+"."+c.App.Target)
+			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+s+c.App.Suffix+"."+c.App.Target)
 			if err != nil {
 				return err
 			}
