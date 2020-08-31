@@ -22,7 +22,7 @@ type App struct {
 	Target  string        `json:"target"`
 	Prefix  string        `json:"prefix"`
 	Suffix  string        `json:"suffix"`
-	Sizes   []*Rect       `json:"sizes"`
+	Sizes   []*Size       `json:"sizes"`
 	JpegOpt *jpeg.Options `json:"jpegOpt"`
 	PngOpt  *png.Options  `json:"pngOpt"`
 	WebpOpt *webp.Options `json:"webpOpt"`
@@ -178,4 +178,11 @@ func (r *Rect) String() string {
 	w := strconv.Itoa(r.Width)
 	h := strconv.Itoa(r.Height)
 	return fmt.Sprintf("%sx%s", w, h)
+}
+
+// Size represents an image resizing. Strategy represents an image resizing
+// strategy, such as cropping.
+type Size struct {
+	Rect
+	Strategy int `json:"strategy"`
 }

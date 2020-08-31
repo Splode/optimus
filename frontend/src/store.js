@@ -57,6 +57,9 @@ const store = new Vuex.Store({
     removeSize(context, index) {
       context.commit('removeSize', index)
     },
+    setSizeStrategy(context, payload) {
+      context.commit('setSizeStrategy', payload)
+    },
 
     getConfig(context) {
       window.backend.Config.GetAppConfig().then(cfg => {
@@ -99,7 +102,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     addSize(state) {
-      const s = { height: null, width: null }
+      const s = { height: null, width: null, strategy: 0 }
       if (!state.config.sizes) {
         state.config.sizes = [s]
       } else {
@@ -108,6 +111,9 @@ const store = new Vuex.Store({
     },
     removeSize(state, index) {
       state.config.sizes.splice(index, 1)
+    },
+    setSizeStrategy(state, payload) {
+      state.config.sizes[payload.index].strategy = payload.value
     },
 
     setConfig(state, c) {

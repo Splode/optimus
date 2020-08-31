@@ -17,6 +17,11 @@ import (
 	"path/filepath"
 )
 
+const (
+	FILL = iota
+	FIT
+)
+
 var mimes = map[string]string{
 	"image/.jpg": "jpg",
 	"image/jpg":  "jpg",
@@ -83,6 +88,7 @@ func (f *File) GetSavings() (int64, error) {
 
 // Write saves a file to disk based on the encoding target.
 func (f *File) Write(c *config.Config) (err error) {
+	// TODO resizing should probably be in its own method
 	if c.App.Sizes != nil {
 		for _, r := range c.App.Sizes {
 			if r.Height <= 0 || r.Width <= 0 {
@@ -92,7 +98,14 @@ func (f *File) Write(c *config.Config) (err error) {
 				})
 				continue
 			}
-			i := imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
+			var i image.Image
+			switch r.Strategy {
+			case FILL:
+				i = imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
+			case FIT:
+				i = imaging.Fit(f.Image, r.Width, r.Height, imaging.Lanczos)
+				// TODO determine file name size based on returned image rect
+			}
 			buf, err := encToBuf(i, c.App)
 			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+r.String()+c.App.Suffix+"."+c.App.Target)
 			if err != nil {

@@ -63,11 +63,17 @@
         <label :for="`width-${i}`">Width</label>
         <input type="text" :id="`width-${i}`" v-model.number="s.width"
                @input="handleNumber" @blur="setConfig"
-               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow">
+               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green ml-4 mr-8 px-4 py-2 rounded-md ta-color-slow">
         <label :for="`height-${i}`">Height</label>
         <input type="text" :id="`height-${i}`" v-model.number="s.height"
                @input="handleNumber" @blur="setConfig"
-               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green mx-4 px-4 py-2 rounded-md ta-color-slow">
+               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green ml-4 mr-8 px-4 py-2 rounded-md ta-color-slow">
+        <p class="mr-4">Strategy</p>
+        <Dropdown :options="strategies"
+                  :selected="strategy(s)"
+                  v-on:updateOption="selectStrategy"
+                  @click.native="handleSelectStrategy(i)"
+                  class="m-0 mr-6 text-gray-200"></Dropdown>
         <button @click="removeSize(i)">
           <svg version="1.1" id="x" xmlns="http://www.w3.org/2000/svg"
                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -75,9 +81,9 @@
                style="enable-background:new 0 0 11.9 11.9;"
                width="10" height="10"
                xml:space="preserve">
-                    <path fill="#b3b3b3"
-                          d="M10.4,0L6,4.5L1.5,0L0,1.5L4.5,6L0,10.4l1.5,1.5L6,7.5l4.5,4.5l1.5-1.5L7.5,6l4.5-4.5L10.4,0z"/>
-        </svg>
+              <path fill="#b3b3b3"
+                    d="M10.4,0L6,4.5L1.5,0L0,1.5L4.5,6L0,10.4l1.5,1.5L6,7.5l4.5,4.5l1.5-1.5L7.5,6l4.5-4.5L10.4,0z"/>
+          </svg>
         </button>
       </div>
     </div>
@@ -108,9 +114,9 @@
                    style="enable-background:new 0 0 24 24;"
                    width="24" height="24"
                    xml:space="preserve">
-                                <path fill="#27ffa7"
-                                      d="M10,15.6l-3.3-3.3l-1.4,1.4l4.7,4.7l9.7-9.7l-1.4-1.4L10,15.6z"/>
-                            </svg>
+                  <path fill="#27ffa7"
+                        d="M10,15.6l-3.3-3.3l-1.4,1.4l4.7,4.7l9.7-9.7l-1.4-1.4L10,15.6z"/>
+              </svg>
             </transition>
           </div>
         </div>
@@ -168,11 +174,12 @@ export default {
 
   data() {
     return {
+      activeStrategy: 0,
       targets: [{ name: 'WebP', value: 'webp' }, {
         name: 'JPEG',
         value: 'jpg'
       }, { name: 'PNG', value: 'png' }],
-      value: 0
+      strategies: [{ name: 'Crop', value: 0 }, { name: 'Fit', value: 1 }]
     }
   },
 
@@ -200,6 +207,7 @@ export default {
     addSize() {
       this.$store.dispatch('addSize')
     },
+
     /**
      * removeSize removes the selected size rect from the sizes config.
      * @param {number} i - The size index.
@@ -207,6 +215,44 @@ export default {
     removeSize(i) {
       this.$store.dispatch('removeSize', i)
       this.setConfig()
+    },
+
+    /**
+     * handleSelectStrategy records the index of the currently active size input.
+     * @param {number} i - The size index.
+     */
+    handleSelectStrategy(i) {
+      this.activeStrategy = i
+    },
+
+    /**
+     * selectStrategy updates the configured size with the selected strategy.
+     * @param {object} e - The selected strategy.
+     */
+    selectStrategy(e) {
+      this.$store.dispatch('setSizeStrategy', {
+        index: this.activeStrategy,
+        value: e.value
+      })
+          .then(() => {
+            this.setConfig()
+          })
+          .catch(err => {
+            console.log(err)
+          })
+    },
+
+    /**
+     * strategy returns the strategy from the list of strategies matching the
+     * current strategy.
+     * @param {object} st - The current strategy.
+     * @returns {object} The matching strategy.
+     */
+    strategy(st) {
+      return this.strategies.find(o => st.strategy === o.value || {
+        name: '',
+        value: ''
+      })
     },
 
     /**
