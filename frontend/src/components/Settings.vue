@@ -64,49 +64,60 @@
     </div>
 
     <div
-        class="border-2 border-gray-700 flex flex-wrap my-4 p-4 rounded-md w-full">
-      <h2 class="text-gray-200 text-xl">Resizing</h2>
-      <button
-          @click="addSize"
-          class="border-0 focus:outline-none hover:green hover:text-green ml-8 ta-slow"
-          v-tooltip.right-end="{ content: 'Add an image size to convert.', delay: 600 }">
-        Add Size +
-      </button>
+        class="border-2 border-gray-700 flex flex-wrap my-4 px-2 py-4 rounded-md w-full">
+      <header class="flex px-2 w-full">
+        <h2 class="text-gray-200 text-xl">Resizing</h2>
+        <button
+            @click="addSize"
+            class="border-0 focus:outline-none hover:green hover:text-green ml-8 ta-slow"
+            v-tooltip.right-end="{ content: 'Add an image size to convert.', delay: 600 }">
+          Add Size +
+        </button>
+      </header>
       <div :key="i"
            class="flex flex-wrap items-center my-2 px-4 text-gray-100 w-full"
            v-for="(s, i) in config.sizes">
-        <label :for="`width-${i}`"
-               v-tooltip.right-end="'Width in pixels. Required and must be a positive integer.'">Width</label>
-        <input :id="`width-${i}`" @blur="setConfig" @input="handleNumber"
-               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green ml-4 mr-8 px-4 py-2 rounded-md ta-color-slow"
-               type="text"
-               v-model.number="s.width">
-        <label :for="`height-${i}`"
-               v-tooltip.right-end="'Height in pixels. Required and must be a positive integer.'">Height</label>
-        <input :id="`height-${i}`" @blur="setConfig" @input="handleNumber"
-               class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green ml-4 mr-8 px-4 py-2 rounded-md ta-color-slow"
-               type="text"
-               v-model.number="s.height">
-        <p class="mr-4">Strategy</p>
-        <Dropdown :options="strategies"
-                  :selected="strategy(s)"
-                  @click.native="handleSelectStrategy(i)"
-                  class="m-0 mr-6 text-gray-200"
-                  v-on:updateOption="selectStrategy"
-                  v-tooltip="strategyTooltip(s)"></Dropdown>
-        <button @click="removeSize(i)">
-          <svg height="10" id="x" style="enable-background:new 0 0 11.9 11.9;"
-               version="1.1" viewBox="0 0 11.9 11.9" width="10"
-               x="0px"
-               xml:space="preserve"
-               xmlns="http://www.w3.org/2000/svg"
-               xmlns:xlink="http://www.w3.org/1999/xlink"
-               y="0px">
-              <path
-                  d="M10.4,0L6,4.5L1.5,0L0,1.5L4.5,6L0,10.4l1.5,1.5L6,7.5l4.5,4.5l1.5-1.5L7.5,6l4.5-4.5L10.4,0z"
-                  fill="#b3b3b3"/>
-          </svg>
-        </button>
+        <div class="mb-2 lg:mb-0 px-2 w-full sm:w-1/2 lg:w-auto">
+          <label :for="`width-${i}`" class="block xl:inline-block mb-2 mr-4"
+                 v-tooltip.right-end="'Width in pixels. Required and must be a positive integer.'">Width</label>
+          <input :id="`width-${i}`" @blur="setConfig" @input="handleNumber"
+                 class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green px-4 py-2 rounded-md ta-color-slow w-full lg:w-auto"
+                 type="text"
+                 v-model.number="s.width">
+        </div>
+        <div class="mb-2 lg:mb-0 px-2 w-full sm:w-1/2 lg:w-auto">
+          <label :for="`height-${i}`" class="block xl:inline-block mb-2 mr-4"
+                 v-tooltip.right-end="'Height in pixels. Required and must be a positive integer.'">Height</label>
+          <input :id="`height-${i}`" @blur="setConfig" @input="handleNumber"
+                 class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green px-4 py-2 rounded-md ta-color-slow w-full lg:w-auto"
+                 type="text"
+                 v-model.number="s.height">
+        </div>
+        <div class="mb-2 lg:mb-0 px-2 w-full sm:w-1/2 lg:w-auto">
+          <label class="block xl:inline-block mb-2 mr-4">Strategy</label>
+          <div class="flex lg:inline-flex w-full lg:w-auto">
+            <Dropdown :options="strategies"
+                      :selected="strategy(s)"
+                      @click.native="handleSelectStrategy(i)"
+                      class="my-0 mr-4 text-gray-200 w-full"
+                      v-on:updateOption="selectStrategy"
+                      v-tooltip="strategyTooltip(s)"></Dropdown>
+            <button @click="removeSize(i)">
+              <svg height="10" id="x"
+                   style="enable-background:new 0 0 11.9 11.9;"
+                   version="1.1" viewBox="0 0 11.9 11.9" width="10"
+                   x="0px"
+                   xml:space="preserve"
+                   xmlns="http://www.w3.org/2000/svg"
+                   xmlns:xlink="http://www.w3.org/1999/xlink"
+                   y="0px">
+                <path
+                    d="M10.4,0L6,4.5L1.5,0L0,1.5L4.5,6L0,10.4l1.5,1.5L6,7.5l4.5,4.5l1.5-1.5L7.5,6l4.5-4.5L10.4,0z"
+                    fill="#b3b3b3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
