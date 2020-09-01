@@ -3,7 +3,7 @@ package stat
 import (
 	"encoding/json"
 	"github.com/wailsapp/wails"
-	"optimus/lib/localstore"
+	"optimus/backend/localstore"
 )
 
 const filename = "stats.json"

@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/leaanthony/mewn"
 	"github.com/wailsapp/wails"
-	"optimus/lib/config"
-	"optimus/lib/image"
-	"optimus/lib/stat"
+	"optimus/backend/config"
+	"optimus/backend/image"
+	"optimus/backend/stat"
 )
 
 func main() {
