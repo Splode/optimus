@@ -79,7 +79,8 @@
            v-for="(s, i) in config.sizes">
         <div class="mb-2 lg:mb-0 px-2 w-full sm:w-1/2 lg:w-auto">
           <label :for="`width-${i}`" class="block xl:inline-block mb-2 mr-4"
-                 v-tooltip.right-end="'Width in pixels. Required and must be a positive integer.'">Width</label>
+          ><span
+              v-tooltip.right-end="'Width in pixels. Required and must be a positive integer.'">Width</span></label>
           <input :id="`width-${i}`" @blur="setConfig" @input="handleNumber"
                  class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green px-4 py-2 rounded-md ta-color-slow w-full lg:w-auto"
                  type="text"
@@ -87,7 +88,8 @@
         </div>
         <div class="mb-2 lg:mb-0 px-2 w-full sm:w-1/2 lg:w-auto">
           <label :for="`height-${i}`" class="block xl:inline-block mb-2 mr-4"
-                 v-tooltip.right-end="'Height in pixels. Required and must be a positive integer.'">Height</label>
+          ><span
+              v-tooltip.right-end="'Height in pixels. Required and must be a positive integer.'">Height</span></label>
           <input :id="`height-${i}`" @blur="setConfig" @input="handleNumber"
                  class="bg-gray-900 cursor-pointer focus:outline-none hover:text-green px-4 py-2 rounded-md ta-color-slow w-full lg:w-auto"
                  type="text"
