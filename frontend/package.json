@@ -17,6 +17,7 @@
     "core-js": "^3.6.4",
     "regenerator-runtime": "^0.13.7",
     "tailwindcss": "^1.7.6",
+    "v-tooltip": "^2.0.3",
     "vue": "^2.6.12",
     "vue-slider-component": "^3.2.5",
     "vuex": "^3.5.1"
