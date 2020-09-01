@@ -558,7 +558,7 @@ export default {
       }
       if (r > 0) {
         EventBus.$emit('notify',
-            { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} and made ${r} resizes in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
+            { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} and made ${r} ${r > 1 ? 'resizes' : 'resize'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
         )
       } else {
         EventBus.$emit('notify',
