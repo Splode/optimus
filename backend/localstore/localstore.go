@@ -7,7 +7,7 @@ import (
 	"path"
 )
 
-// localStore provides reading and writing application data to the user's
+// LocalStore provides reading and writing application data to the user's
 // configuration directory.
 type LocalStore struct {
 	ConfDir string
@@ -29,11 +29,11 @@ func (l *LocalStore) Load(filename string) ([]byte, error) {
 	return d, err
 }
 
-// store writes data to the user's configuration directory at the given
+// Store writes data to the user's configuration directory at the given
 // filename.
 func (l *LocalStore) Store(data []byte, filename string) error {
 	p := path.Join(l.ConfDir, filename)
-	if err := EnsureDirExists(l.ConfDir); err != nil {
+	if err := ensureDirExists(l.ConfDir); err != nil {
 		return err
 	}
 	if err := ioutil.WriteFile(p, data, 0777); err != nil {
@@ -42,12 +42,12 @@ func (l *LocalStore) Store(data []byte, filename string) error {
 	return nil
 }
 
-// EnsureDirExists checks for the existence of the directory at the given path,
+// ensureDirExists checks for the existence of the directory at the given path,
 // which is created if it does not exist.
-func EnsureDirExists(path string) error {
+func ensureDirExists(path string) error {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
-		if err := os.Mkdir(path, 0777); err != nil {
+		if err = os.Mkdir(path, 0777); err != nil {
 			return err
 		}
 	}

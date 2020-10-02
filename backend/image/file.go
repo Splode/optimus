@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	FILL = iota
-	FIT
+	fill = iota
+	fit
 )
 
 var mimes = map[string]string{
@@ -87,7 +87,7 @@ func (f *File) GetSavings() (int64, error) {
 }
 
 // Write saves a file to disk based on the encoding target.
-func (f *File) Write(c *config.Config) (err error) {
+func (f *File) Write(c *config.Config) error {
 	// TODO resizing should probably be in its own method
 	if c.App.Sizes != nil {
 		for _, r := range c.App.Sizes {
@@ -101,10 +101,10 @@ func (f *File) Write(c *config.Config) (err error) {
 			var i image.Image
 			var s string
 			switch r.Strategy {
-			case FILL:
+			case fill:
 				i = imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
 				s = r.String()
-			case FIT:
+			case fit:
 				i = imaging.Fit(f.Image, r.Width, r.Height, imaging.Lanczos)
 				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
 			}
@@ -113,7 +113,7 @@ func (f *File) Write(c *config.Config) (err error) {
 			if err != nil {
 				return err
 			}
-			if err := ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
+			if err = ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
 				return err
 			}
 		}
@@ -123,7 +123,7 @@ func (f *File) Write(c *config.Config) (err error) {
 	if err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
+	if err = ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
 		return err
 	}
 	f.ConvertedFile = filepath.Clean(dest)

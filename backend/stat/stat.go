@@ -8,6 +8,7 @@ import (
 
 const filename = "stats.json"
 
+// Stat represents application statistics.
 type Stat struct {
 	ByteCount  int64 `json:"byteCount"`
 	ImageCount int   `json:"imageCount"`
@@ -86,7 +87,7 @@ func (s *Stat) store() error {
 	if err != nil {
 		return err
 	}
-	if err := s.localStore.Store(js, filename); err != nil {
+	if err = s.localStore.Store(js, filename); err != nil {
 		return err
 	}
 	return nil

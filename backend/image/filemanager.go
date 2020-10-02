@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+// FileManager handles collections of Files for conversion.
 type FileManager struct {
 	Files []*File
 
@@ -41,7 +42,7 @@ func (fm *FileManager) WailsInit(runtime *wails.Runtime) error {
 // HandleFile processes a file from the client.
 func (fm *FileManager) HandleFile(fileJson string) (err error) {
 	file := &File{Runtime: fm.Runtime}
-	if err := json.Unmarshal([]byte(fileJson), &file); err != nil {
+	if err = json.Unmarshal([]byte(fileJson), &file); err != nil {
 		return err
 	}
 
