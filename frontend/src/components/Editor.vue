@@ -3,79 +3,109 @@
     <header class="border-b-2 border-gray-800 flex flex-wrap" ref="header">
       <div class="w-full md:w-1/2 lg:w-5/12">
         <div
-            class="bg-gray-800 border-2 border-dashed cursor-pointer drop-zone flex flex-col items-center justify-center py-6 md:py-10 ta-slow rounded-sm h-full"
-            :class="isDragging ? 'border-green' : 'border-gray-400'"
-            ref="dropZone">
-          <svg version="1.1" id="dropZone-plus"
-               xmlns="http://www.w3.org/2000/svg"
-               xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-               y="0px"
-               viewBox="0 0 48 48" enable-background="new 0 0 48 48"
-               width="48px" height="48px"
-               xml:space="preserve">
-                        <path fill="#808080" d="M47,20.6H28.4c-0.6,0-1-0.4-1-1V1c0-0.6-0.4-1-1-1h-4.9c-0.6,0-1,0.4-1,1v18.6c0,0.6-0.4,1-1,1H1
+          class="bg-gray-800 border-2 border-dashed cursor-pointer drop-zone flex flex-col items-center justify-center py-6 md:py-10 ta-slow rounded-sm h-full"
+          :class="isDragging ? 'border-green' : 'border-gray-400'"
+          ref="dropZone"
+        >
+          <svg
+            version="1.1"
+            id="dropZone-plus"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 48 48"
+            enable-background="new 0 0 48 48"
+            width="48px"
+            height="48px"
+            xml:space="preserve"
+          >
+            <path
+              fill="#808080"
+              d="M47,20.6H28.4c-0.6,0-1-0.4-1-1V1c0-0.6-0.4-1-1-1h-4.9c-0.6,0-1,0.4-1,1v18.6c0,0.6-0.4,1-1,1H1
                 c-0.6,0-1,0.4-1,1v4.9c0,0.6,0.4,1,1,1h18.6c0.6,0,1,0.4,1,1V47c0,0.6,0.4,1,1,1h4.9c0.6,0,1-0.4,1-1V28.4c0-0.6,0.4-1,1-1H47
-                c0.6,0,1-0.4,1-1v-4.9C48,21,47.6,20.6,47,20.6z"/>
-                    </svg>
-          <p class="mt-6 text-gray-200">Drag and drop or select
-            images</p>
+                c0.6,0,1-0.4,1-1v-4.9C48,21,47.6,20.6,47,20.6z"
+            />
+          </svg>
+          <p class="mt-6 text-gray-200">Drag and drop or select images</p>
         </div>
       </div>
       <div class="lg:w-7/12 md:pl-6 md:w-1/2 my-3 w-full">
         <transition name="fade" mode="out-in">
-          <div v-if="!session.count"
-               key="intro"
-               class="flex h-full items-center justify-center">
+          <div
+            v-if="!session.count"
+            key="intro"
+            class="flex h-full items-center justify-center"
+          >
             <h2 class="leading-none text-4xl text-center text-yellow">
-              Add
-              image files<br>to get started</h2>
+              Add image files<br />to get started
+            </h2>
           </div>
-          <div v-else
-               key="stats"
-               class="flex flex-wrap items-end h-full">
+          <div v-else key="stats" class="flex flex-wrap items-end h-full">
             <div class="px-3 w-full lg:w-5/12">
               <div v-if="session.hasSavings">
-                <h2 class="font-bold leading-none text-4xl md:text-5xl text-green tracking-tight">
-                  {{ session.savings }}</h2>
+                <h2
+                  class="font-bold leading-none text-4xl md:text-5xl text-green tracking-tight"
+                >
+                  {{ session.savings }}
+                </h2>
                 <p class="font-medium text-gray-300 tracking-wider uppercase">
-                  Saved</p>
+                  Saved
+                </p>
               </div>
               <div v-else>
-                <h2 class="font-bold leading-none text-5xl text-pink tracking-tight uppercase">
-                  No Savings</h2>
+                <h2
+                  class="font-bold leading-none text-5xl text-pink tracking-tight uppercase"
+                >
+                  No Savings
+                </h2>
                 <p class="font-medium text-gray-300 tracking-wider uppercase">
-                  Try adjusting options</p>
+                  Try adjusting options
+                </p>
               </div>
             </div>
             <div class="flex lg:flex-col justify-between px-3 w-full lg:w-3/12">
               <div class="w-1/2 lg:w-full">
                 <p class="font-bold text-xl lg:text-2xl text-blue">
-                  {{ session.count }}</p>
-                <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
-                  {{
-                    session.count > 1 ? 'Images' :
-                        'Image'
-                  }}</p>
+                  {{ session.count }}
+                </p>
+                <p
+                  class="font-medium text-gray-300 text-sm tracking-wider uppercase"
+                >
+                  {{ session.count > 1 ? 'Images' : 'Image' }}
+                </p>
               </div>
               <div class="w-1/2 lg:w-full">
                 <p class="font-bold text-xl lg:text-2xl text-yellow">
-                  {{ session.time[0] }}</p>
-                <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
-                  {{ session.time[1] }}</p>
+                  {{ session.time[0] }}
+                </p>
+                <p
+                  class="font-medium text-gray-300 text-sm tracking-wider uppercase"
+                >
+                  {{ session.time[1] }}
+                </p>
               </div>
             </div>
             <div class="flex lg:flex-col justify-between px-3 w-full lg:w-4/12">
               <div class="w-1/2 lg:w-full">
                 <p class="font-bold text-xl lg:text-2xl text-pink">
-                  {{ totalStats.byteCount }}</p>
-                <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
-                  All time Savings</p>
+                  {{ totalStats.byteCount }}
+                </p>
+                <p
+                  class="font-medium text-gray-300 text-sm tracking-wider uppercase"
+                >
+                  All time Savings
+                </p>
               </div>
               <div class="w-1/2 lg:w-full">
                 <p class="font-bold text-xl lg:text-2xl text-purple">
-                  {{ totalStats.imageCount }}</p>
-                <p class="font-medium text-gray-300 text-sm tracking-wider uppercase">
-                  All time Images</p>
+                  {{ totalStats.imageCount }}
+                </p>
+                <p
+                  class="font-medium text-gray-300 text-sm tracking-wider uppercase"
+                >
+                  All time Images
+                </p>
               </div>
             </div>
           </div>
@@ -83,20 +113,29 @@
       </div>
       <footer class="w-full">
         <section
-            class="flex justify-between lg:w-5/12 md:w-1/2 py-3 md:py-6 w-full">
+          class="flex justify-between lg:w-5/12 md:w-1/2 py-3 md:py-6 w-full"
+        >
           <button
-              class="btn focus:outline-none ta-slow"
-              :class="canConvert ? 'border-green hover:bg-green hover:text-gray-900 text-gray-200' : 'btn--disabled'"
-              @click="convert"
-              :disabled="!canConvert"
+            class="btn focus:outline-none ta-slow"
+            :class="
+              canConvert
+                ? 'border-green hover:bg-green hover:text-gray-900 text-gray-200'
+                : 'btn--disabled'
+            "
+            @click="convert"
+            :disabled="!canConvert"
           >
             {{ optBtnTxt }}
           </button>
           <button
-              class="btn focus:outline-none ta-slow"
-              :class="canClear ? 'border-gray-400 hover:bg-gray-800 hover:text-green' : 'btn--disabled'"
-              @click="clear"
-              :disabled="!canClear"
+            class="btn focus:outline-none ta-slow"
+            :class="
+              canClear
+                ? 'border-gray-400 hover:bg-gray-800 hover:text-green'
+                : 'btn--disabled'
+            "
+            @click="clear"
+            :disabled="!canClear"
           >
             Clear
           </button>
@@ -104,98 +143,121 @@
       </footer>
     </header>
     <input
-        type="file"
-        accept="image/jpeg, image/jpg, image/png, image/webp"
-        multiple
-        class="hidden"
-        @input="handleFileInput"
-        ref="fileInput"
+      type="file"
+      accept="image/jpeg, image/jpg, image/png, image/webp"
+      multiple
+      class="hidden"
+      @input="handleFileInput"
+      ref="fileInput"
     />
     <!-- file table -->
     <transition name="fade" mode="out-in">
-      <div v-if="files.length > 0" class="table-wrapper"
-           :style="{'height': `calc(100vh - ${headerHeight + 80}px)`}">
+      <div
+        v-if="files.length > 0"
+        class="table-wrapper"
+        :style="{ height: `calc(100vh - ${headerHeight + 80}px)` }"
+      >
         <table class="table-auto w-full text-left whitespace-no-wrap">
           <thead>
-          <tr>
-            <th
+            <tr>
+              <th
                 class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
-            >
-              File
-            </th>
-            <th
+              >
+                File
+              </th>
+              <th
                 class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
-            >
-              Size
-            </th>
-            <th
+              >
+                Size
+              </th>
+              <th
                 class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
-            >
-              Compressed
-            </th>
-            <th
+              >
+                Compressed
+              </th>
+              <th
                 class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"
-            >
-              Ratio
-            </th>
-            <!--                    <th-->
-            <!--                            class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"-->
-            <!--                    >-->
-            <!--                        Result-->
-            <!--                    </th>-->
-            <th
+              >
+                Ratio
+              </th>
+              <!--                    <th-->
+              <!--                            class="font-medium pl-3 pt-6 text-gray-400 text-left text-sm tracking-wider uppercase"-->
+              <!--                    >-->
+              <!--                        Result-->
+              <!--                    </th>-->
+              <th
                 class="font-medium pl-3 pt-6 text-center text-gray-400 text-left text-sm tracking-wider uppercase"
-            >
-              Status
-            </th>
-          </tr>
+              >
+                Status
+              </th>
+            </tr>
           </thead>
           <tbody>
-          <tr v-for="(file, i) in files" :key="`${i}-${file.name}`">
-            <td><p class="cell-l ta"
-                   :class="{
-                                    'text-gray-400': !file.isProcessed,
-                                    'text-gray-200': file.isProcessed,
-                                    'anime-txt-success': file.isConverted
-                                }">
-              {{ file.filename }}</p></td>
-            <td>
-              <p class="ta"
-                 :class="{
-                                    'text-gray-400': !file.isProcessed,
-                                    'text-gray-200': file.isProcessed,
-                                    'anime-txt-success': file.isConverted
-                                }">
-                {{ getPrettySize(file.size) }}</p>
-            </td>
-            <td>
-              <p :class="{ 'anime-txt-success': file.isConverted }">
-                {{
-                  getPrettySize(file.convertedSize)
-                }}</p></td>
-            <td>
-              <p :class="{ 'anime-txt-success' : file.isConverted}">
-                {{ getSavings(file) }}</p></td>
-            <!--                    <td @click="openFile(file)"><p>{{ file.convertedPath }}</p>-->
-            <!--                    </td>-->
-            <td>
-              <p v-if="file.isConverted"
-                 class="cell-r flex items-center justify-center">
-                <svg version="1.1" :id="`${i}-check`"
-                     xmlns="http://www.w3.org/2000/svg"
-                     xmlns:xlink="http://www.w3.org/1999/xlink"
-                     x="0px" y="0px"
-                     viewBox="0 0 20 20"
-                     enable-background="new 0 0 20 20"
-                     width="20px" height="20px"
-                     xml:space="preserve">
-                                <path fill="#27ffa7" d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M8,14.4l-3.7-3.7l1.4-1.4L8,11.6l5.3-5.3
-                            l1.4,1.4L8,14.4z"/>
-                            </svg>
-              </p>
-              <p v-else class="cell-r"></p>
-            </td>
-          </tr>
+            <tr v-for="(file, i) in files" :key="`${i}-${file.name}`">
+              <td>
+                <p
+                  class="cell-l ta"
+                  :class="{
+                    'text-gray-400': !file.isProcessed,
+                    'text-gray-200': file.isProcessed,
+                    'anime-txt-success': file.isConverted
+                  }"
+                >
+                  {{ file.filename }}
+                </p>
+              </td>
+              <td>
+                <p
+                  class="ta"
+                  :class="{
+                    'text-gray-400': !file.isProcessed,
+                    'text-gray-200': file.isProcessed,
+                    'anime-txt-success': file.isConverted
+                  }"
+                >
+                  {{ getPrettySize(file.size) }}
+                </p>
+              </td>
+              <td>
+                <p :class="{ 'anime-txt-success': file.isConverted }">
+                  {{ getPrettySize(file.convertedSize) }}
+                </p>
+              </td>
+              <td>
+                <p :class="{ 'anime-txt-success': file.isConverted }">
+                  {{ getSavings(file) }}
+                </p>
+              </td>
+              <!--                    <td @click="openFile(file)"><p>{{ file.convertedPath }}</p>-->
+              <!--                    </td>-->
+              <td>
+                <p
+                  v-if="file.isConverted"
+                  class="cell-r flex items-center justify-center"
+                >
+                  <svg
+                    version="1.1"
+                    :id="`${i}-check`"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 20 20"
+                    enable-background="new 0 0 20 20"
+                    width="20px"
+                    height="20px"
+                    xml:space="preserve"
+                  >
+                    <path
+                      fill="#27ffa7"
+                      d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M8,14.4l-3.7-3.7l1.4-1.4L8,11.6l5.3-5.3
+                            l1.4,1.4L8,14.4z"
+                    />
+                  </svg>
+                </p>
+                <p v-else class="cell-r"></p>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -238,7 +300,7 @@ export default {
      */
     canConvert() {
       if (this.files.length === 0 || this.isConverting) return false
-      return (this.filesConverted && !this.filesPending)
+      return this.filesConverted && !this.filesPending
     },
 
     /**
@@ -294,11 +356,13 @@ export default {
     clear() {
       this.files = []
       this.$refs['fileInput'].value = null
-      window.backend.FileManager.Clear().then(res => {
-        console.log(res)
-      }).catch(err => {
-        console.error(err)
-      })
+      window.backend.FileManager.Clear()
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
 
     /**
@@ -307,12 +371,12 @@ export default {
     convert() {
       this.isConverting = true
       window.backend.FileManager.Convert()
-          .then(res => {
-            console.log(res)
-          })
-          .catch(err => {
-            console.error(err)
-          })
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
 
     /**
@@ -442,11 +506,13 @@ export default {
      */
     openFile(file) {
       // TODO: can this be called directly from Wails?
-      window.backend.FileManager.OpenFile(file.convertedPath).then(res => {
-        console.log(res)
-      }).catch(err => {
-        console.error(err)
-      })
+      window.backend.FileManager.OpenFile(file.convertedPath)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
 
     /**
@@ -502,25 +568,27 @@ export default {
       reader.onload = () => {
         const name = file.name
         window.backend.FileManager.HandleFile(
-            JSON.stringify({
-              data: reader.result.split(',')[1],
-              ext: fExt(name),
-              id,
-              name: fName(name),
-              size: file.size,
-              type
-            })
-        ).then(() => {
-          const f = this.getFileById(id)
-          f.isProcessed = true
-        }).catch(err => {
-          this.removeFileById(id)
-          EventBus.$emit('notify', {
-            msg: err,
-            type: 'warn'
+          JSON.stringify({
+            data: reader.result.split(',')[1],
+            ext: fExt(name),
+            id,
+            name: fName(name),
+            size: file.size,
+            type
           })
-          console.error(err)
-        })
+        )
+          .then(() => {
+            const f = this.getFileById(id)
+            f.isProcessed = true
+          })
+          .catch(err => {
+            this.removeFileById(id)
+            EventBus.$emit('notify', {
+              msg: err,
+              type: 'warn'
+            })
+            console.error(err)
+          })
       }
       reader.readAsDataURL(file)
     },
@@ -557,50 +625,78 @@ export default {
         this.$store.dispatch('setSessionProp', { key: 'savings', value: s })
       }
       if (r > 0) {
-        EventBus.$emit('notify',
-            { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} and made ${r} ${r > 1 ? 'resizes' : 'resize'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
-        )
+        EventBus.$emit('notify', {
+          msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} and made ${r} ${
+            r > 1 ? 'resizes' : 'resize'
+          } in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.`
+        })
       } else {
-        EventBus.$emit('notify',
-            { msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${prettyTime(t)[0]} ${prettyTime(t)[1].toLowerCase()}.` }
-        )
+        EventBus.$emit('notify', {
+          msg: `Optimized ${c} ${c > 1 ? 'images' : 'image'} in ${
+            prettyTime(t)[0]
+          } ${prettyTime(t)[1].toLowerCase()}.`
+        })
       }
       this.isConverting = false
     })
 
     const dz = this.$refs['dropZone']
 
-    dz.addEventListener('click', () => {
-      this.$refs['fileInput'].click()
-    }, false)
-    dz.addEventListener('dragenter', e => {
-      e.stopPropagation()
-      e.preventDefault()
-    }, false)
-    dz.addEventListener('dragover', e => {
-      e.stopPropagation()
-      e.preventDefault()
-      if (this.isDragging) return
-      this.isDragging = true
-    }, false)
-    dz.addEventListener('dragend', e => {
-      e.stopPropagation()
-      e.preventDefault()
-      this.isDragging = false
-    }, false)
-    dz.addEventListener('dragleave', e => {
-      e.stopPropagation()
-      e.preventDefault()
-      this.isDragging = false
-    }, false)
-    dz.addEventListener('drop', e => {
-      e.stopPropagation()
-      e.preventDefault()
-      const dt = e.dataTransfer
-      const f = dt.files
-      this.isDragging = false
-      this.processFileInput(f)
-    }, false)
+    dz.addEventListener(
+      'click',
+      () => {
+        this.$refs['fileInput'].click()
+      },
+      false
+    )
+    dz.addEventListener(
+      'dragenter',
+      e => {
+        e.stopPropagation()
+        e.preventDefault()
+      },
+      false
+    )
+    dz.addEventListener(
+      'dragover',
+      e => {
+        e.stopPropagation()
+        e.preventDefault()
+        if (this.isDragging) return
+        this.isDragging = true
+      },
+      false
+    )
+    dz.addEventListener(
+      'dragend',
+      e => {
+        e.stopPropagation()
+        e.preventDefault()
+        this.isDragging = false
+      },
+      false
+    )
+    dz.addEventListener(
+      'dragleave',
+      e => {
+        e.stopPropagation()
+        e.preventDefault()
+        this.isDragging = false
+      },
+      false
+    )
+    dz.addEventListener(
+      'drop',
+      e => {
+        e.stopPropagation()
+        e.preventDefault()
+        const dt = e.dataTransfer
+        const f = dt.files
+        this.isDragging = false
+        this.processFileInput(f)
+      },
+      false
+    )
 
     window.addEventListener('resize', this.handleWinResize)
     this.handleWinResize()
@@ -641,7 +737,7 @@ td p.cell-r {
 }
 
 .drop-zone > svg path {
-  transition: fill 600ms cubic-bezier(.07, .95, 0, 1);
+  transition: fill 600ms cubic-bezier(0.07, 0.95, 0, 1);
 }
 
 .drop-zone:hover > svg path {

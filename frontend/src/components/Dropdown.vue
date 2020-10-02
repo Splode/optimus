@@ -1,14 +1,20 @@
 <template>
   <div class="btn-group">
-    <li @click="toggleMenu()" class="dropdown-toggle py-2"
-        v-if="selectedOption.name !== undefined"
-        :class="showMenu ? 'rounded-bl-none rounded-br-none' : ''">
+    <li
+      @click="toggleMenu()"
+      class="dropdown-toggle py-2"
+      v-if="selectedOption.name !== undefined"
+      :class="showMenu ? 'rounded-bl-none rounded-br-none' : ''"
+    >
       {{ selectedOption.name }}
       <span class="caret"></span>
     </li>
 
-    <li @click="toggleMenu()" class="dropdown-toggle"
-        v-if="selectedOption.name === undefined">
+    <li
+      @click="toggleMenu()"
+      class="dropdown-toggle"
+      v-if="selectedOption.name === undefined"
+    >
       {{ placeholderText }}
       <span class="caret"></span>
     </li>
@@ -70,7 +76,7 @@ export default {
     updateOption(option) {
       this.selectedOption = option
       this.showMenu = false
-      this.$emit('updateOption', this.selectedOption)
+      this.$emit('update-option', this.selectedOption)
     },
     toggleMenu() {
       this.showMenu = !this.showMenu
@@ -108,7 +114,8 @@ export default {
   font-weight: 300;
   margin-bottom: 7px;
   border: 0;
-  background-image: linear-gradient(#009688, #009688), linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: linear-gradient(#009688, #009688),
+    linear-gradient(#d2d2d2, #d2d2d2);
   background-size: 0 2px, 100% 1px;
   background-repeat: no-repeat;
   background-position: center bottom, center calc(100% - 1px);
@@ -159,7 +166,7 @@ export default {
 
 .dropdown-menu > li > a:hover {
   background: #efefef;
-  color: #409FCB;
+  color: #409fcb;
 }
 
 .dropdown-menu > li {
@@ -177,7 +184,6 @@ export default {
   margin-left: -24px;
   vertical-align: middle;
   border-top: 4px dashed;
-  border-top: 4px solid \9;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
   right: 10px;

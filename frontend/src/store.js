@@ -62,19 +62,23 @@ const store = new Vuex.Store({
     },
 
     getConfig(context) {
-      window.backend.Config.GetAppConfig().then(cfg => {
-        context.commit('setConfig', cfg)
-      }).catch(err => {
-        console.error(err)
-      })
+      window.backend.Config.GetAppConfig()
+        .then(cfg => {
+          context.commit('setConfig', cfg)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
 
     setConfig(context, c) {
-      window.backend.Config.SetConfig(JSON.stringify(c)).then(() => {
-        context.dispatch('getConfig')
-      }).catch(err => {
-        console.error(err)
-      })
+      window.backend.Config.SetConfig(JSON.stringify(c))
+        .then(() => {
+          context.dispatch('getConfig')
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
 
     setConfigProp(context, payload) {
@@ -90,11 +94,13 @@ const store = new Vuex.Store({
     },
 
     getStats(context) {
-      window.backend.Stat.GetStats().then(s => {
-        context.commit('setStats', s)
-      }).catch(err => {
-        console.error(err)
-      })
+      window.backend.Stat.GetStats()
+        .then(s => {
+          context.commit('setStats', s)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
     setStats(context, s) {
       context.commit('setStats', s)
