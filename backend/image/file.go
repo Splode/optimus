@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/disintegration/imaging"
-	"github.com/wailsapp/wails"
 	"image"
 	"io/ioutil"
 	"optimus/backend/config"
@@ -15,11 +13,17 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/disintegration/imaging"
+	"github.com/muesli/smartcrop"
+	"github.com/muesli/smartcrop/nfnt"
+	"github.com/wailsapp/wails"
 )
 
 const (
 	fill = iota
 	fit
+	smart
 )
 
 var mimes = map[string]string{
@@ -107,6 +111,15 @@ func (f *File) Write(c *config.Config) error {
 			case fit:
 				i = imaging.Fit(f.Image, r.Width, r.Height, imaging.Lanczos)
 				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
+			case smart:
+				analyzer := smartcrop.NewAnalyzer(nfnt.NewDefaultResizer())
+				crop, err := analyzer.FindBestCrop(f.Image, r.Width, r.Height)
+				if err != nil {
+					return err
+				}
+				croppedImg := f.Image.(subImager).subImage(crop)
+				i = imaging.Resize(croppedImg, r.Width, r.Height, imaging.Lanczos)
+				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
 			}
 			buf, err := encToBuf(i, c.App)
 			dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+"--"+s+c.App.Suffix+"."+c.App.Target)
@@ -156,4 +169,8 @@ func getFileType(t string) (string, error) {
 		_ = errors.New("unsupported file type:" + t)
 	}
 	return m, nil
+}
+
+type subImager interface {
+	subImage(r image.Rectangle) image.Image
 }

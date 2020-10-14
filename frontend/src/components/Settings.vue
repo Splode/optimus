@@ -298,8 +298,9 @@ export default {
     return {
       activeStrategy: 0,
       strategies: [
-        { name: 'Crop', value: 0 },
-        { name: 'Fit', value: 1 }
+        { name: 'Fill', value: 0 },
+        { name: 'Fit', value: 1 },
+        { name: 'Smart Crop', value: 2 }
       ],
       targets: [
         { name: 'WebP', value: 'webp' },

@@ -11,6 +11,7 @@ require (
 	github.com/leaanthony/mewn v0.10.7
 	github.com/leaanthony/slicer v1.4.1 // indirect
 	github.com/mattn/go-colorable v0.1.7 // indirect
+	github.com/muesli/smartcrop v0.3.0
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/vrischmann/userdir v0.0.0-20151206171402-20f291cebd68
 	github.com/wailsapp/wails v1.7.1
