@@ -117,7 +117,7 @@ func (f *File) Write(c *config.Config) error {
 				if err != nil {
 					return err
 				}
-				croppedImg := f.Image.(subImager).subImage(crop)
+				croppedImg := f.Image.(SubImager).SubImage(crop)
 				i = imaging.Resize(croppedImg, r.Width, r.Height, imaging.Lanczos)
 				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
 			}
@@ -171,6 +171,7 @@ func getFileType(t string) (string, error) {
 	return m, nil
 }
 
-type subImager interface {
-	subImage(r image.Rectangle) image.Image
+// SubImager handles creating a subimage from an image rect.
+type SubImager interface {
+	SubImage(r image.Rectangle) image.Image
 }
