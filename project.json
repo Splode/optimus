@@ -1,22 +1,22 @@
 {
- "name": "Optimus",
- "description": "Image conversion and compression. Supports WebP, JPEG, and PNG.",
- "author": {
-  "name": "Christopher Murphy",
-  "email": "flyweight@protonmail.com"
- },
- "version": "0.4.1-beta",
- "binaryname": "optimus",
- "frontend": {
-  "dir": "frontend",
-  "install": "npm install",
-  "build": "npm run build",
-  "bridge": "src",
-  "serve": "npm run serve"
- },
- "WailsVersion": "1.7.1",
- "CrossCompile": false,
- "Platform": "",
- "Architecture": "",
- "LdFlags": ""
+  "name": "Optimus",
+  "description": "Image conversion and compression. Supports WebP, JPEG, and PNG.",
+  "author": {
+    "name": "Christopher Murphy",
+    "email": "flyweight@protonmail.com"
+  },
+  "version": "0.5.0-beta",
+  "binaryname": "optimus",
+  "frontend": {
+    "dir": "frontend",
+    "install": "npm install",
+    "build": "npm run build",
+    "bridge": "src",
+    "serve": "npm run serve"
+  },
+  "WailsVersion": "1.7.1",
+  "CrossCompile": false,
+  "Platform": "",
+  "Architecture": "",
+  "LdFlags": ""
 }
