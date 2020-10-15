@@ -1,15 +1,10 @@
 {
   "bin": "optimus.exe",
   "description": "Optimus is an image conversion and optimization application. It supports conversion and compression between WebP, JPEG, and PNG image formats.",
-  "hash": "a667f9a78b2b31fe259c370b1f4a2e290cfd198b0ffa035cad6cb9f61c68cda4",
+  "hash": "9e90cf09e659f7ecf5144d05d00fbb7315739dabd2dea14bb6294c5d26b3e761",
   "homepage": "https://github.com/splode/optimus",
   "license": "MIT",
-  "shortcuts": [
-    [
-      "optimus.exe",
-      "Optimus"
-    ]
-  ],
-  "url": "https://github.com/Splode/optimus/releases/download/v0.4.1-beta/optimus_v0.4.1-beta_windows_x86_64.zip",
-  "version": "0.4.1-beta"
+  "shortcuts": [["optimus.exe", "Optimus"]],
+  "url": "https://github.com/Splode/optimus/releases/download/v0.5.0-beta/optimus_v0.5.0-beta_windows_x86_64.zip",
+  "version": "0.5.0-beta"
 }
