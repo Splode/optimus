@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/disintegration/imaging"
-	"github.com/wailsapp/wails"
 	"image"
 	"io/ioutil"
 	"optimus/backend/config"
@@ -15,11 +13,17 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/disintegration/imaging"
+	"github.com/muesli/smartcrop"
+	"github.com/muesli/smartcrop/nfnt"
+	"github.com/wailsapp/wails"
 )
 
 const (
-	FILL = iota
-	FIT
+	fill = iota
+	fit
+	smart
 )
 
 var mimes = map[string]string{
@@ -87,7 +91,7 @@ func (f *File) GetSavings() (int64, error) {
 }
 
 // Write saves a file to disk based on the encoding target.
-func (f *File) Write(c *config.Config) (err error) {
+func (f *File) Write(c *config.Config) error {
 	// TODO resizing should probably be in its own method
 	if c.App.Sizes != nil {
 		for _, r := range c.App.Sizes {
@@ -101,11 +105,20 @@ func (f *File) Write(c *config.Config) (err error) {
 			var i image.Image
 			var s string
 			switch r.Strategy {
-			case FILL:
+			case fill:
 				i = imaging.Fill(f.Image, r.Width, r.Height, imaging.Center, imaging.Lanczos)
 				s = r.String()
-			case FIT:
+			case fit:
 				i = imaging.Fit(f.Image, r.Width, r.Height, imaging.Lanczos)
+				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
+			case smart:
+				analyzer := smartcrop.NewAnalyzer(nfnt.NewDefaultResizer())
+				crop, err := analyzer.FindBestCrop(f.Image, r.Width, r.Height)
+				if err != nil {
+					return err
+				}
+				croppedImg := f.Image.(SubImager).SubImage(crop)
+				i = imaging.Resize(croppedImg, r.Width, r.Height, imaging.Lanczos)
 				s = fmt.Sprintf("%dx%d", i.Bounds().Max.X, i.Bounds().Max.Y)
 			}
 			buf, err := encToBuf(i, c.App)
@@ -113,7 +126,7 @@ func (f *File) Write(c *config.Config) (err error) {
 			if err != nil {
 				return err
 			}
-			if err := ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
+			if err = ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
 				return err
 			}
 		}
@@ -123,7 +136,7 @@ func (f *File) Write(c *config.Config) (err error) {
 	if err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
+	if err = ioutil.WriteFile(dest, buf.Bytes(), 0666); err != nil {
 		return err
 	}
 	f.ConvertedFile = filepath.Clean(dest)
@@ -156,4 +169,9 @@ func getFileType(t string) (string, error) {
 		_ = errors.New("unsupported file type:" + t)
 	}
 	return m, nil
+}
+
+// SubImager handles creating a subimage from an image rect.
+type SubImager interface {
+	SubImage(r image.Rectangle) image.Image
 }

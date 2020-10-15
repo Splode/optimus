@@ -22,7 +22,7 @@ type App struct {
 	Target  string        `json:"target"`
 	Prefix  string        `json:"prefix"`
 	Suffix  string        `json:"suffix"`
-	Sizes   []*Size       `json:"sizes"`
+	Sizes   []*size       `json:"sizes"`
 	JpegOpt *jpeg.Options `json:"jpegOpt"`
 	PngOpt  *png.Options  `json:"pngOpt"`
 	WebpOpt *webp.Options `json:"webpOpt"`
@@ -53,7 +53,7 @@ func NewConfig() *Config {
 	if err != nil {
 		c.App, _ = defaults()
 	}
-	if err := json.Unmarshal(a, &c.App); err != nil {
+	if err = json.Unmarshal(a, &c.App); err != nil {
 		fmt.Printf("error")
 	}
 	return c
@@ -89,7 +89,7 @@ func (c *Config) RestoreDefaults() (err error) {
 		return err
 	}
 	c.App = a
-	if err := c.store(); err != nil {
+	if err = c.store(); err != nil {
 		return err
 	}
 	return nil
@@ -141,8 +141,8 @@ func defaults() (*App, error) {
 	od := path.Join(ud, "Optimus")
 	cp := filepath.Clean(od)
 
-	if _, err := os.Stat(od); os.IsNotExist(err) {
-		if err := os.Mkdir(od, 0777); err != nil {
+	if _, err = os.Stat(od); os.IsNotExist(err) {
+		if err = os.Mkdir(od, 0777); err != nil {
 			od = "./"
 			fmt.Printf("failed to create default output directory: %v", err)
 			return nil, err
@@ -159,30 +159,30 @@ func (c *Config) store() error {
 		c.Logger.Errorf("failed to marshal config: %v", err)
 		return err
 	}
-	if err := c.localStore.Store(js, filename); err != nil {
+	if err = c.localStore.Store(js, filename); err != nil {
 		c.Logger.Errorf("failed to store config: %v", err)
 		return err
 	}
 	return nil
 }
 
-// Rect represents an image width and height size.
-type Rect struct {
+// rect represents an image width and height size.
+type rect struct {
 	Height int `json:"height,omitempty"`
 	Width  int `json:"width,omitempty"`
 }
 
-// String returns a string representation of the Rect.
+// String returns a string representation of the rect.
 // For example, "1280x720"
-func (r *Rect) String() string {
+func (r *rect) String() string {
 	w := strconv.Itoa(r.Width)
 	h := strconv.Itoa(r.Height)
 	return fmt.Sprintf("%sx%s", w, h)
 }
 
-// Size represents an image resizing. Strategy represents an image resizing
+// size represents an image resizing. Strategy represents an image resizing
 // strategy, such as cropping.
-type Size struct {
-	Rect
+type size struct {
+	rect
 	Strategy int `json:"strategy"`
 }

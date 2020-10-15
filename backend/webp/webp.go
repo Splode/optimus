@@ -13,7 +13,7 @@ type Options struct {
 	Quality  int  `json:"quality"`
 }
 
-// Decode a webp file and return an image.
+// DecodeWebp a webp file and return an image.
 func DecodeWebp(r io.Reader) (image.Image, error) {
 	i, err := webp.Decode(r)
 	if err != nil {
