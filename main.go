@@ -1,18 +1,21 @@
 package main
 
 import (
-	"github.com/leaanthony/mewn"
-	"github.com/wailsapp/wails"
+	_ "embed"
 	"optimus/backend/config"
 	"optimus/backend/image"
 	"optimus/backend/stat"
+
+	"github.com/wailsapp/wails"
 )
 
+//go:embed frontend/dist/app.js
+var js string
+
+//go:embed frontend/dist/app.css
+var css string
+
 func main() {
-
-	js := mewn.String("./frontend/dist/app.js")
-	css := mewn.String("./frontend/dist/app.css")
-
 	app := wails.CreateApp(&wails.AppConfig{
 		Width:     1200,
 		Height:    742,
