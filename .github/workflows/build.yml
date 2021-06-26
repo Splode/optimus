@@ -6,12 +6,12 @@ jobs:
   package:
     strategy:
       matrix:
-        go-version: [1.16.x]
+        go-version: [1.16]
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
       - name: Checkout code
