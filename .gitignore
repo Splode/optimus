@@ -2,3 +2,5 @@ build
 build/**/*
 .idea/
 .vscode/
+frontend/wailsjs/
+frontend/dist/

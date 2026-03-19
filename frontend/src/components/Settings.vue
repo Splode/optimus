@@ -436,7 +436,7 @@ export default {
      * openDir opens the configured output directory.
      */
     openDir() {
-      window.backend.Config.OpenOutputDir()
+      window.go.config.Config.OpenOutputDir()
         .then(res => {
           console.log(res)
         })
@@ -449,7 +449,7 @@ export default {
      * restoreDefaults resets the app configuration to defaults.
      */
     restoreDefaults() {
-      window.backend.Config.RestoreDefaults()
+      window.go.config.Config.RestoreDefaults()
         .then(() => {
           this.$store.dispatch('getConfig')
         })
@@ -462,7 +462,7 @@ export default {
      * selectOutDir selects an output directory in the config.
      */
     selectOutDir() {
-      window.backend.Config.SetOutDir()
+      window.go.config.Config.SetOutDir()
         .then(res => {
           console.log(res)
           this.$store.dispatch('getConfig')

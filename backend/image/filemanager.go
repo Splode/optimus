@@ -1,24 +1,24 @@
 package image
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/wailsapp/wails"
 	"optimus/backend/config"
 	"optimus/backend/stat"
 	"runtime/debug"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // FileManager handles collections of Files for conversion.
 type FileManager struct {
 	Files []*File
 
-	Runtime *wails.Runtime
-	Logger  *wails.CustomLogger
-
+	ctx    context.Context
 	config *config.Config
 	stats  *stat.Stat
 }
@@ -31,17 +31,15 @@ func NewFileManager(c *config.Config, s *stat.Stat) *FileManager {
 	}
 }
 
-// WailsInit performs setup when Wails is ready.
-func (fm *FileManager) WailsInit(runtime *wails.Runtime) error {
-	fm.Runtime = runtime
-	fm.Logger = fm.Runtime.Log.New("FileManager")
-	fm.Logger.Info("FileManager initialized...")
-	return nil
+// Startup stores the context when the app starts.
+func (fm *FileManager) Startup(ctx context.Context) {
+	fm.ctx = ctx
+	runtime.LogInfo(ctx, "FileManager initialized...")
 }
 
 // HandleFile processes a file from the client.
 func (fm *FileManager) HandleFile(fileJson string) (err error) {
-	file := &File{Runtime: fm.Runtime}
+	file := &File{}
 	if err = json.Unmarshal([]byte(fileJson), &file); err != nil {
 		return err
 	}
@@ -50,7 +48,7 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 		return err
 	}
 	fm.Files = append(fm.Files, file)
-	fm.Logger.Infof("added file to file manager: %s", file.Name)
+	runtime.LogInfof(fm.ctx, "added file to file manager: %s", file.Name)
 
 	return nil
 }
@@ -73,21 +71,21 @@ func (fm *FileManager) Convert() (errs []error) {
 		file := file
 		if !file.IsConverted {
 			go func(wg *sync.WaitGroup) {
-				err := file.Write(fm.config)
+				err := file.Write(fm.config, fm.ctx)
 				if err != nil {
-					fm.Logger.Errorf("failed to convert file: %s, %v", file.ID, err)
-					fm.Runtime.Events.Emit("notify", map[string]interface{}{
+					runtime.LogErrorf(fm.ctx, "failed to convert file: %s, %v", file.ID, err)
+					runtime.EventsEmit(fm.ctx, "notify", map[string]interface{}{
 						"msg":  fmt.Sprintf("Failed to convert file: %s, %s", file.Name, err.Error()),
 						"type": "warn",
 					})
 					errs = append(errs, fmt.Errorf("failed to convert file: %s", file.Name))
 				} else {
-					fm.Logger.Info(fmt.Sprintf("converted file: %s", file.Name))
+					runtime.LogInfof(fm.ctx, "converted file: %s", file.Name)
 					s, err := file.GetConvertedSize()
 					if err != nil {
-						fm.Logger.Errorf("failed to read converted file size: %v", err)
+						runtime.LogErrorf(fm.ctx, "failed to read converted file size: %v", err)
 					}
-					fm.Runtime.Events.Emit("conversion:complete", map[string]interface{}{
+					runtime.EventsEmit(fm.ctx, "conversion:complete", map[string]interface{}{
 						"id": file.ID,
 						// TODO: standardize this path conversion
 						"path": strings.Replace(file.ConvertedFile, "\\", "/", -1),
@@ -96,7 +94,7 @@ func (fm *FileManager) Convert() (errs []error) {
 					c++
 					s, err = file.GetSavings()
 					if err != nil {
-						fm.Logger.Errorf("failed to get file conversion savings: %v", err)
+						runtime.LogErrorf(fm.ctx, "failed to get file conversion savings: %v", err)
 					}
 					b += s
 				}
@@ -110,7 +108,7 @@ func (fm *FileManager) Convert() (errs []error) {
 	fm.stats.SetImageCount(c)
 	fm.stats.SetByteCount(b)
 	fm.stats.SetTimeCount(nt)
-	fm.Runtime.Events.Emit("conversion:stat", map[string]interface{}{
+	runtime.EventsEmit(fm.ctx, "conversion:stat", map[string]interface{}{
 		"count":   c,
 		"resizes": c * len(fm.config.App.Sizes),
 		"savings": b,
@@ -123,10 +121,7 @@ func (fm *FileManager) Convert() (errs []error) {
 // OpenFile opens the file at the given filepath using the file's native file
 // application.
 func (fm *FileManager) OpenFile(p string) error {
-	if err := fm.Runtime.Browser.OpenFile(p); err != nil {
-		fm.Logger.Errorf("failed to open file %s: %v", p, err)
-		return err
-	}
+	runtime.BrowserOpenURL(fm.ctx, p)
 	return nil
 }
 

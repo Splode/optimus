@@ -7,12 +7,11 @@
   "private": true,
   "version": "0.5.0-beta",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@wailsapp/runtime": "^1.1.1",
     "autoprefixer": "^9.8.6",
     "core-js": "^3.6.4",
     "regenerator-runtime": "^0.13.7",

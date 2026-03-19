@@ -58,7 +58,7 @@ export default {
     },
 
     openLink(u) {
-      window.wails.Browser.OpenURL(u)
+      window.runtime.BrowserOpenURL(u)
     }
   }
 }

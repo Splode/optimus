@@ -268,7 +268,6 @@
 <script>
 import { fExt, fName, fSize } from '@/lib/file'
 import { EventBus } from '@/lib/event-bus'
-import Wails from '@wailsapp/runtime'
 import { prettyTime } from '@/lib/time'
 
 export default {
@@ -356,7 +355,7 @@ export default {
     clear() {
       this.files = []
       this.$refs['fileInput'].value = null
-      window.backend.FileManager.Clear()
+      window.go.image.FileManager.Clear()
         .then(res => {
           console.log(res)
         })
@@ -370,7 +369,7 @@ export default {
      */
     convert() {
       this.isConverting = true
-      window.backend.FileManager.Convert()
+      window.go.image.FileManager.Convert()
         .then(res => {
           console.log(res)
         })
@@ -506,7 +505,7 @@ export default {
      */
     openFile(file) {
       // TODO: can this be called directly from Wails?
-      window.backend.FileManager.OpenFile(file.convertedPath)
+      window.go.image.FileManager.OpenFile(file.convertedPath)
         .then(res => {
           console.log(res)
         })
@@ -567,7 +566,7 @@ export default {
       const reader = new FileReader()
       reader.onload = () => {
         const name = file.name
-        window.backend.FileManager.HandleFile(
+        window.go.image.FileManager.HandleFile(
           JSON.stringify({
             data: reader.result.split(',')[1],
             ext: fExt(name),
@@ -605,7 +604,7 @@ export default {
   },
 
   mounted() {
-    Wails.Events.On('conversion:complete', e => {
+    window.runtime.EventsOn('conversion:complete', e => {
       const f = this.getFileById(e.id)
       if (!f) return
       f.convertedPath = e.path
@@ -613,7 +612,7 @@ export default {
       f.convertedSize = e.size
     })
 
-    Wails.Events.On('conversion:stat', e => {
+    window.runtime.EventsOn('conversion:stat', e => {
       const c = e.count
       const r = e.resizes
       const s = e.savings

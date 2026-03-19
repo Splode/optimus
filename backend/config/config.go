@@ -1,9 +1,9 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/wailsapp/wails"
 	"optimus/backend/jpeg"
 	"optimus/backend/localstore"
 	"optimus/backend/png"
@@ -12,6 +12,8 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 const filename = "conf.json"
@@ -31,17 +33,14 @@ type App struct {
 // Config represents the application settings.
 type Config struct {
 	App        *App
-	Runtime    *wails.Runtime
-	Logger     *wails.CustomLogger
+	ctx        context.Context
 	localStore *localstore.LocalStore
 }
 
-// WailsInit performs setup when Wails is ready.
-func (c *Config) WailsInit(runtime *wails.Runtime) error {
-	c.Runtime = runtime
-	c.Logger = c.Runtime.Log.New("Config")
-	c.Logger.Info("Config initialized...")
-	return nil
+// Startup stores the context when the app starts.
+func (c *Config) Startup(ctx context.Context) {
+	c.ctx = ctx
+	runtime.LogInfo(ctx, "Config initialized...")
 }
 
 // NewConfig returns a new instance of Config.
@@ -52,9 +51,11 @@ func NewConfig() *Config {
 	a, err := c.localStore.Load(filename)
 	if err != nil {
 		c.App, _ = defaults()
+		return c
 	}
 	if err = json.Unmarshal(a, &c.App); err != nil {
-		fmt.Printf("error")
+		fmt.Printf("error unmarshaling config: %v\n", err)
+		c.App, _ = defaults()
 	}
 	return c
 }
@@ -75,9 +76,7 @@ func (c *Config) GetAppConfig() map[string]interface{} {
 
 // OpenOutputDir opens the output directory using the native system browser.
 func (c *Config) OpenOutputDir() error {
-	if err := c.Runtime.Browser.OpenURL(c.App.OutDir); err != nil {
-		return err
-	}
+	runtime.BrowserOpenURL(c.ctx, c.App.OutDir)
 	return nil
 }
 
@@ -99,12 +98,12 @@ func (c *Config) RestoreDefaults() (err error) {
 func (c *Config) SetConfig(cfg string) error {
 	a := &App{}
 	if err := json.Unmarshal([]byte(cfg), &a); err != nil {
-		c.Logger.Errorf("failed to unmarshal config: %v", err)
+		runtime.LogErrorf(c.ctx, "failed to unmarshal config: %v", err)
 		return err
 	}
 	c.App = a
 	if err := c.store(); err != nil {
-		c.Logger.Errorf("failed to store config: %v", err)
+		runtime.LogErrorf(c.ctx, "failed to store config: %v", err)
 		return err
 	}
 	return nil
@@ -113,13 +112,14 @@ func (c *Config) SetConfig(cfg string) error {
 // SetOutDir opens a directory select dialog and sets the output directory to
 // the chosen directory.
 func (c *Config) SetOutDir() string {
-	dir := c.Runtime.Dialog.SelectDirectory()
-	if dir != "" {
-		c.App.OutDir = dir
-		c.Logger.Infof("set output directory: %s", dir)
-		if err := c.store(); err != nil {
-			c.Logger.Errorf("failed to store config: %v", err)
-		}
+	dir, err := runtime.OpenDirectoryDialog(c.ctx, runtime.OpenDialogOptions{})
+	if err != nil || dir == "" {
+		return c.App.OutDir
+	}
+	c.App.OutDir = dir
+	runtime.LogInfof(c.ctx, "set output directory: %s", dir)
+	if err := c.store(); err != nil {
+		runtime.LogErrorf(c.ctx, "failed to store config: %v", err)
 	}
 	return c.App.OutDir
 }
@@ -143,7 +143,6 @@ func defaults() (*App, error) {
 
 	if _, err = os.Stat(od); os.IsNotExist(err) {
 		if err = os.Mkdir(od, 0777); err != nil {
-			od = "./"
 			fmt.Printf("failed to create default output directory: %v", err)
 			return nil, err
 		}
@@ -156,11 +155,11 @@ func defaults() (*App, error) {
 func (c *Config) store() error {
 	js, err := json.Marshal(c.GetAppConfig())
 	if err != nil {
-		c.Logger.Errorf("failed to marshal config: %v", err)
+		runtime.LogErrorf(c.ctx, "failed to marshal config: %v", err)
 		return err
 	}
 	if err = c.localStore.Store(js, filename); err != nil {
-		c.Logger.Errorf("failed to store config: %v", err)
+		runtime.LogErrorf(c.ctx, "failed to store config: %v", err)
 		return err
 	}
 	return nil

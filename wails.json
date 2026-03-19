@@ -1,4 +1,14 @@
 {
-  "email": "flyweight@pm.me",
-  "name": "Christopher Murphy"
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Optimus",
+  "outputfilename": "Optimus",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run serve",
+  "frontend:dev:serverUrl": "auto",
+  "build:tags": "webkit2_41",
+  "author": {
+    "name": "Christopher Murphy",
+    "email": "flyweight@pm.me"
+  }
 }
