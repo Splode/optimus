@@ -1,7 +1,10 @@
+name: Release
+
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
+
 jobs:
   package:
     strategy:
@@ -29,7 +32,6 @@ jobs:
         run: |
           export PATH=${PATH}:`go env GOPATH`/bin
           wails build
-          echo "converting .app into a .dmg"
           npm install -g appdmg
           appdmg dmg-spec.json optimus.dmg
           zip optimus.zip optimus.dmg
