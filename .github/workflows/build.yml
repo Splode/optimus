@@ -6,85 +6,67 @@ jobs:
   package:
     strategy:
       matrix:
-        go-version: [1.16]
+        go-version: ['1.22']
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set Version
-        run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-      - name: Get Wails dependencies
-        run: sudo apt update && sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+
+      - name: Install Linux dependencies
+        run: sudo apt update && sudo apt install -y libgtk-3-dev libwebkit2gtk-4.1-dev
         if: matrix.os == 'ubuntu-latest'
-      - name: Get Wails
-        run: go get -u github.com/wailsapp/wails/cmd/wails
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
       - name: Build package macOS
         run: |
           export PATH=${PATH}:`go env GOPATH`/bin
-          echo "building on ${{ matrix.os }}"
-          mkdir -p ~/.wails
-          cp wails.json ~/.wails/
-          export LOG_LEVEL=debug
-          export GODEBUG=1
-          wails build -p
+          wails build
           echo "converting .app into a .dmg"
           npm install -g appdmg
           appdmg dmg-spec.json optimus.dmg
           zip optimus.zip optimus.dmg
         if: matrix.os == 'macos-latest'
+
       - name: Build package linux
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
-          echo "building on ${{ matrix.os }}"
-          echo ${{ env.GITHUB_REF }}
-          echo ${{ env.GITHUB_HEAD_REF }}
-          mkdir -p ~/.wails
-          cp wails.json ~/.wails/
-          export LOG_LEVEL=debug
-          export GODEBUG=1
-          wails build
-          tar -czvf optimus.tar.gz ./build/optimus
-          # wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          # chmod +x linuxdeploy*.AppImage
-          # ls ./
-          # ./linuxdeploy*.AppImage --appdir AppDir --executable ./build/optimus --desktop-file=optimus.AppImage.desktop --icon-file=appicon--512.png --output appimage
+          wails build -tags webkit2_41
+          tar -czvf optimus.tar.gz ./build/bin/Optimus
         if: matrix.os == 'ubuntu-latest'
+
       - name: Build package windows
         run: |
           $GP = (go env GOPATH)
           $env:path = "$env:path;$GP\bin"
-          echo "building on ${{ matrix.os }}"
-          New-Item -ItemType directory -Path "$HOME\.wails" -Force
-          Copy-Item -Path "$PWD\wails.json" -Destination "$HOME\.wails\wails.json"
           choco install mingw
-          wails build -p
-          Compress-Archive -Path .\build\optimus* -DestinationPath .\optimus.zip
+          wails build
+          Compress-Archive -Path .\build\bin\Optimus* -DestinationPath .\optimus.zip
         if: matrix.os == 'windows-latest'
-      - name: upload artifact macOS
-        uses: actions/upload-artifact@v1
+
+      - name: Upload artifact macOS
+        uses: actions/upload-artifact@v4
         with:
           name: optimus-macOS
           path: optimus.zip
         if: matrix.os == 'macos-latest'
-      - name: upload artifact linux
-        uses: actions/upload-artifact@v2-preview
+
+      - name: Upload artifact linux
+        uses: actions/upload-artifact@v4
         with:
           name: optimus-linux
           path: optimus.tar.gz
         if: matrix.os == 'ubuntu-latest'
-      #      - name: upload artifact linux appimage
-      #        uses: actions/upload-artifact@v2-preview
-      #        with:
-      #          name: optimus-linux-appimage
-      #          path: Optimus-${{ env.VERSION }}-x86_64.AppImage
-      #        if: matrix.os == 'ubuntu-latest'
-      - name: upload artifact windows
-        uses: actions/upload-artifact@v1
+
+      - name: Upload artifact windows
+        uses: actions/upload-artifact@v4
         with:
           name: optimus-windows
           path: optimus.zip
@@ -94,55 +76,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: package
     steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          path: artifacts
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
           draft: true
           prerelease: true
-      - name: Download macOS package
-        uses: actions/download-artifact@v1
-        with:
-          name: optimus-macOS
-      - name: Upload macOS package to release
-        id: upload-macOS-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-macOS/optimus.zip
-          asset_name: optimus_${{ github.ref }}_macOS.zip
-          asset_content_type: application/octet-stream
-      - name: Download linux package
-        uses: actions/download-artifact@v1
-        with:
-          name: optimus-linux
-      - name: Upload Linux package to release
-        id: upload-linux-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-linux/optimus.tar.gz
-          asset_name: optimus_${{ github.ref }}_linux_x86_64.tar.gz
-          asset_content_type: application/octet-stream
-      - name: Download windows package
-        uses: actions/download-artifact@v1
-        with:
-          name: optimus-windows
-      - name: Upload Windows package to release
-        id: upload-windows-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./optimus-windows/optimus.zip
-          asset_name: optimus_${{ github.ref }}_windows_x86_64.zip
-          asset_content_type: application/octet-stream
+          files: |
+            artifacts/optimus-macOS/optimus.zip
+            artifacts/optimus-linux/optimus.tar.gz
+            artifacts/optimus-windows/optimus.zip
