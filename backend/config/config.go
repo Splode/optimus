@@ -9,8 +9,10 @@ import (
 	"optimus/backend/png"
 	"optimus/backend/webp"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
+	goruntime "runtime"
 	"strconv"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -74,10 +76,18 @@ func (c *Config) GetAppConfig() map[string]interface{} {
 	}
 }
 
-// OpenOutputDir opens the output directory using the native system browser.
+// OpenOutputDir opens the output directory in the native file manager.
 func (c *Config) OpenOutputDir() error {
-	runtime.BrowserOpenURL(c.ctx, c.App.OutDir)
-	return nil
+	var cmd *exec.Cmd
+	switch goruntime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", c.App.OutDir)
+	case "windows":
+		cmd = exec.Command("explorer", c.App.OutDir)
+	default:
+		cmd = exec.Command("xdg-open", c.App.OutDir)
+	}
+	return cmd.Start()
 }
 
 // RestoreDefaults sets the app configuration to defaults.
