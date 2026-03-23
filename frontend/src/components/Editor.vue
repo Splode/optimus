@@ -530,7 +530,7 @@ export default {
      * @param {FileList} f - A FileList array of files.
      */
     processFileInput(f) {
-      f.forEach(f => {
+      Array.from(f).forEach(f => {
         const name = fName(f.name)
         const ext = fExt(f.name)
         const type = this.getFileType(f.type, ext)
