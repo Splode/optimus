@@ -110,6 +110,7 @@ func (fm *FileManager) SelectFiles() ([]SelectFileMeta, error) {
 			runtime.LogErrorf(fm.ctx, "failed to decode file %s: %v", p, err)
 			continue
 		}
+		file.Data = nil // release raw bytes; image is now in file.Image
 		fm.Files = append(fm.Files, file)
 		runtime.LogInfof(fm.ctx, "added file to file manager via dialog: %s", file.Name)
 

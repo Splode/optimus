@@ -5,7 +5,6 @@ go 1.22.0
 require (
 	github.com/chai2010/webp v1.1.0
 	github.com/disintegration/imaging v1.6.2
-	github.com/foobaz/lossypng v0.0.0-20200814224715-48fa8819852a
 	github.com/muesli/smartcrop v0.3.0
 	github.com/vrischmann/userdir v0.0.0-20151206171402-20f291cebd68
 	github.com/wailsapp/wails/v2 v2.11.0

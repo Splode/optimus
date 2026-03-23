@@ -56,7 +56,7 @@ Vue 2 + Vuex. `App.vue` is the root with a sidebar + view router pattern (no vue
 Key components: `Editor.vue` (drag-drop + file list), `Settings.vue` (quality/size/format config), `Stats.vue` (lifetime stats display).
 
 ## Key Dependencies
-- **Go**: `wailsapp/wails/v2`, `chai2010/webp`, `disintegration/imaging`, `muesli/smartcrop`, `foobaz/lossypng`
+- **Go**: `wailsapp/wails/v2`, `chai2010/webp`, `disintegration/imaging`, `muesli/smartcrop`
 - **JS**: Vue 2.6, Vuex 3, Tailwind CSS 1.9
 
 ## Wails v2 Notes

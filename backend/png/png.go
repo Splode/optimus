@@ -2,13 +2,10 @@ package png
 
 import (
 	"bytes"
-	"github.com/foobaz/lossypng/lossypng"
 	"image"
 	"image/png"
 	"io"
 )
-
-const qMax = 20
 
 // Options represent PNG encoding options.
 type Options struct {
@@ -25,15 +22,23 @@ func DecodePNG(r io.Reader) (image.Image, error) {
 }
 
 // EncodePNG encodes an image into PNG and returns a buffer.
+// Lossless compression is used; the Quality option controls the compression
+// level (higher quality = less compression effort = faster encode).
 func EncodePNG(i image.Image, o *Options) (buf bytes.Buffer, err error) {
-	c := lossypng.Compress(i, 2, qualityFactor(o.Quality))
-	err = png.Encode(&buf, c)
+	enc := &png.Encoder{CompressionLevel: compressionLevel(o.Quality)}
+	err = enc.Encode(&buf, i)
 	return buf, err
 }
 
-// qualityFactor normalizes the PNG quality factor from a max of 20, where 0 is
-// no conversion.
-func qualityFactor(q int) int {
-	f := q / 100
-	return qMax - (f * qMax)
+// compressionLevel maps a quality value (0–100) to a png.CompressionLevel.
+// Lower quality = more aggressive compression (smaller file, slower encode).
+func compressionLevel(q int) png.CompressionLevel {
+	switch {
+	case q >= 80:
+		return png.BestSpeed
+	case q >= 40:
+		return png.DefaultCompression
+	default:
+		return png.BestCompression
+	}
 }

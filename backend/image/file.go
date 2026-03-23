@@ -13,6 +13,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"time"
 
 	"github.com/disintegration/imaging"
 	"github.com/muesli/smartcrop"
@@ -130,14 +131,20 @@ func (f *File) Write(c *config.Config, ctx context.Context) error {
 			}
 		}
 	}
+	t0 := time.Now()
 	buf, err := encToBuf(f.Image, c.App)
+	runtime.LogInfof(ctx, "perf: encode %s (%dx%d) to %s: %s", f.Name,
+		f.Image.Bounds().Max.X, f.Image.Bounds().Max.Y,
+		c.App.Target, time.Since(t0))
 	dest := path.Join(c.App.OutDir, c.App.Prefix+f.Name+c.App.Suffix+"."+c.App.Target)
 	if err != nil {
 		return err
 	}
+	t1 := time.Now()
 	if err = os.WriteFile(dest, buf.Bytes(), 0666); err != nil {
 		return err
 	}
+	runtime.LogInfof(ctx, "perf: write %s (%d bytes): %s", dest, len(buf.Bytes()), time.Since(t1))
 	f.ConvertedFile = filepath.Clean(dest)
 	f.IsConverted = true
 	return nil
