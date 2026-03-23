@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"optimus/backend/config"
 	"optimus/backend/stat"
+	"os"
+	"path/filepath"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -51,6 +54,73 @@ func (fm *FileManager) HandleFile(fileJson string) (err error) {
 	runtime.LogInfof(fm.ctx, "added file to file manager: %s", file.Name)
 
 	return nil
+}
+
+// SelectFileMeta holds UI-facing metadata returned after a file is selected and
+// decoded. The heavy image data stays in Go; only what the frontend needs is
+// returned across the IPC bridge.
+type SelectFileMeta struct {
+	ID       string `json:"id"`
+	Filename string `json:"filename"`
+	Name     string `json:"name"`
+	Size     int64  `json:"size"`
+}
+
+// SelectFiles opens a native OS file dialog, reads and decodes the selected
+// image files, adds them to the FileManager, and returns their metadata for
+// the UI. This avoids the unreliable browser <input type="file"> path on macOS.
+func (fm *FileManager) SelectFiles() ([]SelectFileMeta, error) {
+	paths, err := runtime.OpenMultipleFilesDialog(fm.ctx, runtime.OpenDialogOptions{
+		Filters: []runtime.FileFilter{
+			{DisplayName: "Images (*.jpg, *.jpeg, *.png, *.webp)", Pattern: "*.jpg;*.jpeg;*.png;*.webp"},
+		},
+	})
+	if err != nil || len(paths) == 0 {
+		return nil, err
+	}
+
+	var results []SelectFileMeta
+	for _, p := range paths {
+		data, err := os.ReadFile(p)
+		if err != nil {
+			runtime.LogErrorf(fm.ctx, "failed to read file: %s: %v", p, err)
+			continue
+		}
+		base := filepath.Base(p)
+		extWithDot := filepath.Ext(base)
+		ext := strings.ToLower(strings.TrimPrefix(extWithDot, "."))
+		name := strings.TrimSuffix(base, extWithDot)
+		size := int64(len(data))
+		id := name + strconv.FormatInt(size, 10)
+
+		mime := "image/" + ext
+		if ext == "jpg" {
+			mime = "image/jpeg"
+		}
+
+		file := &File{
+			Data:     data,
+			Ext:      ext,
+			ID:       id,
+			MimeType: mime,
+			Name:     name,
+			Size:     size,
+		}
+		if err := file.Decode(); err != nil {
+			runtime.LogErrorf(fm.ctx, "failed to decode file %s: %v", p, err)
+			continue
+		}
+		fm.Files = append(fm.Files, file)
+		runtime.LogInfof(fm.ctx, "added file to file manager via dialog: %s", file.Name)
+
+		results = append(results, SelectFileMeta{
+			ID:       id,
+			Filename: base,
+			Name:     name,
+			Size:     size,
+		})
+	}
+	return results, nil
 }
 
 // Clear removes the files in the FileManager.

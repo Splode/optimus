@@ -142,14 +142,6 @@
         </section>
       </footer>
     </header>
-    <input
-      type="file"
-      accept="image/jpeg, image/jpg, image/png, image/webp"
-      multiple
-      class="hidden"
-      @input="handleFileInput"
-      ref="fileInput"
-    />
     <!-- file table -->
     <transition name="fade" mode="out-in">
       <div
@@ -354,7 +346,6 @@ export default {
      */
     clear() {
       this.files = []
-      this.$refs['fileInput'].value = null
       window.go.image.FileManager.Clear()
         .then(res => {
           console.log(res)
@@ -438,12 +429,32 @@ export default {
     },
 
     /**
-     * handleFileInput handles the file submission via form input.
-     * @param {Event} e
+     * handleNativeFiles handles files returned by the native OS dialog via
+     * FileManager.SelectFiles(). Each entry has {id, filename, name, size}
+     * and is already decoded in Go — it just needs to be added to the UI list.
+     * @param {Array} files
      */
-    handleFileInput(e) {
-      const f = e.target.files
-      this.processFileInput(f)
+    handleNativeFiles(files) {
+      if (!files || files.length === 0) return
+      files.forEach(f => {
+        if (this.hasFile(f.id)) {
+          EventBus.$emit('notify', {
+            msg: 'Image file has already been added to the file list.',
+            type: 'warn'
+          })
+          return
+        }
+        this.files.push({
+          convertedPath: '',
+          convertedSize: 0,
+          filename: f.filename,
+          id: f.id,
+          isConverted: false,
+          isProcessed: true,
+          name: f.name,
+          size: f.size
+        })
+      })
     },
 
     /**
@@ -552,7 +563,6 @@ export default {
           size
         })
       })
-      this.$refs['fileInput'].value = null
     },
 
     /**
@@ -644,7 +654,13 @@ export default {
     dz.addEventListener(
       'click',
       () => {
-        this.$refs['fileInput'].click()
+        window.go.image.FileManager.SelectFiles()
+          .then(files => {
+            this.handleNativeFiles(files)
+          })
+          .catch(err => {
+            console.error(err)
+          })
       },
       false
     )

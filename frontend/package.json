@@ -7,12 +7,12 @@
   "private": true,
   "version": "0.5.0-beta",
   "scripts": {
-    "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "autoprefixer": "^9.8.6",
+    "autoprefixer": "^10.4.0",
     "core-js": "^3.6.4",
     "regenerator-runtime": "^0.13.7",
     "tailwindcss": "^1.9.1",
@@ -22,15 +22,13 @@
     "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.7",
-    "@vue/cli-plugin-eslint": "^4.5.7",
-    "@vue/cli-service": "^4.5.7",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.11.0",
     "eslint-plugin-vue": "^7.0.1",
-    "eventsource-polyfill": "^0.9.6",
-    "vue-template-compiler": "^2.6.12",
-    "webpack-hot-middleware": "^2.25.0"
+    "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {
     "root": true,
